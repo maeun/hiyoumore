@@ -1,18 +1,18 @@
 {
   "files": {
     "main.css": "/hiyoumore/static/css/main.81170253.css",
-    "main.js": "/hiyoumore/static/js/main.79d165ed.js",
+    "main.js": "/hiyoumore/static/js/main.2efd8944.js",
     "static/js/787.48067f02.chunk.js": "/hiyoumore/static/js/787.48067f02.chunk.js",
     "static/media/BinggraeSamanco-Bold.otf": "/hiyoumore/static/media/BinggraeSamanco-Bold.628000a73f73c61ff802.otf",
     "static/media/Binggrae.otf": "/hiyoumore/static/media/Binggrae.7838115c5bdc878c48b9.otf",
     "static/media/BMYEONSUNG.otf": "/hiyoumore/static/media/BMYEONSUNG.73a6ca5783a09294fab4.otf",
     "index.html": "/hiyoumore/index.html",
     "main.81170253.css.map": "/hiyoumore/static/css/main.81170253.css.map",
-    "main.79d165ed.js.map": "/hiyoumore/static/js/main.79d165ed.js.map",
+    "main.2efd8944.js.map": "/hiyoumore/static/js/main.2efd8944.js.map",
     "787.48067f02.chunk.js.map": "/hiyoumore/static/js/787.48067f02.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.81170253.css",
-    "static/js/main.79d165ed.js"
+    "static/js/main.2efd8944.js"
   ]
 }
