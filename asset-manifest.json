@@ -1,21 +1,20 @@
 {
   "files": {
-    "main.css": "/hiyoumore/static/css/main.b0cab6ad.css",
-    "main.js": "/hiyoumore/static/js/main.526174e2.js",
+    "main.css": "/hiyoumore/static/css/main.8d69b42d.css",
+    "main.js": "/hiyoumore/static/js/main.f60a2a7a.js",
     "static/js/787.48067f02.chunk.js": "/hiyoumore/static/js/787.48067f02.chunk.js",
     "static/media/BinggraeSamanco-Bold.otf": "/hiyoumore/static/media/BinggraeSamanco-Bold.628000a73f73c61ff802.otf",
     "static/media/Binggrae.otf": "/hiyoumore/static/media/Binggrae.7838115c5bdc878c48b9.otf",
     "static/media/Maplestory_Light.ttf": "/hiyoumore/static/media/Maplestory_Light.9d9497585053c96c8082.ttf",
     "static/media/BMYEONSUNG.otf": "/hiyoumore/static/media/BMYEONSUNG.73a6ca5783a09294fab4.otf",
     "static/media/something_going_wrong.png": "/hiyoumore/static/media/something_going_wrong.07f318cef97af58e04a1.png",
-    "static/media/logo.svg": "/hiyoumore/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/hiyoumore/index.html",
-    "main.b0cab6ad.css.map": "/hiyoumore/static/css/main.b0cab6ad.css.map",
-    "main.526174e2.js.map": "/hiyoumore/static/js/main.526174e2.js.map",
+    "main.8d69b42d.css.map": "/hiyoumore/static/css/main.8d69b42d.css.map",
+    "main.f60a2a7a.js.map": "/hiyoumore/static/js/main.f60a2a7a.js.map",
     "787.48067f02.chunk.js.map": "/hiyoumore/static/js/787.48067f02.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.b0cab6ad.css",
-    "static/js/main.526174e2.js"
+    "static/css/main.8d69b42d.css",
+    "static/js/main.f60a2a7a.js"
   ]
 }
