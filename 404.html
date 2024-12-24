@@ -1,11 +1,15 @@
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; url=/hiyoumore/" />
+    <meta http-equiv="refresh" content="0; url=/hiyoumore/index.html" />
     <script type="text/javascript">
       setTimeout(function () {
-        // 현재 경로를 유지한 채로 /hiyoumore/index.html로 리디렉션
-        var currentPath = window.location.pathname + window.location.search;
-        window.location = "/hiyoumore" + currentPath;
+        // 현재 경로에 맞는 상대 경로를 index.html로 리디렉션
+        var currentPath =
+          window.location.pathname +
+          window.location.search +
+          window.location.hash;
+        // `index.html`로 리디렉션하면서도 경로를 그대로 유지
+        window.location = "/hiyoumore/index.html" + currentPath;
       }, 0);
     </script>
   </head>
