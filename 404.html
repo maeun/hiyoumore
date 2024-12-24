@@ -3,7 +3,9 @@
     <meta http-equiv="refresh" content="0; url=/hiyoumore/" />
     <script type="text/javascript">
       setTimeout(function () {
-        window.location = "/hiyoumore/";
+        // 현재 경로를 유지한 채로 /hiyoumore/index.html로 리디렉션
+        var currentPath = window.location.pathname + window.location.search;
+        window.location = "/hiyoumore" + currentPath;
       }, 0);
     </script>
   </head>
