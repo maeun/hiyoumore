@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/static/css/main.a9d1568a.css",
+    "main.js": "/static/js/main.cb980abc.js",
+    "static/js/787.48067f02.chunk.js": "/static/js/787.48067f02.chunk.js",
+    "static/media/BinggraeSamanco-Bold.otf": "/static/media/BinggraeSamanco-Bold.628000a73f73c61ff802.otf",
+    "static/media/Binggrae.otf": "/static/media/Binggrae.7838115c5bdc878c48b9.otf",
+    "static/media/Maplestory_Light.ttf": "/static/media/Maplestory_Light.9d9497585053c96c8082.ttf",
+    "static/media/BMYEONSUNG.otf": "/static/media/BMYEONSUNG.73a6ca5783a09294fab4.otf",
+    "static/media/something_going_wrong.png": "/static/media/something_going_wrong.07f318cef97af58e04a1.png",
+    "index.html": "/index.html",
+    "main.a9d1568a.css.map": "/static/css/main.a9d1568a.css.map",
+    "main.cb980abc.js.map": "/static/js/main.cb980abc.js.map",
+    "787.48067f02.chunk.js.map": "/static/js/787.48067f02.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a9d1568a.css",
+    "static/js/main.cb980abc.js"
+  ]
+}

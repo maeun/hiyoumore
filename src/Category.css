@@ -1,0 +1,25 @@
+.Category_list {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto; /* 스크롤을 허용하도록 설정 */
+  white-space: nowrap;
+  width: 100%; /* Content의 폭을 채우도록 설정 */
+  justify-content: flex-start;
+  box-sizing: border-box; /* 패딩과 보더를 포함한 전체 크기 계산 */
+}
+
+.item {
+  margin-left: 3px;
+  margin-right: 3px;
+  flex-shrink: 0; /* 아이템이 줄어들지 않도록 설정 */
+}
+.chip-label {
+  font-family: "Noto Sans KR", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
