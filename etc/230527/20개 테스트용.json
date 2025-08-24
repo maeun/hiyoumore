@@ -1,0 +1,184 @@
+{
+  "QA": [
+    {
+      "que": "지구가 제일 힘들었던 시기는?",
+      "ans": "고생대",
+      "animal": 0,
+      "king": 0,
+      "sci": "",
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "F는 좀 애매한 이유는?",
+      "ans": "F = ma니까",
+      "animal": 0,
+      "king": 0,
+      "sci": 1,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "me too와 비슷한 말은?",
+      "ans": "another(어 나도)",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "이야기를 팔아서 돈을 버는 사람은?",
+      "ans": "썰(Ssul)매장 주인",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "옷감을 울게 만드는 것은?",
+      "ans": "섬유유(ㅠㅠ)연제",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "비빔밥이 항상 남는 이유는?",
+      "ans": "나물 음식이라서",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 1
+    },
+    {
+      "que": "피카츄가 담배를 피기 전에 하는 말?",
+      "ans": "피까",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "모든 사람을 일어나게 하는 숫자는?",
+      "ans": "다섯",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "사자가 항상 숙제를 안 하는 이유는?",
+      "ans": "밀림의 제왕이라서",
+      "animal": 1,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "다리미가 좋아하는 음식은?",
+      "ans": "피자",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "겨울왕국의 엘사가 놀릴 때 하는 말은?",
+      "ans": "얼 Let it go 레리",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "뽑으면 우는 식물은?",
+      "ans": "우엉",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 1,
+      "food": 0
+    },
+    {
+      "que": "오키나와에 가면 살이 찌는 이유는?",
+      "ans": "5끼 나오니까",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "소나무가 삐지면?",
+      "ans": "칫솔",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "우유가 아프면?",
+      "ans": "앙팡",
+      "animal": 0,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "소가 불에 타면?",
+      "ans": "탄소",
+      "animal": 1,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "오리가 얼면?",
+      "ans": "언덕",
+      "animal": 1,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "가장 비싼 새는?",
+      "ans": "백조",
+      "animal": 1,
+      "king": 0,
+      "sci": 0,
+      "plant": 0,
+      "food": 0
+    },
+    {
+      "que": "맥주가 죽기 전에 남긴 말은?",
+      "ans": "유언비어",
+      "animal": 0,
+      "king": 1,
+      "sci": 0,
+      "plant": 0,
+      "food": 1
+    },
+    {
+      "que": "세상에서 가장 가난한 왕은?",
+      "ans": "최저임금",
+      "animal": "",
+      "king": "",
+      "sci": "",
+      "plant": "",
+      "food": ""
+    }
+  ]
+}

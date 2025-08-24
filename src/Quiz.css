@@ -1,0 +1,27 @@
+.QAcardSet {
+  margin: auto;
+  width: 90%;
+}
+
+.Card_Front_Que,
+.Card_Back_Ans {
+  font-size: 170%;
+  font-family: "Maplestory_Light";
+}
+
+.Card_Back_Ans {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* 추가 */
+}
+
+.ShareButton {
+  font-size: 100%;
+  margin-top: 10px; /* 추가 */
+}
+
+@font-face {
+  font-family: "Maplestory_Light";
+  src: url("./fonts/Maplestory_Light.ttf");
+}

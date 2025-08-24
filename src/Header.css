@@ -1,0 +1,33 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #594b73;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+  height: 50px;
+  text-align: center;
+  font-size: 30px;
+  font-family: "BinggraeSamanco-Bold";
+}
+
+.header_text {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: white; /* 텍스트 색상을 흰색으로 설정 */
+}
+
+.logo {
+  margin-right: 10px; /* 로고와 텍스트 사이의 간격 조정 */
+  width: 35px;
+  height: auto;
+}
+@font-face {
+  font-family: "BinggraeSamanco-Bold";
+  src: url("./fonts/BinggraeSamanco-Bold.otf");
+}
+
+@font-face {
+  font-family: "BMYEONSUNG";
+  src: url("./fonts/BMYEONSUNG.otf");
+}

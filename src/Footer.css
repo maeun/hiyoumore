@@ -1,0 +1,12 @@
+a {
+  text-decoration-line: none;
+  color: inherit;
+}
+
+.Panel {
+  display: flex;
+  justify-content: center; /* 가운데 정렬 */
+  align-items: center; /* 세로 정렬 */
+  gap: 20px; /* 링크 사이 간격 */
+  padding: 10px; /* 여백 추가 */
+}

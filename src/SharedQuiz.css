@@ -1,0 +1,23 @@
+.SharedQuiz_Frame {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
+}
+
+.text {
+  font-size: 150%;
+  font-family: "Binggrae";
+  white-space: pre-wrap;
+}
+
+.SharedQuiz_Frame .btn {
+  margin-top: 10px;
+}
+
+@font-face {
+  font-family: "Binggrae";
+  src: url("./fonts/Binggrae.otf");
+}
