@@ -9,16 +9,16 @@ function Header() {
   };
 
   return (
-    <div class="header">
+    <div className="header">
       <div
-        class="header_text"
+        className="header_text"
         onClick={handleImageClick} // 이미지를 클릭했을 때 handleImageClick 함수 호출
         style={{ cursor: "pointer" }} // 클릭 가능한 커서 스타일
       >
         <img
           src={process.env.PUBLIC_URL + "/logo192.png"}
           alt="Logo"
-          class="logo"
+          className="logo"
         />
         hiyoumore
       </div>

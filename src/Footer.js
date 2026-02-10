@@ -163,7 +163,7 @@ function Footer() {
           </>
         )}
       </div>
-      <Typography level="body1">ⓒ 2024 hiyoumore</Typography>
+      <Typography level="body1">ⓒ {new Date().getFullYear()} hiyoumore</Typography>
     </div>
   );
 }

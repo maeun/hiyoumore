@@ -17,7 +17,11 @@
   margin-top: 10px;
 }
 
-@font-face {
-  font-family: "Binggrae";
-  src: url("./fonts/Binggrae.otf");
+.SharedQuiz_Frame .tap-hint {
+  font-size: 12px;
+  color: #594b73;
+  opacity: 0.5;
+  position: absolute;
+  bottom: 8px;
+  font-family: "Noto Sans KR", sans-serif;
 }

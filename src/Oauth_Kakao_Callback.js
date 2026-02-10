@@ -1,17 +1,21 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { ref, set, get } from "firebase/database";
-import { log_in_out_db, sign_up_db } from "./firebaseConfig"; // Firebase config 파일에서 sign_up_db도 import
+import { log_in_out_db, sign_up_db } from "./firebaseConfig";
 
 function Oauth_Kakao_Callback() {
   const { setIsLoggedIn, setToken, setPlatform } = useContext(AuthContext);
-  const [code, setCode] = useState("");
-  const [userInfo, setUserInfo] = useState(null);
-  const [accessToken, setAccessToken] = useState("");
+  const [, setCode] = useState("");
+  const [, setUserInfo] = useState(null);
+  const [, setAccessToken] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -74,9 +78,7 @@ function Oauth_Kakao_Callback() {
       setIsLoggedIn(true);
       setPlatform("kakao");
       saveLoginTime(userData.id, accessToken);
-
-      console.log("11");
-      console.log("22");
+      saveUserInfo(userData);
 
       // Toast를 navigate 호출 직전에 렌더링
       toast(<b>👋 로그인 되었습니다 👋</b>, {
@@ -157,26 +159,15 @@ function Oauth_Kakao_Callback() {
   };
 
   return (
-    <div>
-      <p>짜란~!</p>
-      <p>Code: {code}</p>
-      <p>Token: {accessToken}</p>
-      {userInfo && (
-        <div>
-          <p>User Info:</p>
-          <p>ID: {userInfo.id}</p>
-          <p>CONNECTED_AT: {userInfo.connected_at}</p>
-          <p>Nickname: {userInfo.kakao_account.profile.nickname}</p>
-          <p>Email: {userInfo.kakao_account.email}</p>
-          <p>NAME: {userInfo.kakao_account.name}</p>
-          <p>PHONE_NUMBER: {userInfo.kakao_account.phone_number}</p>
-          <p>
-            PROFILE_IMAGE_URL:{" "}
-            {userInfo.kakao_account.profile.profile_image_url}
-          </p>
-        </div>
-      )}
-    </div>
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh", gap: "16px" }}>
+      <Helmet>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <CircularProgress sx={{ color: "#594b73" }} />
+      <Typography sx={{ fontFamily: '"Noto Sans KR", sans-serif' }}>
+        로그인 처리 중...
+      </Typography>
+    </Box>
   );
 }
 

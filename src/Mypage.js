@@ -1,7 +1,7 @@
-import "./Mypage.css";
 import something_going_wrong from "./something_going_wrong.png";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { TextField, Avatar, Box, Typography, Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
@@ -157,6 +157,9 @@ function Mypage() {
 
   return (
     <div>
+      <Helmet>
+        <meta name="robots" content="noindex" />
+      </Helmet>
       <ToastContainer />
       {isLoggedIn ? (
         <div>

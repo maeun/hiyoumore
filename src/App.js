@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // HashRouter -> BrowserRouter
+import { HelmetProvider, Helmet } from "react-helmet-async";
 import "./App.css";
 
 import Header from "./Header";
@@ -22,6 +23,7 @@ function App() {
   };
 
   return (
+    <HelmetProvider>
     <AuthProvider>
       <Router basename="/">
         <div className="Main">
@@ -32,6 +34,10 @@ function App() {
                 path="/"
                 element={
                   <div className="PageWrapper">
+                    <Helmet>
+                      <title>하이유모어 - 퀴즈 공유</title>
+                      <meta name="description" content="친구에게 재미있는 퀴즈를 공유해보세요! 다양한 카테고리의 퀴즈를 풀고 친구와 함께 즐기세요." />
+                    </Helmet>
                     <Category
                       handleSelectedQuestions={handleSelectedQuestions}
                     />
@@ -85,6 +91,7 @@ function App() {
         </div>
       </Router>
     </AuthProvider>
+    </HelmetProvider>
   );
 }
 

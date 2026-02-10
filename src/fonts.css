@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap");
+
+@font-face {
+  font-family: "BinggraeSamanco-Bold";
+  src: url("./fonts/BinggraeSamanco-Bold.otf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "BMYEONSUNG";
+  src: url("./fonts/BMYEONSUNG.otf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Maplestory_Light";
+  src: url("./fonts/Maplestory_Light.ttf");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Binggrae";
+  src: url("./fonts/Binggrae.otf");
+  font-display: swap;
+}

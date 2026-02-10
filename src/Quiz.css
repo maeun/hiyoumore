@@ -18,10 +18,14 @@
 
 .ShareButton {
   font-size: 100%;
-  margin-top: 10px; /* 추가 */
+  margin-top: 10px;
 }
 
-@font-face {
-  font-family: "Maplestory_Light";
-  src: url("./fonts/Maplestory_Light.ttf");
+.tap-hint {
+  font-size: 12px;
+  color: #594b73;
+  opacity: 0.5;
+  position: absolute;
+  bottom: 8px;
+  font-family: "Noto Sans KR", sans-serif;
 }
