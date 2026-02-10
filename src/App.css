@@ -1,44 +1,6 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .Main {
-  background-color: #f2f4fb;
+  --bg-color: #f2f4fb;
+  background-color: var(--bg-color);
   text-align: center;
 
   display: flex;
@@ -47,9 +9,8 @@
   margin-left: auto;
   margin-right: auto;
   min-height: 100vh;
-  border: 3px;
   box-sizing: border-box;
-  width: min(500px, 100%); /* 최대 500px, 그렇지 않으면 100% */
+  width: min(500px, 100%);
   box-shadow: 10px 20px 40px rgba(0, 0, 0, 0.1),
     -10px 20px 40px rgba(0, 0, 0, 0.1);
   padding-bottom: 10px;
@@ -59,24 +20,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-grow: 1; /* Header와 Footer 사이의 남은 공간을 채우도록 설정 */
+  flex-grow: 1;
   width: 100%;
 }
 
-@font-face {
-  font-family: "BinggraeSamanco-Bold";
-  src: url("./fonts/BinggraeSamanco-Bold.otf");
-}
-
-@font-face {
-  font-family: "BMYEONSUNG";
-  src: url("./fonts/BMYEONSUNG.otf");
-}
-
 .PageWrapper {
-  width: 100%; /* 부모 요소인 Content의 폭을 100%로 설정 */
-  max-width: 100%; /* Content를 넘지 않도록 설정 */
-  box-sizing: border-box; /* padding과 border를 width에 포함 */
-  padding: 0 20px; /* 필요 시 좌우에 패딩을 추가 */
-  margin: 0 auto; /* 가운데 정렬을 유지 */
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 20px;
+  margin: 0 auto;
 }

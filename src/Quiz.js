@@ -4,34 +4,54 @@ import { styled } from "@mui/system";
 import { Card, Button } from "@mui/joy";
 import ShareIcon from "@mui/icons-material/Share";
 import Skeleton from "@mui/material/Skeleton";
+import DOMPurify from "dompurify";
+import tokens from "./tokens";
 import "./Quiz.css";
 
 const ShareButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "#FFFFFF",
-  borderRadius: "20px",
+  backgroundColor: tokens.colors.white,
+  borderRadius: tokens.borderRadius.button,
   padding: theme.spacing(1),
   border: "3px white",
   "&:hover": {
     border: "2px solid pink",
-    backgroundColor: "#FF9999",
-    color: "#FFFFFF",
+    backgroundColor: tokens.colors.accent,
+    color: tokens.colors.white,
   },
-  color: "#FF9999",
+  color: tokens.colors.accent,
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: "180px",
-  backgroundColor: "#f2f4fb",
-  borderRadius: "8px",
-  marginBottom: "30px",
+  backgroundColor: tokens.colors.background,
+  borderRadius: tokens.borderRadius.card,
+  marginBottom: tokens.spacing.cardMarginBottom,
   justifyContent: "center",
   alignItems: "center",
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+  boxShadow: tokens.shadows.cardFront,
   transform: "perspective(600px) rotateY(0)",
   transition: "0.6s",
   backfaceVisibility: "hidden",
   overflow: "hidden",
   padding: 0,
+  position: "relative",
+  border: "2px solid rgba(89, 75, 115, 0.08)",
+}));
+
+const StyledCardBack = styled(Card)(({ theme }) => ({
+  height: "180px",
+  backgroundColor: tokens.colors.cardBack,
+  borderRadius: tokens.borderRadius.card,
+  marginBottom: tokens.spacing.cardMarginBottom,
+  justifyContent: "center",
+  alignItems: "center",
+  boxShadow: tokens.shadows.cardBack,
+  transform: "perspective(600px) rotateY(0)",
+  transition: "0.6s",
+  backfaceVisibility: "hidden",
+  overflow: "hidden",
+  padding: 0,
+  border: "2px solid rgba(89, 75, 115, 0.15)",
 }));
 
 function Quiz({ selectedQuestions }) {
@@ -82,13 +102,14 @@ function Quiz({ selectedQuestions }) {
     >
       <StyledCard className="Card_Front" onClick={() => handleClick(index)}>
         <div className="Card_Front_Que">
-          <p dangerouslySetInnerHTML={{ __html: card.que }} />
+          <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(card.que) }} />
         </div>
+        <span className="tap-hint">탭하여 정답 보기</span>
       </StyledCard>
 
-      <StyledCard className="Card_Back" onClick={() => handleClick(index)}>
+      <StyledCardBack className="Card_Back" onClick={() => handleClick(index)}>
         <div className="Card_Back_Ans">
-          <p dangerouslySetInnerHTML={{ __html: card.ans }} />
+          <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(card.ans) }} />
         </div>
         <ShareButton
           variant="outlined"
@@ -97,7 +118,7 @@ function Quiz({ selectedQuestions }) {
         >
           친구에게 전달하기 <ShareIcon />
         </ShareButton>
-      </StyledCard>
+      </StyledCardBack>
     </ReactCardFlip>
   );
 

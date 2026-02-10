@@ -1,13 +1,17 @@
 import React, { useEffect, useState, useContext } from "react";
+import { Helmet } from "react-helmet-async";
 import AuthContext from "./AuthContext";
 import { toast, ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Oauth_Naver_Callback() {
   const { setIsLoggedIn, setToken, setRefreshToken, setPlatform } =
     useContext(AuthContext);
-  const [userData, setUserData] = useState(null); // State to store user data
+  const [, setUserData] = useState(null);
   const [retry, setRetry] = useState(0); // Track number of retries (0 = no retry, 1 = first retry)
   const location = useLocation();
   const navigate = useNavigate();
@@ -51,7 +55,7 @@ function Oauth_Naver_Callback() {
           transition: Bounce,
         });
 
-        // navigate("/"); // Optionally navigate after successful login
+        navigate("/");
       } else {
         console.error("Failed to retrieve user data:", data);
       }
@@ -74,28 +78,16 @@ function Oauth_Naver_Callback() {
   }, [location]);
 
   return (
-    <div>
-      {userData ? (
-        <div>
-          <h2>로그인 완료!</h2>
-          <p>
-            <b>Nickname:</b> {userData.nickname}
-          </p>
-          <p>
-            <b>Email:</b> {userData.email}
-          </p>
-          <p>
-            <b>PROFILE_IMAGE_URL:</b> {userData.profile_image}
-          </p>
-          <p>
-            <b>NAME:</b> {userData.name}
-          </p>
-        </div>
-      ) : (
-        <div>로그인 처리 중...</div>
-      )}
+    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh", gap: "16px" }}>
+      <Helmet>
+        <meta name="robots" content="noindex" />
+      </Helmet>
+      <CircularProgress sx={{ color: "#594b73" }} />
+      <Typography sx={{ fontFamily: '"Noto Sans KR", sans-serif' }}>
+        로그인 처리 중...
+      </Typography>
       <ToastContainer />
-    </div>
+    </Box>
   );
 }
 

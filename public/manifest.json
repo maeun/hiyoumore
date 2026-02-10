@@ -1,6 +1,6 @@
 {
-  "short_name": "hi you more",
-  "name": "Create React App Sample",
+  "short_name": "하이유머",
+  "name": "하이유모어 - 퀴즈 공유",
   "icons": [
     {
       "src": "favicon.ico",

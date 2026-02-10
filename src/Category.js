@@ -339,20 +339,22 @@ function Category({ handleSelectedQuestions }) {
   };
 
   return (
-    <ScrollContainer className="Category_list">
-      {items.map((item, index) => (
-        <div className="item" key={index}>
-          <Chip
-            className="chip"
-            color="info"
-            onClick={() => handleItemClick(item)}
-            variant={selectedItem === item ? "solid" : "outlined"}
-          >
-            <div className="chip-label">{item}</div>
-          </Chip>
-        </div>
-      ))}
-    </ScrollContainer>
+    <div className="category-scroll-wrapper">
+      <ScrollContainer className="Category_list">
+        {items.map((item, index) => (
+          <div className="item" key={index}>
+            <Chip
+              className="chip"
+              color="info"
+              onClick={() => handleItemClick(item)}
+              variant={selectedItem === item ? "solid" : "outlined"}
+            >
+              <div className="chip-label">{item}</div>
+            </Chip>
+          </div>
+        ))}
+      </ScrollContainer>
+    </div>
   );
 }
 

@@ -3,10 +3,26 @@ a {
   color: inherit;
 }
 
+.Footer {
+  border-top: 1px solid rgba(89, 75, 115, 0.15);
+  padding-top: 8px;
+  margin-top: 12px;
+}
+
 .Panel {
   display: flex;
-  justify-content: center; /* 가운데 정렬 */
-  align-items: center; /* 세로 정렬 */
-  gap: 20px; /* 링크 사이 간격 */
-  padding: 10px; /* 여백 추가 */
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 10px;
+}
+
+.Panel a {
+  color: #594b73;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.Panel a:hover {
+  opacity: 0.7;
 }
