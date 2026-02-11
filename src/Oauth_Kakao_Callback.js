@@ -36,7 +36,7 @@ function Oauth_Kakao_Callback() {
   const fetchToken = async (code) => {
     const grantType = "authorization_code";
     const clientId = "05d00f0fda1f9c72cd19cc6f219cd58a"; // 카카오 개발자 콘솔에서 발급받은 REST API 키
-    const redirectUri = "https://hiyoumore.netlify.app/oauth/kakao/callback"; // 설정한 Redirect URI
+    const redirectUri = "https://hiyoumore.vercel.app/oauth/kakao/callback"; // 설정한 Redirect URI
 
     try {
       const response = await axios.post(

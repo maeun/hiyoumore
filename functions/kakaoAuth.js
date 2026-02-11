@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 exports.handler = async (event, context) => {
   const kakaoRestApiKey = "05d00f0fda1f9c72cd19cc6f219cd58a"; // Netlify의 환경변수에서 가져오기
-  const kakaoRedirectUri = "https://hiyoumore.netlify.app/oauth/kakao/callback"; // 리디렉션 URI도 환경변수로 설정
+  const kakaoRedirectUri = "https://hiyoumore.vercel.app/oauth/kakao/callback"; // 리디렉션 URI도 환경변수로 설정
   const code = event.queryStringParameters.code; // 카카오에서 받은 인증 코드
 
   const url = "https://kauth.kakao.com/oauth/token";

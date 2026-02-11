@@ -10,14 +10,14 @@ function Login() {
   const naver_clientId = "eV5oSQK9GyDD58KC4_Xl";
   // netlify 배포일 때 아래 거 사용
   const naver_redirectUri =
-    "https://hiyoumore.netlify.app/oauth/naver/callback";
+    "https://hiyoumore.vercel.app/oauth/naver/callback";
   const naver_state = Math.random().toString(36).substring(2);
   localStorage.setItem("naverState", naver_state);
 
   const kakao_response_type = "code";
   const kakao_clientId = "05d00f0fda1f9c72cd19cc6f219cd58a";
   const kakao_redirectUri =
-    "https://hiyoumore.netlify.app/oauth/kakao/callback";
+    "https://hiyoumore.vercel.app/oauth/kakao/callback";
 
   // github 배포일 때 아래 거 사용
   // const redirectUri = "https://maeun.github.io/hiyoumore/oauth/naver/callback";
