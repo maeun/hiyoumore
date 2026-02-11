@@ -38,7 +38,7 @@
     "predeploy": "npm run build",
     "deploy": "netlify deploy --prod"
   },
-  "homepage": "https://hiyoumore.netlify.app/",
+  "homepage": "https://hiyoumore.vercel.app/",
   "eslintConfig": {
     "extends": [
       "react-app",
