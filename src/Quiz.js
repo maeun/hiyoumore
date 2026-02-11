@@ -6,6 +6,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import Skeleton from "@mui/material/Skeleton";
 import DOMPurify from "dompurify";
 import tokens from "./tokens";
+import { handleShare } from "./shareUtils";
 import "./Quiz.css";
 
 const ShareButton = styled(Button)(({ theme }) => ({
@@ -72,26 +73,9 @@ function Quiz({ selectedQuestions }) {
     });
   };
 
-  const handleShare = (quiz_num) => {
+  const onShare = (quiz_num) => {
     const share_url = `${window.location.href}shared-quiz?num=${quiz_num}`;
-    const share_text = `😉 이런, 퀴즈가 도착했어요 - ${share_url}`;
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "😉 이런, 퀴즈가 도착했어요",
-          url: share_url,
-        })
-        .then(() => console.log("URL 공유 성공"))
-        .catch((error) => console.error("URL 공유 실패", error));
-    } else {
-      const dummyInput = document.createElement("input");
-      dummyInput.setAttribute("value", share_text);
-      document.body.appendChild(dummyInput);
-      dummyInput.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummyInput);
-    }
+    handleShare(share_url);
   };
 
   const renderCardContent = (card, index) => (
@@ -114,7 +98,7 @@ function Quiz({ selectedQuestions }) {
         <ShareButton
           variant="outlined"
           className="ShareButton"
-          onClick={() => handleShare(card.index)}
+          onClick={() => onShare(card.index)}
         >
           친구에게 전달하기 <ShareIcon />
         </ShareButton>

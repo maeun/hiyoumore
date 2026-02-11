@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import AuthContext from "./AuthContext";
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { showToast } from "./toastUtils";
+import { saveLoginTime } from "./authUtils";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -40,20 +42,10 @@ function Oauth_Naver_Callback() {
         setRefreshToken(data.refresh_token);
         setPlatform("naver");
 
-        // Reset retry state after successful login
-        setRetry(0); // Make sure retry flag is reset after a successful login
+        setRetry(0);
 
-        toast(<b>👋 로그인 되었습니다 👋</b>, {
-          position: "top-center",
-          autoClose: 900,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
+        saveLoginTime(data.user.response?.id || "naverUser", data.access_token, "NAVER");
+        showToast("👋 로그인 되었습니다 👋");
 
         navigate("/");
       } else {
