@@ -11,6 +11,7 @@ import { ref, get, query, orderByChild, equalTo } from "firebase/database";
 import { qa_db } from "./firebaseConfig";
 import DOMPurify from "dompurify";
 import tokens from "./tokens";
+import { handleShare } from "./shareUtils";
 
 function SharedQuiz() {
   const location = useLocation();
@@ -22,32 +23,8 @@ function SharedQuiz() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // handleShare 함수 정의
-  const handleShare = (quiz_num) => {
-    const share_url = window.location.href;
-    const share_text = "😉 이런, 퀴즈가 도착했어요 - " + share_url;
-
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "😉 이런, 퀴즈가 도착했어요",
-          url: share_url,
-        })
-        .then(() => {
-          console.log("URL 공유 성공");
-        })
-        .catch((error) => {
-          console.error("URL 공유 실패", error);
-        });
-    } else {
-      const dummyInput = document.createElement("input");
-      dummyInput.setAttribute("value", share_text);
-      document.body.appendChild(dummyInput);
-      dummyInput.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummyInput);
-      alert("퀴즈 URL이 복사되었습니다!");
-    }
+  const onShare = () => {
+    handleShare(window.location.href);
   };
 
   const handleFlipCard = () => {
@@ -167,7 +144,7 @@ function SharedQuiz() {
         size="lg"
         className="btn"
         color="info"
-        onClick={() => handleShare(num)} // 여기서 handleShare 함수 사용
+        onClick={onShare}
         variant="solid"
       >
         😎 친구에게 공유하기

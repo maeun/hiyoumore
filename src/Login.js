@@ -4,8 +4,6 @@ import kakao_login_btn from "./kakao_login_btn.png";
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 
 function Login() {
   const naver_response_type = "code";
@@ -25,34 +23,11 @@ function Login() {
   // const redirectUri = "https://maeun.github.io/hiyoumore/oauth/naver/callback";
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "16px",
-        padding: "24px",
-        backgroundColor: "#FFFFFF",
-        borderRadius: "16px",
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-        maxWidth: "360px",
-        margin: "0 auto",
-      }}
-    >
+    <div className="login-container">
       <Helmet>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <img
-        src={login_main_img}
-        alt="login main"
-        style={{ width: "120px", borderRadius: "12px" }}
-      />
-      <Typography
-        variant="h6"
-        sx={{ fontFamily: '"Noto Sans KR", sans-serif', fontWeight: 600 }}
-      >
-        로그인
-      </Typography>
+      <img src={login_main_img} alt="login main" />
 
       <Button
         variant="outlined"
@@ -72,6 +47,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          margin: "0 auto",
         }}
       >
         <img
@@ -102,6 +78,7 @@ function Login() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          margin: "0 auto",
         }}
       >
         <img
@@ -114,7 +91,7 @@ function Login() {
         />
         카카오로 로그인하기
       </Button>
-    </Box>
+    </div>
   );
 }
 

@@ -5,7 +5,8 @@ import { Helmet } from "react-helmet-async";
 import { TextField, Avatar, Box, Typography, Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
-import { toast, ToastContainer, Bounce } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import { showToast, showErrorToast } from "./toastUtils";
 
 function Mypage() {
   const { isLoggedIn, setIsLoggedIn, token, refreshToken, platform } =
@@ -121,36 +122,15 @@ function Mypage() {
 
         console.log("Signout success", response.data);
         setIsLoggedIn(false);
-        toast(<b>🤧 탈퇴되었습니다 🤧</b>, {
-          position: "top-center",
-          autoClose: 900,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
+        showToast("🤧 탈퇴되었습니다 🤧");
       } else if (platform === "naver") {
-        // Naver logout process: just clear the token
         fetchNaverSignOut();
         setIsLoggedIn(false);
-        toast(<b>🤧 탈퇴되었습니다 🤧</b>, {
-          position: "top-center",
-          autoClose: 900,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
+        showToast("🤧 탈퇴되었습니다 🤧");
       }
     } catch (error) {
       console.error("Signout failed:", error);
-      toast.error("Signout failed. Please try again.");
+      showErrorToast("Signout failed. Please try again.");
     }
     // navigate("/");
   };

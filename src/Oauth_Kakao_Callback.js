@@ -3,13 +3,14 @@ import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
-import { toast, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { ref, set, get } from "firebase/database";
-import { log_in_out_db, sign_up_db } from "./firebaseConfig";
+import { ref, set } from "firebase/database";
+import { sign_up_db } from "./firebaseConfig";
+import { showToast } from "./toastUtils";
+import { saveLoginTime } from "./authUtils";
 
 function Oauth_Kakao_Callback() {
   const { setIsLoggedIn, setToken, setPlatform } = useContext(AuthContext);
@@ -77,62 +78,15 @@ function Oauth_Kakao_Callback() {
       setUserInfo(userData);
       setIsLoggedIn(true);
       setPlatform("kakao");
-      saveLoginTime(userData.id, accessToken);
+      saveLoginTime(userData.id, accessToken, "KAKAO");
       saveUserInfo(userData);
 
-      // Toast를 navigate 호출 직전에 렌더링
-      toast(<b>👋 로그인 되었습니다 👋</b>, {
-        position: "top-center",
-        autoClose: 900,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      showToast("👋 로그인 되었습니다 👋");
 
       // navigate 호출
       navigate("/");
     } catch (error) {
       console.error("Error fetching the user info:", error);
-    }
-  };
-
-  const saveLoginTime = async (userId, accessToken) => {
-    const loginTime = new Date();
-    const utc9Time = new Date(loginTime.getTime() + 9 * 60 * 60 * 1000); // UTC+9 시간대 변환
-    const formattedTime = utc9Time.toISOString().replace("Z", "+09:00"); // 시간 문자열을 UTC+09:00 형식으로 변환
-
-    // 날짜 형식을 YYYY-MM-DD로 변환
-    const date = utc9Time.toISOString().split("T")[0];
-
-    try {
-      // 해당 날짜의 로그인 횟수 조회
-      const dateRef = ref(log_in_out_db, `login/${date}`);
-      const snapshot = await get(dateRef);
-      let loginCount = 0;
-
-      if (snapshot.exists()) {
-        loginCount = snapshot.size; // 해당 날짜의 기존 로그인 수
-      }
-
-      // 새로운 로그인 번호
-      const newLoginNumber = loginCount + 1;
-
-      // 새로운 로그인 정보 저장
-      const newLoginRef = ref(log_in_out_db, `login/${date}/${newLoginNumber}`);
-      await set(newLoginRef, {
-        user_id: userId,
-        login_time: formattedTime,
-        accessToken: accessToken,
-        login_platform: "KAKAO",
-      });
-
-      console.log("Login time saved successfully");
-    } catch (error) {
-      console.error("Error saving login time:", error);
     }
   };
 
