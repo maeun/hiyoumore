@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.dfdfb4ea.css",
-    "main.js": "/static/js/main.f320c81d.js",
+    "main.css": "/static/css/main.89fb7a3d.css",
+    "main.js": "/static/js/main.4a90b107.js",
     "static/js/787.48067f02.chunk.js": "/static/js/787.48067f02.chunk.js",
     "static/media/BinggraeSamanco-Bold.otf": "/static/media/BinggraeSamanco-Bold.628000a73f73c61ff802.otf",
     "static/media/Binggrae.otf": "/static/media/Binggrae.7838115c5bdc878c48b9.otf",
@@ -10,12 +10,12 @@
     "service-worker.js": "/service-worker.js",
     "static/media/something_going_wrong.png": "/static/media/something_going_wrong.07f318cef97af58e04a1.png",
     "index.html": "/index.html",
-    "main.dfdfb4ea.css.map": "/static/css/main.dfdfb4ea.css.map",
-    "main.f320c81d.js.map": "/static/js/main.f320c81d.js.map",
+    "main.89fb7a3d.css.map": "/static/css/main.89fb7a3d.css.map",
+    "main.4a90b107.js.map": "/static/js/main.4a90b107.js.map",
     "787.48067f02.chunk.js.map": "/static/js/787.48067f02.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.dfdfb4ea.css",
-    "static/js/main.f320c81d.js"
+    "static/css/main.89fb7a3d.css",
+    "static/js/main.4a90b107.js"
   ]
 }

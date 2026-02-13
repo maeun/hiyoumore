@@ -73,6 +73,12 @@ function Footer() {
               <Link to="/mypage">My Page</Link>
             </Typography>
             <Typography level="body1">
+              <Link to="/terms">Terms</Link>
+            </Typography>
+            <Typography level="body1">
+              <Link to="/privacy">Privacy</Link>
+            </Typography>
+            <Typography level="body1">
               <a href="https://open.kakao.com/o/sPjylDmf">Contact</a>
             </Typography>
           </>
@@ -82,14 +88,16 @@ function Footer() {
               <Link to="/login">Login</Link>
             </Typography>
             <Typography level="body1">
+              <Link to="/terms">Terms</Link>
+            </Typography>
+            <Typography level="body1">
+              <Link to="/privacy">Privacy</Link>
+            </Typography>
+            <Typography level="body1">
               <a href="https://open.kakao.com/o/sPjylDmf">Contact</a>
             </Typography>
           </>
         )}
-      </div>
-      <div className="LegalLinks">
-        <Link to="/terms">이용약관</Link>
-        <Link to="/privacy">개인정보처리방침</Link>
       </div>
       <Typography level="body1">ⓒ {new Date().getFullYear()} hiyoumore</Typography>
     </div>
