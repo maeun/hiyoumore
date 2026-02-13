@@ -5,13 +5,70 @@ import "./SharedQuiz.css";
 import Button from "@mui/joy/Button";
 import ReactCardFlip from "react-card-flip";
 import { Card } from "@mui/joy";
+import { styled } from "@mui/system";
 import CircularProgress from "@mui/material/CircularProgress";
 import Skeleton from "@mui/material/Skeleton";
+import ShareIcon from "@mui/icons-material/Share";
+import QuizIcon from "@mui/icons-material/Quiz";
 import { ref, get, query, orderByChild, equalTo } from "firebase/database";
 import { qa_db } from "./firebaseConfig";
 import DOMPurify from "dompurify";
 import tokens from "./tokens";
 import { handleShare } from "./shareUtils";
+
+const ShareButton = styled(Button)({
+  background: `linear-gradient(135deg, ${tokens.colors.accent} 0%, #FFB6C1 100%)`,
+  borderRadius: "24px",
+  padding: "14px 28px",
+  border: "none",
+  fontSize: "1rem",
+  fontWeight: 600,
+  color: tokens.colors.white,
+  boxShadow: "0 4px 12px rgba(255, 153, 153, 0.3)",
+  transition: "all 0.3s ease",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  textTransform: "none",
+  width: "100%",
+  "&:hover": {
+    background: `linear-gradient(135deg, #FF7A7A 0%, ${tokens.colors.accent} 100%)`,
+    boxShadow: "0 6px 16px rgba(255, 153, 153, 0.4)",
+    transform: "translateY(-2px)",
+  },
+  "&:active": {
+    transform: "translateY(0)",
+    boxShadow: "0 2px 8px rgba(255, 153, 153, 0.3)",
+  },
+});
+
+const SecondaryButton = styled(Button)({
+  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
+  borderRadius: "24px",
+  padding: "14px 28px",
+  border: "none",
+  fontSize: "1rem",
+  fontWeight: 600,
+  color: tokens.colors.white,
+  boxShadow: "0 4px 12px rgba(89, 75, 115, 0.25)",
+  transition: "all 0.3s ease",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  textTransform: "none",
+  width: "100%",
+  "&:hover": {
+    background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, #7d6ea0 100%)`,
+    boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
+    transform: "translateY(-2px)",
+  },
+  "&:active": {
+    transform: "translateY(0)",
+    boxShadow: "0 2px 8px rgba(89, 75, 115, 0.25)",
+  },
+});
 
 function SharedQuiz() {
   const location = useLocation();
@@ -81,13 +138,26 @@ function SharedQuiz() {
     return <div>{error}</div>;
   }
 
+  // Strip HTML tags for OG description
+  const stripHtml = (html) => {
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
+  const ogDescription = question.que
+    ? `"${stripHtml(question.que).substring(0, 80)}${stripHtml(question.que).length > 80 ? '...' : ''}" - 친구가 보낸 퀴즈를 맞춰보세요!`
+    : "친구가 보낸 퀴즈가 도착했어요! 한 번 맞춰볼까요?";
+
   return (
     <div className="SharedQuiz_Frame">
       <Helmet>
         <title>친구가 보낸 퀴즈 | 하이유모어</title>
-        <meta name="description" content="친구가 보낸 퀴즈가 도착했어요! 한 번 맞춰볼까요?" />
+        <meta name="description" content={ogDescription} />
         <meta property="og:title" content="친구가 보낸 퀴즈 | 하이유모어" />
-        <meta property="og:description" content="친구가 보낸 퀴즈가 도착했어요! 한 번 맞춰볼까요?" />
+        <meta property="og:description" content={ogDescription} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:image" content="https://hiyoumore.vercel.app/meta_img.png" />
       </Helmet>
       <p className="text">
         ☺️친구에게 받은 퀴즈예요☺️
@@ -140,25 +210,15 @@ function SharedQuiz() {
           </div>
         </Card>
       </ReactCardFlip>
-      <Button
-        size="lg"
-        className="btn"
-        color="info"
-        onClick={onShare}
-        variant="solid"
-      >
-        😎 친구에게 공유하기
-      </Button>
-      <a href="https://hiyoumore.netlify.app/">
-        <Button
-          style={{ width: "100%" }}
-          size="lg"
-          className="btn"
-          color="info"
-          variant="solid"
-        >
-          📝 다른 퀴즈 풀어보기
-        </Button>
+      <ShareButton onClick={onShare}>
+        <ShareIcon sx={{ fontSize: "1.2rem" }} />
+        친구에게 공유하기
+      </ShareButton>
+      <a href="https://hiyoumore.vercel.app/" style={{ textDecoration: "none", width: "100%" }}>
+        <SecondaryButton>
+          <QuizIcon sx={{ fontSize: "1.2rem" }} />
+          다른 퀴즈 풀어보기
+        </SecondaryButton>
       </a>
     </div>
   );

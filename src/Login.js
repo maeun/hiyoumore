@@ -29,6 +29,8 @@ function Login() {
       </Helmet>
       <img src={login_main_img} alt="login main" />
 
+      {/* Naver OAuth login - Currently disabled (Netlify Functions dependency) */}
+      {/*
       <Button
         variant="outlined"
         href={`https://nid.naver.com/oauth2.0/authorize?response_type=${naver_response_type}&client_id=${naver_clientId}&redirect_uri=${naver_redirectUri}&state=${naver_state}`}
@@ -60,6 +62,7 @@ function Login() {
         />
         네이버로 로그인하기
       </Button>
+      */}
       <Button
         variant="outlined"
         href={`https://kauth.kakao.com/oauth/authorize?response_type=${kakao_response_type}&client_id=${kakao_clientId}&redirect_uri=${kakao_redirectUri}`}

@@ -1,10 +1,11 @@
 .SharedQuiz_Frame {
   width: 100%;
-
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex-grow: 1; /* 남은 공간을 차지하도록 설정 */
+  flex-grow: 1;
+  gap: 12px;
+  padding: 0 20px;
 }
 
 .text {

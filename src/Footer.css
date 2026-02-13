@@ -26,3 +26,21 @@ a {
 .Panel a:hover {
   opacity: 0.7;
 }
+
+.LegalLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 10px 8px;
+}
+
+.LegalLinks a {
+  font-size: 0.75rem;
+  color: #888;
+  transition: opacity 0.2s;
+}
+
+.LegalLinks a:hover {
+  opacity: 0.7;
+}

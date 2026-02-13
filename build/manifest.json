@@ -1,6 +1,6 @@
 {
-  "short_name": "hi you more",
-  "name": "Create React App Sample",
+  "short_name": "하이유머",
+  "name": "hiyoumore",
   "icons": [
     {
       "src": "favicon.ico",

@@ -198,6 +198,8 @@ function Mypage() {
                       ? userInfo.email
                       : userInfo.email}
                   </Typography>
+                  {/* Solana Wallet - Currently hidden */}
+                  {/*
                   <TextField
                     id="standard-read-only-input"
                     label="Solana Wallet Address"
@@ -208,6 +210,7 @@ function Mypage() {
                     variant="standard"
                     fullWidth
                   />
+                  */}
                 </Box>
                 <Button
                   component="section"

@@ -10,16 +10,28 @@ import { handleShare } from "./shareUtils";
 import "./Quiz.css";
 
 const ShareButton = styled(Button)(({ theme }) => ({
-  backgroundColor: tokens.colors.white,
-  borderRadius: tokens.borderRadius.button,
-  padding: theme.spacing(1),
-  border: "3px white",
+  background: `linear-gradient(135deg, ${tokens.colors.accent} 0%, #FFB6C1 100%)`,
+  borderRadius: "24px",
+  padding: "12px 24px",
+  border: "none",
+  fontSize: "0.95rem",
+  fontWeight: 600,
+  color: tokens.colors.white,
+  boxShadow: "0 4px 12px rgba(255, 153, 153, 0.3)",
+  transition: "all 0.3s ease",
+  display: "flex",
+  alignItems: "center",
+  gap: "8px",
+  textTransform: "none",
   "&:hover": {
-    border: "2px solid pink",
-    backgroundColor: tokens.colors.accent,
-    color: tokens.colors.white,
+    background: `linear-gradient(135deg, #FF7A7A 0%, ${tokens.colors.accent} 100%)`,
+    boxShadow: "0 6px 16px rgba(255, 153, 153, 0.4)",
+    transform: "translateY(-2px)",
   },
-  color: tokens.colors.accent,
+  "&:active": {
+    transform: "translateY(0)",
+    boxShadow: "0 2px 8px rgba(255, 153, 153, 0.3)",
+  },
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -44,14 +56,16 @@ const StyledCardBack = styled(Card)(({ theme }) => ({
   backgroundColor: tokens.colors.cardBack,
   borderRadius: tokens.borderRadius.card,
   marginBottom: tokens.spacing.cardMarginBottom,
+  display: "flex",
+  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
   boxShadow: tokens.shadows.cardBack,
   transform: "perspective(600px) rotateY(0)",
   transition: "0.6s",
   backfaceVisibility: "hidden",
-  overflow: "hidden",
-  padding: 0,
+  overflow: "visible",
+  padding: "16px",
   border: "2px solid rgba(89, 75, 115, 0.15)",
 }));
 
@@ -96,11 +110,15 @@ function Quiz({ selectedQuestions }) {
           <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(card.ans) }} />
         </div>
         <ShareButton
-          variant="outlined"
+          variant="solid"
           className="ShareButton"
-          onClick={() => onShare(card.index)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onShare(card.index);
+          }}
         >
-          친구에게 전달하기 <ShareIcon />
+          <ShareIcon sx={{ fontSize: "1.1rem" }} />
+          친구에게 전달하기
         </ShareButton>
       </StyledCardBack>
     </ReactCardFlip>

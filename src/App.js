@@ -11,6 +11,8 @@ import Login from "./Login";
 import Oauth_Naver_Callback from "./Oauth_Naver_Callback";
 import Oauth_Kakao_Callback from "./Oauth_Kakao_Callback";
 import Mypage from "./Mypage";
+import Terms from "./Terms";
+import Privacy from "./Privacy";
 import Footer from "./Footer";
 
 import { AuthProvider } from "./AuthContext";
@@ -82,6 +84,22 @@ function App() {
                 element={
                   <div>
                     <Mypage />
+                  </div>
+                }
+              />
+              <Route
+                path="/terms"
+                element={
+                  <div className="PageWrapper">
+                    <Terms />
+                  </div>
+                }
+              />
+              <Route
+                path="/privacy"
+                element={
+                  <div className="PageWrapper">
+                    <Privacy />
                   </div>
                 }
               />

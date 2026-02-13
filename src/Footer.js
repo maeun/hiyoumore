@@ -87,6 +87,10 @@ function Footer() {
           </>
         )}
       </div>
+      <div className="LegalLinks">
+        <Link to="/terms">이용약관</Link>
+        <Link to="/privacy">개인정보처리방침</Link>
+      </div>
       <Typography level="body1">ⓒ {new Date().getFullYear()} hiyoumore</Typography>
     </div>
   );
