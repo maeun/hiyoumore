@@ -1,316 +1,55 @@
-/* ============================================
-   ENHANCED CATEGORY NAVIGATION
-   Each category has its own personality color
-   Like Korean subway line colors!
-   ============================================ */
-
-.category-container {
-  position: sticky;
-  top: 72px;
-  z-index: 50;
-  background: linear-gradient(180deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 255, 255, 0.95) 100%
-  );
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 16px 0;
-  margin-bottom: 8px;
-  box-shadow: 0 2px 12px rgba(89, 75, 115, 0.08);
-}
-
 .category-scroll-wrapper {
   position: relative;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: 0 20px;
 }
 
-/* Fade edges for scroll indicator */
 .category-scroll-wrapper::before,
 .category-scroll-wrapper::after {
   content: '';
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 40px;
+  width: 20px;
+  z-index: 1;
   pointer-events: none;
-  z-index: 2;
-  transition: opacity 0.3s ease;
 }
 
 .category-scroll-wrapper::before {
   left: 0;
-  background: linear-gradient(90deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(to right, var(--bg-color, #f2f4fb), transparent);
 }
 
 .category-scroll-wrapper::after {
   right: 0;
-  background: linear-gradient(270deg,
-    rgba(255, 255, 255, 0.98) 0%,
-    transparent 100%
-  );
+  background: linear-gradient(to left, var(--bg-color, #f2f4fb), transparent);
 }
 
-/* Scrollable category list */
-.category-list {
+.Category_list {
+  margin-top: 15px;
+  margin-bottom: 20px;
   display: flex;
-  gap: 10px;
+  flex-wrap: nowrap;
   overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: none;
+  white-space: nowrap;
+  width: 100%;
+  justify-content: flex-start;
+  box-sizing: border-box;
   -ms-overflow-style: none;
-  scroll-behavior: smooth;
-  padding: 4px 0;
-  cursor: grab;
+  scrollbar-width: none;
 }
 
-.category-list::-webkit-scrollbar {
+.Category_list::-webkit-scrollbar {
   display: none;
 }
 
-.category-list:active {
-  cursor: grabbing;
-}
-
-/* ============================================
-   CATEGORY CHIP - Tactile button design
-   ============================================ */
-.category-chip {
+.item {
+  margin-left: 3px;
+  margin-right: 3px;
   flex-shrink: 0;
-  padding: 12px 20px;
-  border-radius: 20px;
-  font-family: 'Noto Sans KR', -apple-system, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  user-select: none;
-  position: relative;
-  overflow: hidden;
-  white-space: nowrap;
-  border: 2px solid transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.category-chip::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg,
-    rgba(255, 255, 255, 0.4) 0%,
-    transparent 100%
-  );
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.category-chip:hover::before {
-  opacity: 1;
-}
-
-.category-chip:active {
-  transform: scale(0.95);
-}
-
-/* ============================================
-   CATEGORY COLORS - Each has personality!
-   ============================================ */
-
-/* 📆 Today's - Special gold accent */
-.category-chip[data-category="today"] {
-  background: linear-gradient(135deg, #ffd89b 0%, #ffb88c 100%);
-  color: #664400;
-  box-shadow:
-    0 4px 12px rgba(255, 184, 140, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="today"].selected {
-  background: linear-gradient(135deg, #ffb88c 0%, #ff9a76 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(255, 154, 118, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* ✔️ Maker's Pick - Purple (brand color) */
-.category-chip[data-category="pick"] {
-  background: linear-gradient(135deg, #b794f6 0%, #9966ff 100%);
-  color: #ffffff;
-  box-shadow:
-    0 4px 12px rgba(153, 102, 255, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-}
-
-.category-chip[data-category="pick"].selected {
-  background: linear-gradient(135deg, #9966ff 0%, #7744dd 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(119, 68, 221, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.3) inset;
-}
-
-/* 🧪 Science - Blue */
-.category-chip[data-category="eng"] {
-  background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
-  color: #004d73;
-  box-shadow:
-    0 4px 12px rgba(79, 195, 247, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="eng"].selected {
-  background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(41, 182, 246, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 🐖 Animal - Pink */
-.category-chip[data-category="animal"] {
-  background: linear-gradient(135deg, #ffb3d9 0%, #ff8fd1 100%);
-  color: #880044;
-  box-shadow:
-    0 4px 12px rgba(255, 143, 209, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="animal"].selected {
-  background: linear-gradient(135deg, #ff8fd1 0%, #ff6bc9 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(255, 107, 201, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 👑 King - Royal purple */
-.category-chip[data-category="king"] {
-  background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
-  color: #4a0066;
-  box-shadow:
-    0 4px 12px rgba(186, 104, 200, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="king"].selected {
-  background: linear-gradient(135deg, #ba68c8 0%, #ab47bc 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(171, 71, 188, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 🌱 Plant - Green */
-.category-chip[data-category="plant"] {
-  background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
-  color: #1b5e20;
-  box-shadow:
-    0 4px 12px rgba(129, 199, 132, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="plant"].selected {
-  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(102, 187, 106, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 🍔 Food - Orange */
-.category-chip[data-category="food"] {
-  background: linear-gradient(135deg, #ffcc80 0%, #ffb74d 100%);
-  color: #e65100;
-  box-shadow:
-    0 4px 12px rgba(255, 183, 77, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="food"].selected {
-  background: linear-gradient(135deg, #ffb74d 0%, #ffa726 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(255, 167, 38, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 🔤 English - Teal */
-.category-chip[data-category="english"] {
-  background: linear-gradient(135deg, #80deea 0%, #4dd0e1 100%);
-  color: #006064;
-  box-shadow:
-    0 4px 12px rgba(77, 208, 225, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="english"].selected {
-  background: linear-gradient(135deg, #4dd0e1 0%, #26c6da 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(38, 198, 218, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* 🙏 Religion - Soft lavender */
-.category-chip[data-category="religion"] {
-  background: linear-gradient(135deg, #d1c4e9 0%, #b39ddb 100%);
-  color: #4527a0;
-  box-shadow:
-    0 4px 12px rgba(179, 157, 219, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-}
-
-.category-chip[data-category="religion"].selected {
-  background: linear-gradient(135deg, #b39ddb 0%, #9575cd 100%);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 16px rgba(149, 117, 205, 0.5),
-    0 0 0 2px rgba(255, 255, 255, 0.4) inset;
-}
-
-/* ============================================
-   EMOJI ANIMATION
-   ============================================ */
-.category-chip .emoji {
-  display: inline-block;
-  margin-right: 6px;
-  font-size: 1.1rem;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.category-chip:hover .emoji {
-  transform: scale(1.2) rotate(10deg);
-}
-
-.category-chip.selected .emoji {
-  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes emoji-bounce {
-  0%, 100% { transform: scale(1) rotate(0deg); }
-  25% { transform: scale(1.3) rotate(-10deg); }
-  75% { transform: scale(1.3) rotate(10deg); }
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 480px) {
-  .category-container {
-    padding: 12px 0;
-  }
-
-  .category-scroll-wrapper {
-    padding: 0 16px;
-  }
-
-  .category-chip {
-    padding: 10px 16px;
-    font-size: 0.9rem;
-  }
+.chip-label {
+  font-family: "Noto Sans KR", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

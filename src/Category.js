@@ -2,6 +2,7 @@ import { supabase } from './supabaseConfig';
 
 import React, { useState, useEffect } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
+import { Chip } from "@mui/joy";
 import "./Category.css";
 
 const CATEGORY_MAP = {
@@ -102,22 +103,6 @@ const fetchTodays = async () => {
   return [mappedQuestions[index1], mappedQuestions[index2], mappedQuestions[index3]];
 };
 
-// Map category names to data-category attributes for enhanced CSS
-const getCategorySlug = (item) => {
-  const slugMap = {
-    "📆 Today's": "today",
-    "✔️ Maker's Pick": "pick",
-    "🧪 이과": "eng",
-    "🐖 동물": "animal",
-    "👑 왕": "king",
-    "🌱 식물": "plant",
-    "🍔 음식": "food",
-    "🔤 영어": "english",
-    "🙏 종교": "religion",
-  };
-  return slugMap[item] || "default";
-};
-
 function Category({ handleSelectedQuestions }) {
   const [selectedItem, setSelectedItem] = useState("📆 Today's");
 
@@ -141,26 +126,21 @@ function Category({ handleSelectedQuestions }) {
   };
 
   return (
-    <div className="category-container">
-      <div className="category-scroll-wrapper">
-        <ScrollContainer className="category-list">
-          {items.map((item, index) => {
-            const [emoji, ...textParts] = item.split(' ');
-            const text = textParts.join(' ');
-
-            return (
-              <div
-                key={index}
-                className={`category-chip ${selectedItem === item ? 'selected' : ''}`}
-                data-category={getCategorySlug(item)}
-                onClick={() => handleItemClick(item)}
-              >
-                <span className="emoji">{emoji}</span> {text}
-              </div>
-            );
-          })}
-        </ScrollContainer>
-      </div>
+    <div className="category-scroll-wrapper">
+      <ScrollContainer className="Category_list">
+        {items.map((item, index) => (
+          <div className="item" key={index}>
+            <Chip
+              className="chip"
+              color="info"
+              onClick={() => handleItemClick(item)}
+              variant={selectedItem === item ? "solid" : "outlined"}
+            >
+              <div className="chip-label">{item}</div>
+            </Chip>
+          </div>
+        ))}
+      </ScrollContainer>
     </div>
   );
 }
