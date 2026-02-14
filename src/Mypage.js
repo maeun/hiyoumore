@@ -1,21 +1,18 @@
 import something_going_wrong from "./something_going_wrong.png";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { TextField, Avatar, Box, Typography, Button } from "@mui/material";
+import { Avatar, Box, Typography, Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 import { ToastContainer } from "react-toastify";
 import { showToast, showErrorToast } from "./toastUtils";
+import { supabase } from './supabaseConfig';
+import { saveLogoutTime } from './authUtils';
 
 function Mypage() {
-  const { isLoggedIn, setIsLoggedIn, token, refreshToken, platform } =
-    useContext(AuthContext);
-  const [userInfo, setUserInfo] = useState(null);
+  const { user, session, platform, isLoggedIn } = useContext(AuthContext);
+  const [userProfile, setUserProfile] = useState(null);
   const navigate = useNavigate();
-  console.log(platform);
-  console.log(token);
-  console.log(refreshToken);
 
   const profileImages = [
     process.env.PUBLIC_URL + "/profile_yellow.png",
@@ -28,111 +25,44 @@ function Mypage() {
     profileImages[Math.floor(Math.random() * profileImages.length)];
 
   useEffect(() => {
-    if (isLoggedIn && token) {
-      if (platform === "kakao") {
-        fetchKakaoUserInfo();
-      } else if (platform === "naver") {
-        fetchNaverUserInfo();
-      }
+    if (user) {
+      fetchUserProfile();
     }
-  }, [isLoggedIn, token, platform]);
+  }, [user]);
 
-  const fetchKakaoUserInfo = async () => {
-    try {
-      const response = await axios.get("https://kapi.kakao.com/v2/user/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+  const fetchUserProfile = async () => {
+    const { data, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching profile:', error);
+      // Fallback to user metadata from auth.users
+      setUserProfile({
+        nickname: user.user_metadata?.name || user.email,
+        email: user.email,
+        profile_image_url: user.user_metadata?.avatar_url
       });
-
-      setUserInfo(response.data);
-    } catch (error) {
-      console.error("Error fetching the Kakao user info:", error);
-    }
-  };
-
-  const fetchNaverUserInfo = async () => {
-    console.log(token);
-    try {
-      console.log("netlify function try start");
-      const response = await fetch(
-        `/.netlify/functions/naverGetUserInfo?token=${token}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-      console.log("netlify function try end");
-
-      const data = await response.json();
-
-      if (data.response) {
-        console.log(data.response);
-        setUserInfo(data.response);
-      } else {
-        console.log("no data response");
-      }
-    } catch (error) {
-      console.error("Error fetching the Naver user info:", error);
-    }
-  };
-
-  const fetchNaverSignOut = async () => {
-    try {
-      const response = await fetch(
-        `/.netlify/functions/naverSignOut?token=${token}&refresh_token=${refreshToken}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-
-      const data = await response.json();
-      console.log(data.result);
-      console.log(data.error);
-      console.log(response);
-
-      if (data.message) {
-      } else {
-        console.log("no data response");
-      }
-    } catch (error) {
-      console.error("Error fetching the Naver user info:", error);
+    } else {
+      setUserProfile(data);
     }
   };
 
   const handleSignout = async () => {
-    try {
-      if (platform === "kakao") {
-        const response = await axios.post(
-          "https://kapi.kakao.com/v1/user/unlink",
-          {}, // 빈 객체를 데이터로 전달
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/x-www-form-urlencoded",
-            },
-          }
-        );
+    // Save logout time before signing out
+    await saveLogoutTime(user.id, session.access_token, platform);
 
-        console.log("Signout success", response.data);
-        setIsLoggedIn(false);
-        showToast("🤧 탈퇴되었습니다 🤧");
-      } else if (platform === "naver") {
-        fetchNaverSignOut();
-        setIsLoggedIn(false);
-        showToast("🤧 탈퇴되었습니다 🤧");
-      }
-    } catch (error) {
-      console.error("Signout failed:", error);
-      showErrorToast("Signout failed. Please try again.");
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      showErrorToast('로그아웃 실패');
+      console.error('Signout error:', error);
+    } else {
+      showToast('🤧 로그아웃되었습니다 🤧');
+      navigate('/');
     }
-    // navigate("/");
   };
 
   return (
@@ -143,13 +73,13 @@ function Mypage() {
       <ToastContainer />
       {isLoggedIn ? (
         <div>
-          {userInfo && (
+          {userProfile && (
             <div>
               <Box
                 sx={{
                   width: "100%",
-                  maxWidth: "400px", // 동일한 최대 너비
-                  margin: "0 auto", // 가운데 정렬
+                  maxWidth: "400px",
+                  margin: "0 auto",
                   padding: "16px",
                   backgroundColor: "#f9f9f9",
                   borderRadius: "8px",
@@ -165,14 +95,7 @@ function Mypage() {
                   }}
                 >
                   <Avatar
-                    src={
-                      platform === "kakao"
-                        ? userInfo.kakao_account.profile.profile_image_url ||
-                          defaultProfileImage
-                        : platform === "naver"
-                        ? userInfo.profile_image || defaultProfileImage
-                        : defaultProfileImage
-                    }
+                    src={userProfile.profile_image_url || defaultProfileImage}
                     alt="Profile"
                     sx={{ width: 80, height: 80, marginBottom: "16px" }}
                   />
@@ -181,22 +104,13 @@ function Mypage() {
                     component="p"
                     sx={{ marginBottom: "8px" }}
                   >
-                    {platform === "kakao"
-                      ? userInfo.kakao_account.profile.nickname
-                      : platform === "naver"
-                      ? userInfo.nickname
-                      : userInfo.nickname}
-                    님 환영합니다
+                    {userProfile.nickname || userProfile.name}님 환영합니다
                   </Typography>
                   <Typography
                     variant="body1"
                     sx={{ marginBottom: "16px", color: "#555" }}
                   >
-                    {platform === "kakao"
-                      ? userInfo.kakao_account.email
-                      : platform === "naver"
-                      ? userInfo.email
-                      : userInfo.email}
+                    {userProfile.email}
                   </Typography>
                   {/* Solana Wallet - Currently hidden */}
                   {/*
@@ -223,7 +137,7 @@ function Mypage() {
                   }}
                   onClick={handleSignout}
                 >
-                  🥺 탈퇴하기
+                  🤧 로그아웃
                 </Button>
               </Box>
             </div>

@@ -1,5 +1,4 @@
-import { qa_db } from "./firebaseConfig";
-import { ref, get, orderByChild, query, equalTo } from "firebase/database";
+import { supabase } from './supabaseConfig';
 
 import React, { useState, useEffect } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
@@ -15,6 +14,18 @@ const CATEGORY_MAP = {
   "🍔 음식": "food",
   "🔤 영어": "english",
   "🙏 종교": "religion",
+};
+
+// Map Firebase field names to Supabase column names
+const FIREBASE_TO_SUPABASE_CATEGORY = {
+  'my_pick': 'category_my_pick',
+  'eng': 'category_eng',
+  'animal': 'category_animal',
+  'king': 'category_king',
+  'plant': 'category_plant',
+  'food': 'category_food',
+  'english': 'category_english',
+  'religion': 'category_religion',
 };
 
 const items = [
@@ -38,40 +49,48 @@ const shuffleAndPick = (arr, count = 3) => {
 };
 
 const fetchByCategory = async (field) => {
-  const questionsRef = query(ref(qa_db), orderByChild(field), equalTo(1));
-  let questions = [];
-  try {
-    const snapshot = await get(questionsRef);
-    if (snapshot.exists()) {
-      snapshot.forEach((childSnapshot) => {
-        questions.push(childSnapshot.val());
-      });
-    } else {
-      console.log("No data available");
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
+  const columnName = FIREBASE_TO_SUPABASE_CATEGORY[field];
+
+  const { data: questions, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .eq(columnName, true);
+
+  if (error) {
+    console.error('Error fetching data:', error);
+    return [];
   }
-  return questions.length >= 3 ? shuffleAndPick(questions) : questions;
+
+  // Map Supabase fields back to existing format (que/ans for backward compatibility)
+  const mappedQuestions = questions.map(q => ({
+    ...q,
+    que: q.question,
+    ans: q.answer
+  }));
+
+  return mappedQuestions.length >= 3 ? shuffleAndPick(mappedQuestions) : mappedQuestions;
 };
 
 const fetchTodays = async () => {
-  const questionsRef = ref(qa_db);
-  let questions = [];
-  try {
-    const snapshot = await get(questionsRef);
-    if (snapshot.exists()) {
-      snapshot.forEach((childSnapshot) => {
-        questions.push(childSnapshot.val());
-      });
-    } else {
-      console.log("No data available");
-    }
-  } catch (error) {
-    console.error("Error fetching data:", error);
+  const { data: questions, error } = await supabase
+    .from('quizzes')
+    .select('*')
+    .order('index', { ascending: true });  // CRITICAL: consistent ordering
+
+  if (error) {
+    console.error('Error fetching data:', error);
+    return [];
   }
 
-  const len = questions.length;
+  // Map fields for backward compatibility
+  const mappedQuestions = questions.map(q => ({
+    ...q,
+    que: q.question,
+    ans: q.answer
+  }));
+
+  // Same deterministic algorithm as before
+  const len = mappedQuestions.length;
   const now = new Date();
   const randomSeed =
     ((now.getYear() + now.getMonth() + now.getDate()) * 9301 + 49297) % 233280;
@@ -81,7 +100,7 @@ const fetchTodays = async () => {
   const index3 =
     Math.floor((randomSeed / 233280) * (len / 3) + (2 * len) / 3) - 1;
 
-  return [questions[index1], questions[index2], questions[index3]];
+  return [mappedQuestions[index1], mappedQuestions[index2], mappedQuestions[index3]];
 };
 
 function Category({ handleSelectedQuestions }) {

@@ -7,7 +7,7 @@
 - **Target audience**: Korean mobile users (KakaoTalk, Naver ecosystem)
 - **Core value**: Lightweight, instant quiz fun with zero friction — no signup required to play
 - **Monetization**: None currently; social virality is the growth mechanism
-- **Content**: Quiz data lives in Firebase Realtime DB, managed externally (CSV/JSON in `etc/`)
+- **Content**: Quiz data lives in Supabase PostgreSQL database, migrated from Firebase (original data in `etc/`)
 
 ## Tech Stack
 
@@ -17,11 +17,11 @@
 | UI Library | MUI Joy UI + MUI Material (mixed) |
 | Styling | `styled()` from `@mui/system`, CSS files, CSS variables |
 | Design Tokens | `src/tokens.js` (colors, shadows, borderRadius, spacing, fonts) |
-| Database | Firebase Realtime Database (3 separate DBs: qa, sign_up, log_in_out) |
-| Auth | Kakao OAuth (Naver disabled - Netlify Functions dependency) |
+| Database | Supabase PostgreSQL (4 tables: quizzes, user_profiles, login_logs, logout_logs) |
+| Auth | Supabase Auth with Kakao OAuth provider |
 | PWA | Workbox service worker with offline caching |
-| Deployment | Vercel (primary), previously Netlify |
-| Security | DOMPurify for XSS sanitization on quiz content |
+| Deployment | Vercel (environment variables for Supabase credentials) |
+| Security | DOMPurify for XSS sanitization + Supabase Row Level Security (RLS) |
 
 ## Architecture
 
@@ -29,25 +29,22 @@
 ```
 src/
   App.js              # Router, layout, state lifting for selectedQuestions
-  AuthContext.js       # Auth state (sessionStorage persistence)
-  firebaseConfig.js   # 3 Firebase DB instances (qa, sign_up, log_in_out)
+  AuthContext.js      # Auth state with Supabase Auth listener (localStorage)
+  supabaseConfig.js   # Supabase client initialization
   tokens.js           # Centralized design tokens
-  fonts.css            # All @font-face + Google Fonts import
+  fonts.css           # All @font-face + Google Fonts import
 
   # Pages / Features
   Header.js + .css     # Sticky header with logo, navigates to home
   Category.js + .css   # Horizontal scrollable category chips
   Quiz.js + .css       # 3 flip cards (front=question, back=answer+share)
   SharedQuiz.js + .css # Single shared quiz card via URL param
-  Login.js             # Kakao OAuth login button (Naver disabled)
-  Mypage.js            # User profile, sign-out (Solana wallet hidden)
+  Login.js             # Supabase Auth with Kakao OAuth
+  AuthCallback.js      # Unified OAuth callback handler
+  Mypage.js            # User profile from Supabase, logout
   Footer.js + .css     # Navigation with Terms/Privacy links
   Terms.js             # 이용약관 (Terms of Use) legal page
   Privacy.js           # 개인정보처리방침 (Privacy Policy) legal page
-
-  # OAuth Callbacks
-  Oauth_Kakao_Callback.js
-  Oauth_Naver_Callback.js
 
   # Shared Utilities
   toastUtils.js        # showToast(), showErrorToast()
@@ -55,35 +52,40 @@ src/
   authUtils.js         # saveLoginTime(), saveLogoutTime() with KST conversion
 
   # PWA / Service Worker
-  service-worker.js            # Workbox SW with Firebase/image caching
+  service-worker.js            # Workbox SW with Supabase/image caching
   serviceWorkerRegistration.js # SW registration logic
 
-functions/               # Netlify serverless functions (Naver OAuth - not used on Vercel)
-  naverAuth.js
-  naverGetUserInfo.js
-  naverSignOut.js
-  kakaoAuth.js
+migration/              # Firebase to Supabase migration tools
+  schema.sql           # PostgreSQL database schema
+  transform-quizzes.js # Data transformation script
+  import-to-supabase.js # Bulk import script
+  README.md            # Migration guide
 ```
 
 ### Data Flow
-1. `Category.js` fetches quizzes from Firebase by category field (e.g., `orderByChild("animal"), equalTo(1)`)
-2. "Today's" uses a deterministic seed (date-based LCG) — same 3 quizzes all day
+1. `Category.js` queries Supabase quizzes table by category (e.g., `.eq('category_animal', true)`)
+2. "Today's" uses a deterministic seed (date-based LCG) — same 3 quizzes all day (ordered by index)
 3. Other categories shuffle and pick 3 random quizzes
-4. `Quiz.js` receives `selectedQuestions` via props, renders flip cards
-5. Share button generates a URL with `?num=<quiz_index>` and invokes `shareUtils.handleShare()`
-6. `SharedQuiz.js` reads `num` from URL, fetches that specific quiz from Firebase
+4. Results mapped back to `que`/`ans` format for backward compatibility
+5. `Quiz.js` receives `selectedQuestions` via props, renders flip cards
+6. Share button generates a URL with `?num=<quiz_index>` and invokes `shareUtils.handleShare()`
+7. `SharedQuiz.js` reads `num` from URL, queries Supabase with `.eq('index', num).single()`
 
 ### Auth Flow
-1. User clicks Kakao login button on `Login.js` (Naver currently disabled)
-2. Redirected to OAuth provider, then back to `/oauth/kakao/callback`
-3. Callback component exchanges code for token, stores in `AuthContext` (sessionStorage)
-4. Login/logout times are logged to Firebase via `authUtils.js`
+1. User clicks Kakao login button on `Login.js`
+2. `supabase.auth.signInWithOAuth()` redirects to Kakao
+3. After Kakao auth, redirects to `/auth/callback`
+4. `AuthCallback.js` exchanges code for session (handled by Supabase automatically)
+5. Session stored in localStorage with auto-refresh
+6. `AuthContext` listens to auth state changes globally
+7. Login/logout times logged to Supabase `login_logs`/`logout_logs` tables
+8. User profile auto-created via database trigger on first login
 
 ### PWA / Offline Capabilities
 1. Service worker registered in `index.js` via `serviceWorkerRegistration.register()`
 2. **Precaching**: Static assets (JS, CSS, images) cached on install
 3. **Runtime caching strategies**:
-   - Firebase Realtime DB: StaleWhileRevalidate (show cached, update in background)
+   - Supabase REST API (`*.supabase.co/rest/v1/`): StaleWhileRevalidate (show cached, update in background)
    - Images: CacheFirst with 30-day expiration, max 60 entries
 4. Users can browse previously viewed quizzes offline
 
@@ -172,39 +174,57 @@ functions/               # Netlify serverless functions (Naver OAuth - not used 
 - Naver OAuth uses Netlify Functions as a proxy (CORS workaround)
 - `_redirects` file handles SPA routing
 
-### Important: Naver OAuth Status
-The Naver OAuth flow **depends on Netlify Functions** (`functions/naverAuth.js`, `naverGetUserInfo.js`, `naverSignOut.js`) which don't work on Vercel. Therefore:
-- ✅ **Kakao OAuth**: Fully functional (client-side only, no serverless needed)
-- ❌ **Naver OAuth**: Currently disabled (commented out in Login.js, Footer.js, App.js)
-- 🔄 **To re-enable Naver**: Migrate Netlify Functions to Vercel Serverless Functions (`/api/` directory)
+### Environment Variables
+Supabase credentials stored in `.env.local` (gitignored):
+```bash
+REACT_APP_SUPABASE_URL=https://[project-id].supabase.co
+REACT_APP_SUPABASE_ANON_KEY=eyJ... (public anon key)
+```
+
+Vercel deployment requires these same variables set in **Settings → Environment Variables**.
+
+### OAuth Configuration
+- ✅ **Kakao OAuth**: Fully functional via Supabase Auth provider
+  - Configured in Supabase Dashboard → Authentication → Providers
+  - Callback URL: `https://[project-id].supabase.co/auth/v1/callback`
+  - Whitelisted in Kakao Developers Console
+- ❌ **Naver OAuth**: Not yet implemented (can be added as Supabase provider later)
 
 ## Expandability Considerations
 
 ### Content Management
-- Quiz categories are data-driven via `CATEGORY_MAP` in `Category.js` — adding a new category requires only a DB field and one map entry
-- Quiz data schema: `{ que, ans, index, my_pick, eng, animal, king, plant, food, english, religion }` — category fields are binary (0/1)
-- **Easy to expand**: Just add new field to Firebase + one entry in `CATEGORY_MAP`
+- Quiz categories are data-driven via `CATEGORY_MAP` in `Category.js` — adding a new category requires only a DB column and one map entry
+- **Supabase schema**: `quizzes` table with columns:
+  - `id` (SERIAL PRIMARY KEY)
+  - `index` (INTEGER UNIQUE) — preserved from Firebase for shared URL compatibility
+  - `question`, `answer` (TEXT)
+  - `category_*` (BOOLEAN) — 8 category columns with indexed lookups
+- **Easy to expand**: Add column to `quizzes` table + entry in `CATEGORY_MAP` + `FIREBASE_TO_SUPABASE_CATEGORY` mapping
+- **Backward compatibility**: Code maps `question`→`que`, `answer`→`ans` for existing components
 
 ### Community Features (Future Potential)
 **Phase 1: Comments System** (Recommended first step)
-- Add Firebase collection: `quiz_comments` with quiz_index, user_id, comment, timestamp, likes
+- Add Supabase table: `quiz_comments` with quiz_index, user_id, comment, timestamp, likes
 - Create `CommentSection.js` component (reusable across Quiz.js and SharedQuiz.js)
 - UI: 💬 button on quiz cards → bottom sheet modal (mobile-first)
-- Benefits: User engagement, retention, content discovery
+- RLS policy: Users can insert own comments, read all comments
+- **Benefits**: User engagement, retention, content discovery
 - **Effort**: ~1-2 days implementation
 
 **Phase 2: Leaderboard** (Gamification)
+- Add Supabase table: `quiz_completions` with user_id, quiz_index, completed_at
+- PostgreSQL views for weekly/monthly rankings
 - Track quiz completion count per user
-- Weekly/monthly leaderboards with top solvers
 - Benefits: Competitive motivation, daily return visits
-- **Effort**: ~2-3 days (needs quiz completion tracking)
+- **Effort**: ~2-3 days (SQL aggregations + UI)
 
 **Phase 3: User-Generated Quizzes** (Content scaling)
-- Allow users to submit quizzes (with moderation queue)
-- Community voting on quiz quality
-- Best quizzes promoted to "Today's Picks"
-- Benefits: Infinite content, community ownership
-- **Effort**: ~1 week (needs moderation system)
+- Add Supabase table: `user_quizzes` with moderation_status column
+- Community voting via `quiz_votes` table
+- PostgreSQL triggers for auto-promotion based on vote threshold
+- RLS policies for moderation access
+- **Benefits**: Infinite content, community ownership
+- **Effort**: ~1 week (needs moderation UI)
 
 ### Feature Expansion Opportunities
 - **Difficulty levels**: DB field exists (`"🎖️ 난이도 상"` commented out) — ready to enable
@@ -214,28 +234,68 @@ The Naver OAuth flow **depends on Netlify Functions** (`functions/naverAuth.js`,
 - **Blockchain rewards**: Could reward quiz creators/solvers with tokens (requires wallet re-enable)
 
 ### Technical Improvements Needed
-- Pre-existing eslint warnings (useEffect dependencies, unused vars) — suppressed via `CI=false`
+- Pre-existing eslint warnings (useEffect dependencies) — suppressed via `CI=false`
 - MUI Joy + MUI Material mixed usage (ideally pick one for consistency)
-- OAuth client IDs hardcoded in source (should use environment variables)
-- `functions/` directory is Netlify-specific — needs Vercel migration for Naver OAuth
 - Some `console.log` debug statements remain in production code
 - No error boundary components (app crashes on unhandled errors)
 - No analytics events tracking (only pageviews via Google Analytics)
+- Old Firebase files still present (`firebaseConfig.js`, old OAuth callbacks) — to be removed after testing
+- Could leverage Supabase Realtime for live quiz updates
+- Could use Supabase Storage for user-uploaded quiz images
 
-## Recent Improvements (2025-02-13)
+## Recent Improvements
 
-### Legal & Compliance
+### Firebase to Supabase Migration (2026-02-14)
+
+**🎯 Major architectural upgrade - migrated from Firebase to Supabase**
+
+#### Database Migration
+- ✅ **PostgreSQL schema**: 4 tables (quizzes, user_profiles, login_logs, logout_logs)
+- ✅ **427 quizzes migrated** from Firebase Realtime DB with full data integrity
+- ✅ **Indexed category columns** for fast filtering (8 boolean category fields)
+- ✅ **Preserved quiz index field** for backward-compatible shared URLs
+- ✅ **Row Level Security (RLS)** policies for database-level security
+
+#### Authentication Overhaul
+- ✅ **Supabase Auth** with built-in Kakao OAuth provider
+- ✅ **Auto-refreshing sessions** via localStorage (no manual token management)
+- ✅ **AuthContext refactored** to use Supabase auth state listener
+- ✅ **Unified OAuth callback** (`/auth/callback`) replaces separate Kakao/Naver handlers
+- ✅ **Auto user profile creation** via PostgreSQL database trigger on signup
+- ✅ **Session persistence** across page refreshes
+
+#### Code Architecture
+- ✅ **Created 8 new files**: `supabaseConfig.js`, `AuthCallback.js`, migration tools
+- ✅ **Updated 11 core files**: Auth, data fetching, user management
+- ✅ **Backward compatibility**: Maps `question`→`que`, `answer`→`ans` for existing components
+- ✅ **Service worker updated** to cache Supabase REST API calls
+
+#### Developer Experience
+- ✅ **Migration tools**: SQL schema, data transformation script, bulk import script
+- ✅ **Comprehensive documentation**: 4 migration guides (MIGRATION_GUIDE.md, TODO.md, etc.)
+- ✅ **Environment variables**: `.env.local` for Supabase credentials
+- ✅ **Rollback plan**: Git revert + Vercel deployment rollback documented
+
+#### Benefits
+- 🚀 **Faster queries**: PostgreSQL indexes vs NoSQL scans
+- 🔒 **Better security**: RLS policies + database-level access control
+- 🛠️ **Easier expandability**: SQL queries for comments, leaderboards, analytics
+- 💰 **Better pricing**: Generous free tier for growing apps
+- 📊 **Built-in analytics**: Supabase Dashboard for DB insights
+
+### Previous Improvements (2025-02-13)
+
+#### Legal & Compliance
 - ✅ Added Terms of Use (`/terms`) and Privacy Policy (`/privacy`) pages in Korean
 - ✅ Footer navigation updated with legal links between Login and Contact
-- ✅ Privacy policy covers Kakao OAuth data collection (Naver disabled)
+- ✅ Privacy policy covers Kakao OAuth data collection
 
-### PWA & Performance
+#### PWA & Performance
 - ✅ Implemented service worker with Workbox for offline caching
-- ✅ Firebase Realtime DB cached with StaleWhileRevalidate strategy
 - ✅ Images cached with CacheFirst (30-day expiration, max 60 entries)
 - ✅ Bundle size reduced by 24KB with improved share button implementation
 
-### UI/UX Enhancements
+#### UI/UX Enhancements
 - ✅ Redesigned share buttons with gradient backgrounds and animations
   - Pink gradient with soft glow for primary share button
   - Purple gradient for secondary "more quizzes" button
@@ -245,9 +305,8 @@ The Naver OAuth flow **depends on Netlify Functions** (`functions/naverAuth.js`,
 - ✅ Mobile-friendly tap targets (44px min-height)
 - ✅ Updated footer to single-row navigation with flex-wrap for mobile
 
-### Technical Updates
+#### Technical Updates
 - ✅ Updated all OG URLs from Netlify to Vercel domain
-- ✅ Disabled Naver OAuth (commented out, awaiting Vercel Functions migration)
 - ✅ Hidden Solana wallet field in Mypage (future Web3 feature)
 - ✅ Git author updated to `hess.kpark@gmail.com` for Vercel deployment
 
@@ -257,9 +316,10 @@ The Naver OAuth flow **depends on Netlify Functions** (`functions/naverAuth.js`,
 - **Imports**: React/libraries first, then local modules, then CSS
 - **Styling**: Prefer `styled()` for reusable components; CSS files for layout/global
 - **Utilities**: Shared logic extracted to `*Utils.js` files (toast, share, auth)
-- **State management**: React Context (`AuthContext`) — no Redux
+- **State management**: React Context (`AuthContext`) with Supabase auth listener
 - **Naming**: Components in PascalCase files, utilities in camelCase files
-- **Firebase**: Direct SDK usage (no abstraction layer)
+- **Supabase**: Direct client usage (`supabase.from()`, `supabase.auth()`) — no abstraction layer
+- **Backward compatibility**: Map Supabase column names to legacy field names where needed
 
 ## Design Philosophy
 

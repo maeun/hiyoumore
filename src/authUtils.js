@@ -1,5 +1,4 @@
-import { ref, set, get } from "firebase/database";
-import { log_in_out_db } from "./firebaseConfig";
+import { supabase } from './supabaseConfig';
 
 const getKSTDateAndTime = () => {
   const now = new Date();
@@ -11,71 +10,41 @@ const getKSTDateAndTime = () => {
 };
 
 export const saveLoginTime = async (userId, accessToken, platform) => {
-  const { date, formattedTime } = getKSTDateAndTime();
+  const { formattedTime } = getKSTDateAndTime();
 
-  try {
-    const dateRef = ref(log_in_out_db, `login/${date}`);
-    const snapshot = await get(dateRef);
-    let loginCount = 0;
-
-    if (snapshot.exists()) {
-      loginCount = snapshot.size;
-    }
-
-    const newLoginNumber = loginCount + 1;
-    const newLoginRef = ref(log_in_out_db, `login/${date}/${newLoginNumber}`);
-    await set(newLoginRef, {
-      user_id: userId,
+  const { error } = await supabase
+    .from('login_logs')
+    .insert({
+      user_id: userId,  // Supabase auth UUID
+      oauth_user_id: userId,  // For compatibility
+      login_platform: platform.toUpperCase(),
       login_time: formattedTime,
-      accessToken: accessToken,
-      login_platform: platform,
+      access_token: accessToken
     });
 
-    console.log("Login time saved successfully");
-  } catch (error) {
-    console.error("Error saving login time:", error);
+  if (error) {
+    console.error('Error saving login time:', error);
+  } else {
+    console.log('Login time saved successfully');
   }
 };
 
-export const saveLogoutTime = async (userId, token) => {
-  const { date, formattedTime } = getKSTDateAndTime();
+export const saveLogoutTime = async (userId, token, platform) => {
+  const { formattedTime } = getKSTDateAndTime();
 
-  try {
-    const loginPlatformSnapshot = await get(
-      ref(log_in_out_db, `login/${date}`)
-    );
-    let platform = "UNKNOWN";
-
-    if (loginPlatformSnapshot.exists()) {
-      loginPlatformSnapshot.forEach((childSnapshot) => {
-        if (childSnapshot.val().user_id === userId) {
-          platform = childSnapshot.val().login_platform;
-        }
-      });
-    }
-
-    const dateRef = ref(log_in_out_db, `logout/${date}`);
-    const snapshot = await get(dateRef);
-    let logoutCount = 0;
-
-    if (snapshot.exists()) {
-      logoutCount = snapshot.size;
-    }
-
-    const newLogoutNumber = logoutCount + 1;
-    const newLogoutRef = ref(
-      log_in_out_db,
-      `logout/${date}/${newLogoutNumber}`
-    );
-    await set(newLogoutRef, {
-      logout_platform: platform,
+  const { error } = await supabase
+    .from('logout_logs')
+    .insert({
       user_id: userId,
+      oauth_user_id: userId,
+      logout_platform: platform.toUpperCase(),
       logout_time: formattedTime,
-      accessToken: token,
+      access_token: token
     });
 
-    console.log("Logout time saved successfully");
-  } catch (error) {
-    console.error("Error saving logout time:", error);
+  if (error) {
+    console.error('Error saving logout time:', error);
+  } else {
+    console.log('Logout time saved successfully');
   }
 };

@@ -1,39 +1,58 @@
 import React, { createContext, useState, useEffect } from "react";
+import { supabase } from './supabaseConfig';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    () => sessionStorage.getItem("isLoggedIn") === "true"
-  );
-  const [token, setToken] = useState(
-    () => sessionStorage.getItem("token") || ""
-  );
-  const [refreshToken, setRefreshToken] = useState(
-    () => sessionStorage.getItem("refreshToken") || ""
-  );
-  const [platform, setPlatform] = useState(
-    () => sessionStorage.getItem("platform") || ""
-  );
+  const [session, setSession] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    sessionStorage.setItem("isLoggedIn", isLoggedIn);
-    sessionStorage.setItem("token", token);
-    sessionStorage.setItem("refreshToken", refreshToken);
-    sessionStorage.setItem("platform", platform);
-  }, [isLoggedIn, token, refreshToken, platform]);
+    // Clear old Firebase sessionStorage on first load
+    if (sessionStorage.getItem('isLoggedIn')) {
+      sessionStorage.clear();
+    }
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Provide backward-compatible derived state
+  const isLoggedIn = !!session;
+  const token = session?.access_token || '';
+  const refreshToken = session?.refresh_token || '';
+  const platform = user?.app_metadata?.provider || '';
 
   return (
     <AuthContext.Provider
       value={{
+        session,
+        user,
         isLoggedIn,
-        setIsLoggedIn,
         token,
-        setToken,
         refreshToken,
-        setRefreshToken,
         platform,
-        setPlatform,
+        loading,
+        // Deprecated setters (no-op for backward compatibility)
+        setIsLoggedIn: () => {},
+        setToken: () => {},
+        setRefreshToken: () => {},
+        setPlatform: () => {},
       }}
     >
       {children}

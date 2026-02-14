@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(test:*)",
+      "Bash(wc:*)",
+      "Bash(grep:*)",
+      "Bash(git -C \"C:\\\\Users\\\\maeun\\\\side_pjt\\\\hiyoumore\" status)",
+      "Bash(git -C \"C:\\\\Users\\\\maeun\\\\side_pjt\\\\hiyoumore\" diff --stat)",
+      "Bash(git -C \"C:\\\\Users\\\\maeun\\\\side_pjt\\\\hiyoumore\" log --oneline -5)",
+      "Bash(git -C \"C:\\\\Users\\\\maeun\\\\side_pjt\\\\hiyoumore\" add public/index.html public/manifest.json src/tokens.js src/fonts.css src/index.css src/index.js src/App.css src/App.js src/AuthContext.js src/Header.js src/Header.css src/Quiz.js src/Quiz.css src/Category.js src/Category.css src/Footer.js src/Footer.css src/SharedQuiz.js src/SharedQuiz.css src/Login.js src/Mypage.js src/Oauth_Kakao_Callback.js src/Oauth_Naver_Callback.js src/Login.css src/Mypage.css package.json package-lock.json yarn.lock)",
+      "Bash(git -C \"C:\\\\Users\\\\maeun\\\\side_pjt\\\\hiyoumore\" commit -m \"$\\(cat <<''EOF''\nImprove UI/UX design and fix meta tags\n\n- Add design tokens \\(tokens.js\\) and consolidated fonts \\(fonts.css\\)\n- Fix index.html: lang=\"ko\", OG/Twitter meta tags, canonical URL, remove CRA boilerplate\n- Add react-helmet-async with per-route meta tags and noindex on private pages\n- Fix Header.js class→className React bug, add gradient + sticky positioning\n- Quiz cards: front/back visual distinction, tap hint, DOMPurify sanitization\n- Category: hide scrollbar, add fade edge scroll indicators\n- Footer: border-top separator, purple links, dynamic copyright year\n- Login: card container with heading and proper spacing\n- SharedQuiz: loading skeleton, tokens-based styling, fix GitHub URL → Netlify\n- OAuth callbacks: remove PII display, add loading spinner, enable Naver redirect\n- Kakao callback: call saveUserInfo \\(was defined but never called\\)\n- AuthContext: persist login state to sessionStorage\n- Clean up: remove CRA boilerplate CSS, empty CSS files, duplicate @font-face, unused imports\n- Add body gradient background for desktop view\n- Install dompurify and react-helmet-async\nEOF\n\\)\")",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nRefactor shared utilities and rollback Login page design\n\n- Extract toast config into toastUtils.js \\(showToast/showErrorToast\\)\n- Extract share logic into shareUtils.js \\(navigator.share + clipboard fallback\\)\n- Extract auth time logging into authUtils.js \\(saveLoginTime/saveLogoutTime\\)\n- Refactor Category.js with CATEGORY_MAP + fetchByCategory \\(~360→130 lines\\)\n- Add missing saveLoginTime call in Naver OAuth callback\n- Rollback Login.js to original layout \\(remove Box card wrapper\\)\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(git rebase:*)",
+      "Bash(git stash:*)",
+      "Bash(npm start)",
+      "Bash(npx react-scripts build:*)",
+      "Bash(dir:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git pull:*)",
+      "Bash(git config:*)",
+      "Bash(node transform-quizzes.js:*)",
+      "Bash(SUPABASE_URL=https://pgorlwgzytiskguqxrve.supabase.co SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb3Jsd2d6eXRpc2tndXF4cnZlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTAxODg3MywiZXhwIjoyMDg2NTk0ODczfQ.4UEabazKdm-k7Hs_neX3VIh-PhvsUNwDGQquyNGOEcc node:*)"
+    ]
+  }
+}

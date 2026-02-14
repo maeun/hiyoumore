@@ -50,14 +50,13 @@ registerRoute(
   createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
 );
 
-// Cache Firebase data with StaleWhileRevalidate strategy
+// Cache Supabase data with StaleWhileRevalidate strategy
 registerRoute(
   ({ url }) =>
-    url.origin === 'https://hiyoumore-default-rtdb.firebaseio.com' ||
-    url.origin === 'https://hiyoumore-sign-up-default-rtdb.firebaseio.com' ||
-    url.origin === 'https://hiyoumore-log-in-out-default-rtdb.firebaseio.com',
+    url.origin.includes('.supabase.co') &&
+    url.pathname.startsWith('/rest/v1/'),
   new StaleWhileRevalidate({
-    cacheName: 'firebase-cache',
+    cacheName: 'supabase-cache',
   })
 );
 

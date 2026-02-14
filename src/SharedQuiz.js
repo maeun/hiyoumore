@@ -10,8 +10,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Skeleton from "@mui/material/Skeleton";
 import ShareIcon from "@mui/icons-material/Share";
 import QuizIcon from "@mui/icons-material/Quiz";
-import { ref, get, query, orderByChild, equalTo } from "firebase/database";
-import { qa_db } from "./firebaseConfig";
+import { supabase } from './supabaseConfig';
 import DOMPurify from "dompurify";
 import tokens from "./tokens";
 import { handleShare } from "./shareUtils";
@@ -96,27 +95,22 @@ function SharedQuiz() {
     }
 
     const fetchQuestionAndAnswer = async () => {
-      const QuestionsRef = query(
-        ref(qa_db),
-        orderByChild("index"),
-        equalTo(parseInt(num))
-      );
-      try {
-        const snapshot = await get(QuestionsRef);
-        if (snapshot.exists()) {
-          snapshot.forEach((childSnapshot) => {
-            const questionData = childSnapshot.val();
-            setQuestion({ que: questionData.que, ans: questionData.ans });
-          });
-          setLoading(false);
-        } else {
-          console.log("No data available");
-          setError("퀴즈를 찾을 수 없습니다.");
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setError("데이터를 불러오는 중 오류가 발생했습니다.");
+      const { data: quiz, error } = await supabase
+        .from('quizzes')
+        .select('question, answer, index')
+        .eq('index', parseInt(num))
+        .single();  // Returns single object instead of array
+
+      if (error) {
+        console.error('Error fetching data:', error);
+        setError('퀴즈를 찾을 수 없습니다.');
+        setLoading(false);
+      } else if (quiz) {
+        // Map to existing format
+        setQuestion({ que: quiz.question, ans: quiz.answer });
+        setLoading(false);
+      } else {
+        setError('퀴즈를 찾을 수 없습니다.');
         setLoading(false);
       }
     };

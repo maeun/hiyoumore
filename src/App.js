@@ -8,8 +8,7 @@ import Category from "./Category";
 import Quiz from "./Quiz";
 import SharedQuiz from "./SharedQuiz";
 import Login from "./Login";
-import Oauth_Naver_Callback from "./Oauth_Naver_Callback";
-import Oauth_Kakao_Callback from "./Oauth_Kakao_Callback";
+import AuthCallback from "./AuthCallback";
 import Mypage from "./Mypage";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
@@ -64,18 +63,10 @@ function App() {
                 }
               />
               <Route
-                path="/oauth/naver/callback"
+                path="/auth/callback"
                 element={
                   <div>
-                    <Oauth_Naver_Callback />
-                  </div>
-                }
-              />
-              <Route
-                path="/oauth/kakao/callback"
-                element={
-                  <div>
-                    <Oauth_Kakao_Callback />
+                    <AuthCallback />
                   </div>
                 }
               />
