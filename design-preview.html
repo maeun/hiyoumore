@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HiYouMore Enhanced Design Preview 🎨</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Import enhanced styles inline for demo */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', -apple-system, sans-serif;
+            background: #f5f0f8;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Atmospheric background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(255, 182, 193, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(173, 216, 230, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #fef9ff 0%, #fff9f5 25%, #f5f9ff 50%, #fffef5 75%, #fef5ff 100%);
+            animation: gradient-shift 20s ease-in-out infinite;
+        }
+
+        @keyframes gradient-shift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            box-shadow: 0 8px 32px rgba(89, 75, 115, 0.12);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #6b5c8a 0%, #594b73 50%, #7d6ea0 100%);
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.5;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Category chips */
+        .categories {
+            padding: 20px 24px;
+            background: white;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .categories::-webkit-scrollbar { display: none; }
+
+        .categories-list {
+            display: flex;
+            gap: 10px;
+        }
+
+        .category-chip {
+            padding: 12px 20px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid transparent;
+            flex-shrink: 0;
+        }
+
+        .category-chip:hover {
+            transform: translateY(-2px);
+        }
+
+        .category-chip:active {
+            transform: scale(0.95);
+        }
+
+        /* Category colors */
+        .chip-today {
+            background: linear-gradient(135deg, #ffd89b 0%, #ffb88c 100%);
+            color: #664400;
+            box-shadow: 0 4px 12px rgba(255, 184, 140, 0.4);
+        }
+
+        .chip-pick {
+            background: linear-gradient(135deg, #b794f6 0%, #9966ff 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(153, 102, 255, 0.4);
+        }
+
+        .chip-science {
+            background: linear-gradient(135deg, #81d4fa 0%, #4fc3f7 100%);
+            color: #004d73;
+            box-shadow: 0 4px 12px rgba(79, 195, 247, 0.4);
+        }
+
+        .chip-animal {
+            background: linear-gradient(135deg, #ffb3d9 0%, #ff8fd1 100%);
+            color: #880044;
+            box-shadow: 0 4px 12px rgba(255, 143, 209, 0.4);
+        }
+
+        .chip-plant {
+            background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+            color: #1b5e20;
+            box-shadow: 0 4px 12px rgba(129, 199, 132, 0.4);
+        }
+
+        /* Quiz cards */
+        .quiz-section {
+            padding: 24px;
+        }
+
+        .quiz-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fef9ff 50%, #fff9f5 100%);
+            border-radius: 24px;
+            padding: 32px 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(89, 75, 115, 0.08), 0 8px 24px rgba(89, 75, 115, 0.12);
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 182, 193, 0.15) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .quiz-card:hover::before {
+            opacity: 1;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(89, 75, 115, 0.12), 0 16px 32px rgba(89, 75, 115, 0.16);
+        }
+
+        .quiz-question {
+            font-size: 1.35rem;
+            line-height: 1.6;
+            color: #2d2438;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .tap-hint {
+            color: #8b7a9f;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            animation: gentle-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Share button */
+        .share-button {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #ffdde1 100%);
+            border: none;
+            border-radius: 16px;
+            padding: 16px 24px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(255, 154, 158, 0.4);
+            margin-top: 20px;
+        }
+
+        .share-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(255, 154, 158, 0.5);
+        }
+
+        .share-button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* Info panel */
+        .info-panel {
+            background: linear-gradient(135deg, #f5f0ff 0%, #fff0f5 100%);
+            padding: 24px;
+            margin: 20px 24px;
+            border-radius: 20px;
+            border: 2px dashed rgba(89, 75, 115, 0.2);
+        }
+
+        .info-panel h3 {
+            color: #594b73;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-panel ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-panel li {
+            margin: 8px 0;
+            padding-left: 24px;
+            position: relative;
+            color: #2d2438;
+            line-height: 1.6;
+        }
+
+        .info-panel li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+        }
+
+        .footer-note {
+            text-align: center;
+            padding: 32px 24px;
+            color: #8b7a9f;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 하이유모어 Enhanced</h1>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories">
+            <div class="categories-list">
+                <div class="category-chip chip-today">📆 Today's</div>
+                <div class="category-chip chip-pick">✔️ Maker's Pick</div>
+                <div class="category-chip chip-science">🧪 이과</div>
+                <div class="category-chip chip-animal">🐖 동물</div>
+                <div class="category-chip chip-plant">🌱 식물</div>
+            </div>
+        </div>
+
+        <!-- Quiz Cards -->
+        <div class="quiz-section">
+            <div class="quiz-card">
+                <div class="quiz-question">
+                    지구가 제일 힘들었던 시기는?
+                </div>
+                <div class="tap-hint">탭하여 정답 보기</div>
+            </div>
+
+            <div class="quiz-card">
+                <div class="quiz-question">
+                    F는 좀 애매한 이유는?
+                </div>
+                <div class="tap-hint">탭하여 정답 보기</div>
+            </div>
+
+            <button class="share-button">
+                <span>💝</span>
+                친구에게 공유하기
+            </button>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="info-panel">
+            <h3>✨ Design Enhancements</h3>
+            <ul>
+                <li>Soft, inviting Korean cafe aesthetic</li>
+                <li>Each category has unique personality color</li>
+                <li>Tactile 3D cards with smooth animations</li>
+                <li>Atmospheric layered background</li>
+                <li>Irresistible share button design</li>
+                <li>Buttery smooth micro-interactions</li>
+            </ul>
+        </div>
+
+        <div class="footer-note">
+            <strong>This is a preview of the enhanced design!</strong><br>
+            See DESIGN_ENHANCEMENT_GUIDE.md for implementation.
+        </div>
+    </div>
+
+    <script>
+        // Add interactive demo
+        document.querySelectorAll('.quiz-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const question = this.querySelector('.quiz-question');
+                const hint = this.querySelector('.tap-hint');
+
+                if (hint.textContent === '탭하여 정답 보기') {
+                    // Show answer
+                    question.style.fontSize = '1.4rem';
+                    question.style.fontWeight = '600';
+                    question.style.color = '#594b73';
+                    hint.textContent = '탭하여 문제 보기';
+
+                    // Change background
+                    this.style.background = 'linear-gradient(135deg, #f5f0ff 0%, #fff0f5 50%, #fffef0 100%)';
+                } else {
+                    // Show question
+                    question.style.fontSize = '1.35rem';
+                    question.style.fontWeight = '500';
+                    question.style.color = '#2d2438';
+                    hint.textContent = '탭하여 정답 보기';
+
+                    // Reset background
+                    this.style.background = 'linear-gradient(135deg, #ffffff 0%, #fef9ff 50%, #fff9f5 100%)';
+                }
+            });
+        });
+
+        // Category chip interactions
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(c => {
+                    c.style.transform = '';
+                    c.style.boxShadow = '';
+                });
+
+                this.style.transform = 'translateY(-2px) scale(1.05)';
+                this.style.boxShadow = '0 6px 16px rgba(0, 0, 0, 0.2)';
+            });
+        });
+
+        // Share button effect
+        document.querySelector('.share-button').addEventListener('click', function() {
+            this.textContent = '✅ 공유 완료!';
+            this.style.background = 'linear-gradient(135deg, #81c784, #66bb6a)';
+
+            setTimeout(() => {
+                this.innerHTML = '<span>💝</span> 친구에게 공유하기';
+                this.style.background = '';
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

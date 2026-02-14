@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supabase Connection Test</title>
+</head>
+<body>
+    <h1>Testing Supabase Connection...</h1>
+    <div id="result"></div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+
+        const supabaseUrl = 'https://pgorlwgzytiskguqxrve.supabase.co'
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnb3Jsd2d6eXRpc2tndXF4cnZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEwMTg4NzMsImV4cCI6MjA4NjU5NDg3M30.HgeQpDjhCbXuxn21ce6t3IxnNsySgmaEn9NfvL5CJh4'
+
+        const supabase = createClient(supabaseUrl, supabaseKey)
+
+        async function test() {
+            const resultDiv = document.getElementById('result')
+
+            try {
+                // Test 1: Count quizzes
+                const { count, error: countError } = await supabase
+                    .from('quizzes')
+                    .select('*', { count: 'exact', head: true })
+
+                if (countError) {
+                    resultDiv.innerHTML += `<p style="color: red;">❌ Error counting quizzes: ${countError.message}</p>`
+                    console.error('Count error:', countError)
+                } else {
+                    resultDiv.innerHTML += `<p style="color: green;">✅ Total quizzes in database: ${count}</p>`
+                }
+
+                // Test 2: Fetch 3 sample quizzes
+                const { data: quizzes, error: fetchError } = await supabase
+                    .from('quizzes')
+                    .select('index, question, answer')
+                    .limit(3)
+
+                if (fetchError) {
+                    resultDiv.innerHTML += `<p style="color: red;">❌ Error fetching quizzes: ${fetchError.message}</p>`
+                    console.error('Fetch error:', fetchError)
+                } else {
+                    resultDiv.innerHTML += `<p style="color: green;">✅ Successfully fetched ${quizzes.length} quizzes:</p>`
+                    quizzes.forEach(q => {
+                        resultDiv.innerHTML += `<li>Quiz #${q.index}: ${q.question.substring(0, 50)}...</li>`
+                    })
+                }
+
+                // Test 3: Test category query (animal)
+                const { data: animals, error: catError } = await supabase
+                    .from('quizzes')
+                    .select('*')
+                    .eq('category_animal', true)
+                    .limit(3)
+
+                if (catError) {
+                    resultDiv.innerHTML += `<p style="color: red;">❌ Error fetching animal category: ${catError.message}</p>`
+                    console.error('Category error:', catError)
+                } else {
+                    resultDiv.innerHTML += `<p style="color: green;">✅ Animal category works: ${animals.length} quizzes found</p>`
+                }
+
+            } catch (error) {
+                resultDiv.innerHTML += `<p style="color: red;">❌ Connection failed: ${error.message}</p>`
+                console.error('Test error:', error)
+            }
+        }
+
+        test()
+    </script>
+</body>
+</html>
