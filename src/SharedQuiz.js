@@ -37,7 +37,7 @@ const ShareButton = styled(Button)({
   gap: "8px",
   textTransform: "none",
   width: "100%",
-  minHeight: "48px",
+  height: "48px",
   "&:hover": {
     background: `linear-gradient(135deg, #FF7A7A 0%, ${tokens.colors.accent} 100%)`,
     boxShadow: "0 6px 16px rgba(255, 153, 153, 0.4)",
@@ -65,7 +65,7 @@ const CommentButton = styled(Button)({
   gap: "8px",
   textTransform: "none",
   width: "100%",
-  minHeight: "48px",
+  height: "48px",
   "&:hover": {
     background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
     boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
@@ -93,7 +93,7 @@ const SecondaryButton = styled(Button)({
   gap: "8px",
   textTransform: "none",
   width: "100%",
-  minHeight: "48px",
+  height: "48px",
   "&:hover": {
     background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, #7d6ea0 100%)`,
     boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",

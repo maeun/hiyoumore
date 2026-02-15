@@ -46,7 +46,7 @@ const StyledBookmarkButton = styled(Button)(({ isBookmarked }) => ({
   gap: '8px',
   textTransform: 'none',
   width: '100%',
-  minHeight: '48px',
+  height: '48px',
   '&:hover': {
     background: isBookmarked
       ? `linear-gradient(135deg, #FFA000 0%, #FFB800 100%)`
