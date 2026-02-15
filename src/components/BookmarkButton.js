@@ -29,36 +29,38 @@ const StyledBookmarkButton = styled(Button)(({ isBookmarked }) => ({
   background: isBookmarked
     ? `linear-gradient(135deg, #FFB800 0%, #FFA000 100%)` // Gold gradient when bookmarked
     : `linear-gradient(135deg, #B8B8D8 0%, #D8D8E8 100%)`, // Purple-tinted gray when not bookmarked
-  borderRadius: tokens.borderRadius.button,
-  padding: '10px 16px',
+  borderRadius: '24px',
+  padding: '14px 28px',
   border: 'none',
-  fontSize: '0.85rem',
-  fontWeight: 700,
+  fontSize: '1rem',
+  fontWeight: 600,
   color: tokens.colors.white,
   fontFamily: tokens.fonts.korean,
   boxShadow: isBookmarked
-    ? '0 2px 8px rgba(255, 184, 0, 0.3)'
-    : tokens.shadows.button,
-  transition: 'all 0.2s ease',
+    ? '0 4px 12px rgba(255, 184, 0, 0.3)'
+    : '0 4px 12px rgba(184, 184, 216, 0.25)',
+  transition: 'all 0.3s ease',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '6px',
+  gap: '8px',
   textTransform: 'none',
-  marginTop: '0',
-  minHeight: '44px',
   width: '100%',
+  minHeight: '48px',
   '&:hover': {
     background: isBookmarked
       ? `linear-gradient(135deg, #FFA000 0%, #FFB800 100%)`
       : `linear-gradient(135deg, #A8A8C8 0%, #C8C8D8 100%)`,
     boxShadow: isBookmarked
-      ? '0 4px 12px rgba(255, 184, 0, 0.4)'
-      : tokens.shadows.buttonHover,
-    transform: 'scale(1.02)',
+      ? '0 6px 16px rgba(255, 184, 0, 0.4)'
+      : '0 6px 16px rgba(184, 184, 216, 0.35)',
+    transform: 'translateY(-2px)',
   },
   '&:active': {
-    transform: 'scale(0.98)',
+    transform: 'translateY(0)',
+    boxShadow: isBookmarked
+      ? '0 2px 8px rgba(255, 184, 0, 0.3)'
+      : '0 2px 8px rgba(184, 184, 216, 0.25)',
   },
   '&:disabled': {
     background: '#E8E8E8',
