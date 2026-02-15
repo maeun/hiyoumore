@@ -64,20 +64,79 @@ const Content = styled('div')({
   padding: '20px',
 });
 
+const SummaryCard = styled('div')({
+  backgroundColor: tokens.colors.white,
+  borderRadius: tokens.borderRadius.medium,
+  padding: '20px',
+  marginBottom: '20px',
+  boxShadow: tokens.shadows.light,
+  border: `1px solid ${tokens.colors.borderLight}`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+});
+
+const SummaryText = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+});
+
+const SummaryTitle = styled('h2')({
+  margin: 0,
+  fontSize: '0.85rem',
+  fontWeight: 600,
+  color: tokens.colors.textSecondary,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+});
+
+const SummaryNumber = styled('div')({
+  fontSize: '2rem',
+  fontWeight: 900,
+  color: tokens.colors.primary,
+  lineHeight: 1,
+});
+
 const EmptyState = styled('div')({
   textAlign: 'center',
-  padding: '60px 20px',
+  padding: '80px 20px',
   color: tokens.colors.textSecondary,
 });
 
 const EmptyIcon = styled('div')({
-  fontSize: '4rem',
-  marginBottom: '16px',
+  fontSize: '5rem',
+  marginBottom: '20px',
+  opacity: 0.6,
 });
 
 const EmptyText = styled('p')({
+  fontSize: '1.05rem',
+  margin: '0 0 12px 0',
+  color: tokens.colors.text,
+  fontWeight: 500,
+  lineHeight: 1.6,
+});
+
+const EmptySubtext = styled('p')({
+  fontSize: '0.9rem',
+  margin: '0 0 32px 0',
+  color: tokens.colors.textSecondary,
+});
+
+const StartButton = styled(Button)({
+  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
+  color: tokens.colors.white,
+  borderRadius: '24px',
+  padding: '12px 32px',
   fontSize: '1rem',
-  margin: '0 0 24px 0',
+  fontWeight: 600,
+  boxShadow: '0 4px 12px rgba(89, 75, 115, 0.3)',
+  '&:hover': {
+    background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, ${tokens.colors.primary} 100%)`,
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 16px rgba(89, 75, 115, 0.4)',
+  },
 });
 
 const HistoryList = styled('div')({
@@ -89,33 +148,84 @@ const HistoryList = styled('div')({
 const HistoryItem = styled('div')({
   backgroundColor: tokens.colors.white,
   borderRadius: tokens.borderRadius.medium,
-  padding: '16px',
+  padding: '18px',
   boxShadow: tokens.shadows.light,
   display: 'flex',
-  gap: '12px',
-  alignItems: 'flex-start',
+  gap: '14px',
+  alignItems: 'stretch',
   cursor: 'pointer',
-  transition: 'all 0.2s ease',
+  transition: 'all 0.3s ease',
   border: '1px solid rgba(89, 75, 115, 0.1)',
+  position: 'relative',
+  overflow: 'hidden',
   '&:hover': {
     boxShadow: tokens.shadows.medium,
-    transform: 'translateY(-2px)',
+    transform: 'translateY(-3px)',
     borderColor: tokens.colors.primary,
+    '&::before': {
+      opacity: 1,
+    },
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: '4px',
+    background: `linear-gradient(180deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
   },
 });
 
 const HistoryContent = styled('div')({
   flex: 1,
   minWidth: 0,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
 });
 
-const FlipBadge = styled(Chip)({
-  fontSize: '0.75rem',
-  height: '24px',
-  marginBottom: '8px',
-  backgroundColor: tokens.colors.primaryLight,
+const FlipCountBadge = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minWidth: '60px',
+  padding: '12px',
+  background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, ${tokens.colors.primary} 100%)`,
+  borderRadius: '12px',
+  flexDirection: 'column',
+  gap: '4px',
+  boxShadow: '0 4px 12px rgba(89, 75, 115, 0.2)',
+});
+
+const FlipNumber = styled('div')({
+  fontSize: '1.5rem',
+  fontWeight: 900,
   color: tokens.colors.white,
+  lineHeight: 1,
+});
+
+const FlipLabel = styled('div')({
+  fontSize: '0.65rem',
+  color: 'rgba(255, 255, 255, 0.9)',
   fontWeight: 600,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+});
+
+const QuestionMeta = styled('div')({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  marginBottom: '4px',
+});
+
+const Timestamp = styled('span')({
+  fontSize: '0.75rem',
+  color: tokens.colors.textSecondary,
+  fontWeight: 500,
 });
 
 const QuestionPreview = styled('p')({
@@ -229,6 +339,26 @@ const MyHistory = () => {
     return tmp.textContent || tmp.innerText || '';
   };
 
+  // Format timestamp to Korean relative time
+  const formatTimestamp = (timestamp) => {
+    const now = new Date();
+    const viewedDate = new Date(timestamp);
+    const diffMs = now - viewedDate;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return '방금 전';
+    if (diffMins < 60) return `${diffMins}분 전`;
+    if (diffHours < 24) return `${diffHours}시간 전`;
+    if (diffDays < 7) return `${diffDays}일 전`;
+
+    return viewedDate.toLocaleDateString('ko-KR', {
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
   if (!user) {
     return (
       <Container>
@@ -291,26 +421,41 @@ const MyHistory = () => {
         {history.length === 0 ? (
           <EmptyState>
             <EmptyIcon>👀</EmptyIcon>
-            <EmptyText>
-              아직 본 퀴즈가 없어요.
+            <EmptyText>아직 본 퀴즈가 없어요</EmptyText>
+            <EmptySubtext>
+              재미있는 퀴즈를 풀어보면
               <br />
-              재미있는 퀴즈를 풀어보세요!
-            </EmptyText>
+              여기에 기록이 남아요!
+            </EmptySubtext>
+            <StartButton onClick={() => navigate('/')}>
+              퀴즈 풀러가기
+            </StartButton>
           </EmptyState>
         ) : (
           <>
+            <SummaryCard>
+              <SummaryText>
+                <SummaryTitle>Total Viewed</SummaryTitle>
+                <SummaryNumber>{history.length}</SummaryNumber>
+              </SummaryText>
+              <VisibilityIcon sx={{ fontSize: '3rem', color: tokens.colors.primary, opacity: 0.3 }} />
+            </SummaryCard>
+
             <HistoryList>
               {history.map((item) => (
                 <HistoryItem
                   key={item.id}
                   onClick={() => handleHistoryClick(item.quiz_index)}
                 >
+                  <FlipCountBadge>
+                    <FlipNumber>{item.flip_count}</FlipNumber>
+                    <FlipLabel>번</FlipLabel>
+                  </FlipCountBadge>
                   <HistoryContent>
-                    <FlipBadge
-                      icon={<VisibilityIcon sx={{ fontSize: '0.9rem' }} />}
-                      label={`${item.flip_count}번 봄`}
-                      size="small"
-                    />
+                    <QuestionMeta>
+                      <VisibilityIcon sx={{ fontSize: '0.9rem', color: tokens.colors.textSecondary }} />
+                      <Timestamp>{formatTimestamp(item.last_flipped_at)}</Timestamp>
+                    </QuestionMeta>
                     <QuestionPreview>
                       {stripHtml(item.question)}
                     </QuestionPreview>
