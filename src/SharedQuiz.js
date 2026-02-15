@@ -205,7 +205,9 @@ function SharedQuiz() {
       <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
         <Card
           sx={{
-            height: "180px",
+            minHeight: "200px",
+            height: "auto",
+            maxHeight: "280px",
             backgroundColor: tokens.colors.background,
             borderRadius: tokens.borderRadius.card,
             marginBottom: tokens.spacing.cardMarginBottom,
@@ -217,18 +219,25 @@ function SharedQuiz() {
             backfaceVisibility: "hidden",
             position: "relative",
             border: "2px solid rgba(89, 75, 115, 0.08)",
+            overflow: "hidden",
+            "@media (max-width: 400px)": {
+              minHeight: "180px",
+              maxHeight: "260px",
+            },
           }}
           className="Card_Front"
           onClick={handleFlipCard}
         >
-          <div className="Card_Back_Ans">
+          <div className="Card_Front_Que">
             <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.que) }} />
           </div>
           <span className="tap-hint">탭하여 정답 보기</span>
         </Card>
         <Card
           sx={{
-            height: "180px",
+            minHeight: "200px",
+            height: "auto",
+            maxHeight: "280px",
             backgroundColor: tokens.colors.cardBack,
             borderRadius: tokens.borderRadius.card,
             marginBottom: tokens.spacing.cardMarginBottom,
@@ -239,6 +248,11 @@ function SharedQuiz() {
             transition: "0.6s",
             backfaceVisibility: "hidden",
             border: "2px solid rgba(89, 75, 115, 0.15)",
+            overflow: "hidden",
+            "@media (max-width: 400px)": {
+              minHeight: "180px",
+              maxHeight: "260px",
+            },
           }}
           className="Card_Back"
           onClick={handleFlipCard}

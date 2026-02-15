@@ -73,7 +73,9 @@ const CommentButton = styled(Button)(({ theme }) => ({
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: "200px",
+  minHeight: "200px",
+  height: "auto",
+  maxHeight: "280px",
   backgroundColor: tokens.colors.cardFront,
   borderRadius: tokens.borderRadius.card,
   marginBottom: tokens.spacing.cardMarginBottom,
@@ -93,10 +95,18 @@ const StyledCard = styled(Card)(({ theme }) => ({
     boxShadow: tokens.shadows.cardHover,
     transform: "perspective(600px) rotateY(0) translateY(-4px)",
   },
+
+  /* Mobile adjustments */
+  "@media (max-width: 400px)": {
+    minHeight: "180px",
+    maxHeight: "260px",
+  },
 }));
 
 const StyledCardBack = styled(Card)(({ theme }) => ({
-  height: "200px",
+  minHeight: "200px",
+  height: "auto",
+  maxHeight: "280px",
   backgroundColor: tokens.colors.cardBack,
   borderRadius: tokens.borderRadius.card,
   marginBottom: tokens.spacing.cardMarginBottom,
@@ -117,6 +127,14 @@ const StyledCardBack = styled(Card)(({ theme }) => ({
   "&:hover": {
     boxShadow: tokens.shadows.cardHover,
     transform: "perspective(600px) rotateY(0) translateY(-4px)",
+  },
+
+  /* Mobile adjustments */
+  "@media (max-width: 400px)": {
+    minHeight: "180px",
+    maxHeight: "260px",
+    padding: "16px",
+    gap: "12px",
   },
 }));
 

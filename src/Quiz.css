@@ -4,15 +4,42 @@
 }
 
 .Card_Front_Que {
-  font-size: 1.5rem;
   font-family: "Maplestory_Light";
   color: #2D2D2D;
-  line-height: 1.45;
-  padding: 24px;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Responsive font sizing */
+  font-size: clamp(1.1rem, 3.5vw, 1.5rem);
+  line-height: 1.5;
+}
+
+.Card_Front_Que p {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  text-align: center;
+
+  /* Korean text optimization */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+
+  /* Prevent awkward orphans */
+  hyphens: none;
+  -webkit-hyphens: none;
+
+  /* Limit lines to prevent overflow */
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .Card_Back_Ans {
-  font-size: 1.7rem;
   font-family: "Maplestory_Light";
   font-weight: 700;
   display: flex;
@@ -21,13 +48,32 @@
   text-align: center;
   flex: 1;
   color: #7C5CDB;
-  line-height: 1.4;
   min-width: 0;
+  padding: 8px;
+
+  /* Responsive font sizing */
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  line-height: 1.45;
 }
 
 .Card_Back_Ans p {
   margin: 0;
+  padding: 0;
+  max-width: 100%;
+
+  /* Korean text optimization */
   word-break: keep-all;
+  overflow-wrap: break-word;
+
+  /* Prevent awkward orphans */
+  hyphens: none;
+  -webkit-hyphens: none;
+
+  /* Limit lines to prevent overflow */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .ShareButton {
