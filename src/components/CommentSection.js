@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Button, CircularProgress, Avatar, IconButton, TextField } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseConfig';
 import AuthContext from '../AuthContext';
 import { showToast, showErrorToast } from '../toastUtils';
+import { deleteComment } from '../utils/commentUtils';
 import tokens from '../tokens';
 
 /**
@@ -168,6 +170,15 @@ const LikeCount = styled('span')(({ isLiked }) => ({
   color: isLiked ? '#FF9999' : tokens.colors.textSecondary,
   fontWeight: isLiked ? 600 : 400,
 }));
+
+const DeleteButton = styled(IconButton)({
+  padding: '4px',
+  marginLeft: 'auto',
+  '&:hover': {
+    backgroundColor: 'rgba(211, 47, 47, 0.1)',
+    color: '#d32f2f',
+  },
+});
 
 const LoadMoreButton = styled(Button)({
   alignSelf: 'center',
@@ -397,6 +408,20 @@ const CommentSection = ({ quizIndex }) => {
     fetchComments(quizIndex, offset, false);
   };
 
+  // Delete comment
+  const handleDeleteComment = async (commentId) => {
+    if (!confirm('댓글을 삭제하시겠습니까?')) {
+      return;
+    }
+
+    const success = await deleteComment(commentId, user?.id);
+
+    if (success) {
+      // Remove from UI
+      setComments((prev) => prev.filter((c) => c.id !== commentId));
+    }
+  };
+
   const charCount = commentText.length;
   const isOverLimit = charCount > 500;
 
@@ -480,6 +505,16 @@ const CommentSection = ({ quizIndex }) => {
                       </LikeButton>
                       {comment.likes_count > 0 && (
                         <LikeCount isLiked={isLiked}>{comment.likes_count}</LikeCount>
+                      )}
+                      {/* Delete button - only show for comment owner */}
+                      {user?.id === comment.user_id && (
+                        <DeleteButton
+                          onClick={() => handleDeleteComment(comment.id)}
+                          size="small"
+                          aria-label="댓글 삭제"
+                        >
+                          <DeleteIcon sx={{ fontSize: '0.9rem' }} />
+                        </DeleteButton>
                       )}
                     </CommentActions>
                   </CommentContent>

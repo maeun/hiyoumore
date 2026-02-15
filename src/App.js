@@ -12,6 +12,7 @@ import AuthCallback from "./AuthCallback";
 import Mypage from "./Mypage";
 import MyBookmarks from "./MyBookmarks";
 import MyHistory from "./MyHistory";
+import MyComments from "./MyComments";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
 import Footer from "./Footer";
@@ -89,6 +90,14 @@ function App() {
                 element={
                   <div className="PageWrapper">
                     <MyHistory />
+                  </div>
+                }
+              />
+              <Route
+                path="/my-comments"
+                element={
+                  <div className="PageWrapper">
+                    <MyComments />
                   </div>
                 }
               />

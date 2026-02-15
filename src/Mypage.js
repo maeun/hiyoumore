@@ -8,6 +8,7 @@ import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AuthContext from "./AuthContext";
 import { ToastContainer } from "react-toastify";
@@ -15,6 +16,7 @@ import { showToast, showErrorToast } from "./toastUtils";
 import { supabase } from "./supabaseConfig";
 import { saveLogoutTime } from "./authUtils";
 import { getBookmarkCount, getFlipCount } from "./utils/bookmarkUtils";
+import { getCommentCount } from "./utils/commentUtils";
 import tokens from "./tokens";
 
 /** =========================
@@ -126,7 +128,7 @@ const SectionTitle = styled(Typography)({
 
 const StatsGrid = styled(Box)({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateColumns: "1fr 1fr 1fr",
   gap: 14,
   marginBottom: 16,
   width: "100%",
@@ -237,6 +239,7 @@ function Mypage() {
   const [userProfile, setUserProfile] = useState(null);
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [flipCount, setFlipCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(0);
   const navigate = useNavigate();
 
   const PREVIEW_MODE = process.env.NODE_ENV !== "production" && true;
@@ -379,6 +382,16 @@ function Mypage() {
                     </StatIconWrapper>
                     <StatNumber>{bookmarkCount}</StatNumber>
                     <StatLabel>북마크</StatLabel>
+                  </StatItem>
+
+                  <StatItem onClick={() => navigate("/my-comments")}>
+                    <StatIconWrapper>
+                      <ChatBubbleOutlineIcon
+                        sx={{ color: "#FFF", fontSize: "1.45rem" }}
+                      />
+                    </StatIconWrapper>
+                    <StatNumber>{commentCount}</StatNumber>
+                    <StatLabel>댓글</StatLabel>
                   </StatItem>
                 </StatsGrid>
 
