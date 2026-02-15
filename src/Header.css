@@ -25,3 +25,9 @@
   width: 35px;
   height: auto;
 }
+
+.header_with_back {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
