@@ -1,13 +1,11 @@
 .SharedQuiz_Frame {
   width: 100%;
   max-width: 500px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  flex-grow: 1;
   gap: 12px;
-  padding: 0 20px;
+  padding: 20px;
 }
 
 .text {

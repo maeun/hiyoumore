@@ -50,11 +50,7 @@ function App() {
               />
               <Route
                 path="/shared-quiz"
-                element={
-                  <div className="PageWrapper">
-                    <SharedQuiz />
-                  </div>
-                }
+                element={<SharedQuiz />}
               />
               <Route
                 path="/login"
