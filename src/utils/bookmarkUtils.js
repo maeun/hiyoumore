@@ -248,3 +248,68 @@ export const deleteBookmark = async (bookmarkId, userId) => {
     return false;
   }
 };
+
+/**
+ * Get user's flip history with quiz details and pagination
+ *
+ * @param {string} userId - User ID
+ * @param {number} offset - Pagination offset
+ * @param {number} limit - Number of items to fetch
+ * @returns {Promise<{data: Array, hasMore: boolean}>}
+ */
+export const getUserFlipHistory = async (userId, offset = 0, limit = 10) => {
+  if (!userId) return { data: [], hasMore: false };
+
+  try {
+    // Get flip history with quiz details
+    const { data: flipData, error: flipError, count } = await supabase
+      .from('user_flip_history')
+      .select('quiz_index, last_flipped_at, flip_count', { count: 'exact' })
+      .eq('user_id', userId)
+      .order('last_flipped_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (flipError) {
+      console.error('Error fetching flip history:', flipError);
+      return { data: [], hasMore: false };
+    }
+
+    if (!flipData || flipData.length === 0) {
+      return { data: [], hasMore: false };
+    }
+
+    // Get quiz details for each flipped quiz
+    const quizIndices = flipData.map((f) => f.quiz_index);
+    const { data: quizData, error: quizError } = await supabase
+      .from('quizzes')
+      .select('index, question, answer')
+      .in('index', quizIndices);
+
+    if (quizError) {
+      console.error('Error fetching quiz details:', quizError);
+      return { data: [], hasMore: false };
+    }
+
+    // Merge flip history with quiz data
+    const mergedData = flipData.map((flip) => {
+      const quiz = quizData.find((q) => q.index === flip.quiz_index);
+      return {
+        id: flip.quiz_index, // Use quiz_index as unique ID
+        quiz_index: flip.quiz_index,
+        question: quiz?.question || '',
+        answer: quiz?.answer || '',
+        last_flipped_at: flip.last_flipped_at,
+        flip_count: flip.flip_count,
+        category: '기타', // TODO: Extract category from quiz
+      };
+    });
+
+    return {
+      data: mergedData,
+      hasMore: count > offset + limit,
+    };
+  } catch (error) {
+    console.error('Unexpected error in getUserFlipHistory:', error);
+    return { data: [], hasMore: false };
+  }
+};

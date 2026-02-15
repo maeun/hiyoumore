@@ -139,10 +139,14 @@ const StatItem = styled(Box)({
   borderRadius: 18,
   border: `1px solid ${tokens.colors.borderLight}`,
   transition: "all 0.2s ease",
+  cursor: "pointer",
   "&:hover": {
     transform: "translateY(-2px)",
     boxShadow: "0 10px 22px rgba(124, 92, 219, 0.12)",
     borderColor: tokens.colors.primary,
+  },
+  "&:active": {
+    transform: "translateY(0px)",
   },
 });
 
@@ -359,7 +363,7 @@ function Mypage() {
                 <SectionTitle>My Activity</SectionTitle>
 
                 <StatsGrid>
-                  <StatItem>
+                  <StatItem onClick={() => navigate("/my-history")}>
                     <StatIconWrapper>
                       <VisibilityIcon
                         sx={{ color: "#FFF", fontSize: "1.45rem" }}
@@ -369,7 +373,7 @@ function Mypage() {
                     <StatLabel>봤던 퀴즈</StatLabel>
                   </StatItem>
 
-                  <StatItem>
+                  <StatItem onClick={() => navigate("/my-bookmarks")}>
                     <StatIconWrapper>
                       <StarIcon sx={{ color: "#FFF", fontSize: "1.45rem" }} />
                     </StatIconWrapper>

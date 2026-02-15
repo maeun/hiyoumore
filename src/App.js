@@ -11,6 +11,7 @@ import Login from "./Login";
 import AuthCallback from "./AuthCallback";
 import Mypage from "./Mypage";
 import MyBookmarks from "./MyBookmarks";
+import MyHistory from "./MyHistory";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
 import Footer from "./Footer";
@@ -84,6 +85,14 @@ function App() {
                 element={
                   <div className="PageWrapper">
                     <MyBookmarks />
+                  </div>
+                }
+              />
+              <Route
+                path="/my-history"
+                element={
+                  <div className="PageWrapper">
+                    <MyHistory />
                   </div>
                 }
               />
