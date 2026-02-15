@@ -11,6 +11,7 @@ const Container = styled("div")({
   fontFamily: tokens.fonts.category,
   color: tokens.colors.black,
   lineHeight: 1.8,
+  textAlign: "left",
   "& h1": {
     fontSize: "1.4rem",
     fontWeight: 700,
