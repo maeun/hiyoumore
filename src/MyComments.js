@@ -37,9 +37,10 @@ const Header = styled('div')({
   backgroundColor: tokens.colors.primary,
   background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
   color: tokens.colors.white,
-  padding: '20px',
+  padding: '0 20px',
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
   gap: '12px',
   position: 'sticky',
   top: 0,
@@ -48,6 +49,7 @@ const Header = styled('div')({
   maxWidth: '500px',
   margin: '0 auto',
   width: '100%',
+  height: '60px',
 });
 
 const BackButton = styled(IconButton)({
