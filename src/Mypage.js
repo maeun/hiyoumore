@@ -250,6 +250,77 @@ const PowerOffButton = styled(Box)({
 });
 
 /** =========================
+ * LOGIN PROMPT (Non-logged-in state)
+ * ========================= */
+
+const LoginPromptContainer = styled(Box)({
+  padding: tokensArcade.spacing.xxl,
+  background: `linear-gradient(135deg, ${tokensArcade.colors.deepBlack} 0%, #1A1A2E 100%)`,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonPink,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: `${tokensArcade.shadows.deep}, 0 0 30px rgba(255, 46, 151, 0.3)`,
+  textAlign: 'center',
+  position: 'relative',
+  overflow: 'hidden',
+  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
+
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: '-100%',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(90deg, transparent, rgba(255, 46, 151, 0.1), transparent)',
+    animation: 'shimmer 3s infinite',
+  },
+
+  '@keyframes shimmer': {
+    '0%': { left: '-100%' },
+    '100%': { left: '100%' },
+  },
+});
+
+const LoginPromptIcon = styled('div')({
+  fontSize: '4rem',
+  marginBottom: tokensArcade.spacing.lg,
+  animation: 'bounce 2s ease-in-out infinite',
+  position: 'relative',
+  zIndex: 1,
+
+  '@keyframes bounce': {
+    '0%, 100%': { transform: 'translateY(0px)' },
+    '50%': { transform: 'translateY(-12px)' },
+  },
+});
+
+const LoginPromptTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.md,
+  color: tokensArcade.colors.neonPink,
+  textShadow: tokensArcade.shadows.neonPink,
+  letterSpacing: '1px',
+  textTransform: 'uppercase',
+  marginBottom: tokensArcade.spacing.sm,
+  position: 'relative',
+  zIndex: 1,
+});
+
+const LoginPromptText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: `0 0 10px rgba(0, 240, 255, 0.5)`,
+  marginBottom: tokensArcade.spacing.lg,
+  lineHeight: 1.6,
+  position: 'relative',
+  zIndex: 1,
+});
+
+/** =========================
  * MYPAGE COMPONENT
  * ========================= */
 
@@ -440,9 +511,21 @@ function Mypage() {
             </Stack>
           )
         ) : (
-          <Box sx={{ textAlign: "center", padding: "40px 20px" }}>
-            <img src={something_going_wrong} alt="Something went wrong" />
-          </Box>
+          <LoginPromptContainer>
+            <LoginPromptIcon>🎮</LoginPromptIcon>
+            <LoginPromptTitle>INSERT COIN TO CONTINUE</LoginPromptTitle>
+            <LoginPromptText>
+              나의 퀴즈 활동을 보려면 로그인이 필요해요!
+            </LoginPromptText>
+            <ArcadeButton
+              variant="yellow"
+              size="mega"
+              fullWidth
+              onClick={() => navigate('/login')}
+            >
+              🎮 카카오로 시작하기
+            </ArcadeButton>
+          </LoginPromptContainer>
         )}
       </Shell>
     </Page>

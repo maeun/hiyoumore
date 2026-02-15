@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import { Box } from '@mui/material';
@@ -83,6 +84,7 @@ const StyledBookmarkButton = styled(Box)(({ isBookmarked }) => ({
 
 const BookmarkButton = ({ quizIndex }) => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -102,9 +104,15 @@ const BookmarkButton = ({ quizIndex }) => {
   const handleToggle = async (e) => {
     e.stopPropagation(); // Prevent card flip when clicking button
 
+    // If not logged in, redirect to login immediately
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
     setLoading(true);
 
-    // Optimistic UI update
+    // Optimistic UI update (only for logged-in users)
     const newBookmarkState = !isBookmarked;
     setIsBookmarked(newBookmarkState);
 

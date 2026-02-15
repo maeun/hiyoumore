@@ -181,6 +181,104 @@ const LoadingContainer = styled(Box)({
   minHeight: '300px',
 });
 
+// Login Prompt (for non-logged-in users)
+const LoginPromptContainer = styled(Box)({
+  padding: tokensArcade.spacing.xxl,
+  background: `linear-gradient(135deg, ${tokensArcade.colors.deepBlack} 0%, #1A1A2E 100%)`,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonPink,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: `${tokensArcade.shadows.deep}, 0 0 30px rgba(255, 46, 151, 0.3)`,
+  textAlign: 'center',
+  position: 'relative',
+  overflow: 'hidden',
+  margin: tokensArcade.spacing.lg,
+
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: '-100%',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(90deg, transparent, rgba(255, 46, 151, 0.1), transparent)',
+    animation: 'shimmer 3s infinite',
+  },
+
+  '@keyframes shimmer': {
+    '0%': { left: '-100%' },
+    '100%': { left: '100%' },
+  },
+});
+
+const LoginPromptIcon = styled('div')({
+  fontSize: '4rem',
+  marginBottom: tokensArcade.spacing.lg,
+  animation: 'bounce 2s ease-in-out infinite',
+  position: 'relative',
+  zIndex: 1,
+
+  '@keyframes bounce': {
+    '0%, 100%': { transform: 'translateY(0px)' },
+    '50%': { transform: 'translateY(-12px)' },
+  },
+});
+
+const LoginPromptTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.md,
+  color: tokensArcade.colors.neonPink,
+  textShadow: tokensArcade.shadows.neonPink,
+  letterSpacing: '1px',
+  textTransform: 'uppercase',
+  marginBottom: tokensArcade.spacing.sm,
+  position: 'relative',
+  zIndex: 1,
+});
+
+const LoginPromptText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: `0 0 10px rgba(0, 240, 255, 0.5)`,
+  marginBottom: tokensArcade.spacing.lg,
+  lineHeight: 1.6,
+  position: 'relative',
+  zIndex: 1,
+});
+
+const LoginButton = styled(Box)({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: tokensArcade.spacing.sm,
+  padding: `${tokensArcade.spacing.lg} ${tokensArcade.spacing.xxl}`,
+  backgroundColor: tokensArcade.colors.arcadeYellow,
+  color: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.deep,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.bounce}`,
+  fontFamily: tokensArcade.fonts.display,
+  fontSize: tokensArcade.fonts.base,
+  fontWeight: tokensArcade.fonts.weights.black,
+  position: 'relative',
+  zIndex: 1,
+
+  '&:hover': {
+    transform: 'translateY(-6px) scale(1.05)',
+    boxShadow: `${tokensArcade.shadows.mega}, 0 0 20px rgba(255, 214, 0, 0.5)`,
+    backgroundColor: '#FFDE33',
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+});
+
 // ============================================
 // MY BOOKMARKS COMPONENT
 // ============================================
@@ -192,8 +290,11 @@ const MyBookmarks = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (user) fetchBookmarks();
-    else setLoading(false);
+    if (user) {
+      fetchBookmarks();
+    } else {
+      setLoading(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -251,7 +352,18 @@ const MyBookmarks = () => {
       </GalleryHeader>
 
       <GalleryContent>
-        {bookmarks.length === 0 ? (
+        {!user ? (
+          <LoginPromptContainer>
+            <LoginPromptIcon>⭐</LoginPromptIcon>
+            <LoginPromptTitle>YOUR COLLECTION AWAITS!</LoginPromptTitle>
+            <LoginPromptText>
+              북마크한 퀴즈를 모아보려면 로그인이 필요해요!
+            </LoginPromptText>
+            <LoginButton onClick={() => navigate('/login')}>
+              🎮 카카오로 시작하기
+            </LoginButton>
+          </LoginPromptContainer>
+        ) : bookmarks.length === 0 ? (
           <EmptyState>
             <EmptyIcon>😢</EmptyIcon>
             <EmptyText>NO ITEMS COLLECTED</EmptyText>
