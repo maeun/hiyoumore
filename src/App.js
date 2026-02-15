@@ -10,6 +10,7 @@ import SharedQuiz from "./SharedQuiz";
 import Login from "./Login";
 import AuthCallback from "./AuthCallback";
 import Mypage from "./Mypage";
+import MyBookmarks from "./MyBookmarks";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
 import Footer from "./Footer";
@@ -73,8 +74,16 @@ function App() {
               <Route
                 path="/mypage"
                 element={
-                  <div>
+                  <div className="PageWrapper">
                     <Mypage />
+                  </div>
+                }
+              />
+              <Route
+                path="/my-bookmarks"
+                element={
+                  <div className="PageWrapper">
+                    <MyBookmarks />
                   </div>
                 }
               />
