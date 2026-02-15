@@ -16,6 +16,7 @@ import MyComments from "./MyComments";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
 import Footer from "./Footer";
+import FloatingBackButton from "./components/FloatingBackButton";
 
 import { AuthProvider } from "./AuthContext";
 
@@ -32,6 +33,7 @@ function App() {
       <Router basename="/">
         <div className="Main">
           <Header />
+          <FloatingBackButton />
           <div className="Content">
             <Routes>
               <Route

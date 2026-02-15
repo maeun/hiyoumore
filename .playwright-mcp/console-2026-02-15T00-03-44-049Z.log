@@ -1,0 +1,49 @@
+[  271558ms] ReferenceError: any is not defined
+    at Mypage (http://localhost:3000/static/js/bundle.js:2167:87)
+    at renderWithHooks (http://localhost:3000/static/js/bundle.js:68760:22)
+    at mountIndeterminateComponent (http://localhost:3000/static/js/bundle.js:72046:17)
+    at beginWork (http://localhost:3000/static/js/bundle.js:73342:20)
+    at HTMLUnknownElement.callCallback (http://localhost:3000/static/js/bundle.js:58352:18)
+    at Object.invokeGuardedCallbackDev (http://localhost:3000/static/js/bundle.js:58396:20)
+    at invokeGuardedCallback (http://localhost:3000/static/js/bundle.js:58453:35)
+    at beginWork$1 (http://localhost:3000/static/js/bundle.js:78327:11)
+    at performUnitOfWork (http://localhost:3000/static/js/bundle.js:77574:16)
+    at workLoopSync (http://localhost:3000/static/js/bundle.js:77497:9)
+[  271567ms] ReferenceError: any is not defined
+    at Mypage (http://localhost:3000/static/js/bundle.js:2167:87)
+    at renderWithHooks (http://localhost:3000/static/js/bundle.js:68760:22)
+    at mountIndeterminateComponent (http://localhost:3000/static/js/bundle.js:72046:17)
+    at beginWork (http://localhost:3000/static/js/bundle.js:73342:20)
+    at HTMLUnknownElement.callCallback (http://localhost:3000/static/js/bundle.js:58352:18)
+    at Object.invokeGuardedCallbackDev (http://localhost:3000/static/js/bundle.js:58396:20)
+    at invokeGuardedCallback (http://localhost:3000/static/js/bundle.js:58453:35)
+    at beginWork$1 (http://localhost:3000/static/js/bundle.js:78327:11)
+    at performUnitOfWork (http://localhost:3000/static/js/bundle.js:77574:16)
+    at workLoopSync (http://localhost:3000/static/js/bundle.js:77497:9)
+[  271573ms] [ERROR] The above error occurred in the <Mypage> component:
+
+    at Mypage (http://localhost:3000/static/js/bundle.js:2166:56)
+    at div
+    at RenderedRoute (http://localhost:3000/static/js/bundle.js:83886:5)
+    at Routes (http://localhost:3000/static/js/bundle.js:84437:5)
+    at div
+    at div
+    at Router (http://localhost:3000/static/js/bundle.js:84375:15)
+    at BrowserRouter (http://localhost:3000/static/js/bundle.js:82625:5)
+    at AuthProvider (http://localhost:3000/static/js/bundle.js:468:5)
+    at _HelmetProvider (http://localhost:3000/static/js/bundle.js:81036:5)
+    at App (http://localhost:3000/static/js/bundle.js:58:100)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries. @ http://localhost:3000/static/js/bundle.js:70863
+[  271576ms] ReferenceError: any is not defined
+    at Mypage (http://localhost:3000/static/js/bundle.js:2167:87)
+    at renderWithHooks (http://localhost:3000/static/js/bundle.js:68760:22)
+    at mountIndeterminateComponent (http://localhost:3000/static/js/bundle.js:72046:17)
+    at beginWork (http://localhost:3000/static/js/bundle.js:73342:20)
+    at beginWork$1 (http://localhost:3000/static/js/bundle.js:78305:18)
+    at performUnitOfWork (http://localhost:3000/static/js/bundle.js:77574:16)
+    at workLoopSync (http://localhost:3000/static/js/bundle.js:77497:9)
+    at renderRootSync (http://localhost:3000/static/js/bundle.js:77470:11)
+    at recoverFromConcurrentError (http://localhost:3000/static/js/bundle.js:76962:24)
+    at performConcurrentWorkOnRoot (http://localhost:3000/static/js/bundle.js:76874:26)

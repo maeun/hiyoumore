@@ -1,0 +1,29 @@
+[    2508ms] [ERROR] Warning: React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element.%s isBookmarked isbookmarked 
+    at button
+    at http://localhost:3000/static/js/bundle.js:6989:66
+    at ButtonBase (http://localhost:3000/static/js/bundle.js:13198:82)
+    at http://localhost:3000/static/js/bundle.js:6989:66
+    at Button (http://localhost:3000/static/js/bundle.js:14411:59)
+    at http://localhost:3000/static/js/bundle.js:6989:66
+    at BookmarkButton (http://localhost:3000/static/js/bundle.js:4214:5)
+    at div
+    at div
+    at http://localhost:3000/static/js/bundle.js:6989:66
+    at Card (http://localhost:3000/static/js/bundle.js:9707:69)
+    at http://localhost:3000/static/js/bundle.js:6989:66
+    at div
+    at div
+    at div
+    at ReactCardFlip (http://localhost:3000/static/js/bundle.js:54459:18)
+    at div
+    at Quiz (http://localhost:3000/static/js/bundle.js:2962:5)
+    at div
+    at RenderedRoute (http://localhost:3000/static/js/bundle.js:83840:5)
+    at Routes (http://localhost:3000/static/js/bundle.js:84391:5)
+    at div
+    at div
+    at Router (http://localhost:3000/static/js/bundle.js:84329:15)
+    at BrowserRouter (http://localhost:3000/static/js/bundle.js:82579:5)
+    at AuthProvider (http://localhost:3000/static/js/bundle.js:466:5)
+    at _HelmetProvider (http://localhost:3000/static/js/bundle.js:80990:5)
+    at App (http://localhost:3000/static/js/bundle.js:58:100) @ http://localhost:3000/static/js/bundle.js:54646

@@ -9,7 +9,6 @@ import {
   Button,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AuthContext from './AuthContext';
 import { getUserBookmarks, deleteBookmark } from './utils/bookmarkUtils';
 import tokens from './tokens';
@@ -29,40 +28,13 @@ const Container = styled('div')({
   minHeight: '100vh',
   backgroundColor: 'var(--bg-color)',
   paddingBottom: '80px',
-});
-
-const Header = styled('div')({
-  backgroundColor: tokens.colors.primary,
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
-  padding: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '12px',
-  position: 'sticky',
-  top: '60px',
-  zIndex: 99,
-  boxShadow: tokens.shadows.medium,
-});
-
-const BackButton = styled(IconButton)({
-  color: tokens.colors.white,
-  '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-});
-
-const Title = styled('h1')({
-  margin: 0,
-  fontSize: '1.3rem',
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
+  paddingTop: '20px',
 });
 
 const Content = styled('div')({
   maxWidth: '500px',
   margin: '0 auto',
-  padding: '20px',
+  padding: '0 20px',
 });
 
 const EmptyState = styled('div')({
@@ -257,12 +229,6 @@ const MyBookmarks = () => {
           <title>내 북마크 | 하이유모어</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Header>
-          <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>⭐ 내 북마크</Title>
-        </Header>
         <Content>
           <LoginPrompt>
             <EmptyIcon>⭐</EmptyIcon>
@@ -283,12 +249,6 @@ const MyBookmarks = () => {
           <title>내 북마크 | 하이유모어</title>
           <meta name="robots" content="noindex" />
         </Helmet>
-        <Header>
-          <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>⭐ 내 북마크</Title>
-        </Header>
         <Content>
           <LoadingContainer>
             <CircularProgress sx={{ color: tokens.colors.primary }} />
@@ -304,13 +264,6 @@ const MyBookmarks = () => {
         <title>{`내 북마크 (${bookmarks.length}개) | 하이유모어`}</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-
-      <Header>
-        <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-          <ArrowBackIcon />
-        </BackButton>
-        <Title>⭐ 내 북마크</Title>
-      </Header>
 
       <Content>
         {bookmarks.length === 0 ? (
