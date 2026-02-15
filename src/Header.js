@@ -1,19 +1,26 @@
 import "./Header.css";
-import { useNavigate } from "react-router-dom"; // useNavigate 훅을 가져옵니다.
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Header() {
-  const navigate = useNavigate(); // useNavigate 훅을 사용하여 navigate 함수를 호출합니다.
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Hide header on these pages (they have their own page-specific headers)
+  const hideHeaderPages = ['/my-history', '/my-bookmarks', '/my-comments'];
+  if (hideHeaderPages.includes(location.pathname)) {
+    return null;
+  }
 
   const handleImageClick = () => {
-    navigate("/"); // 홈 페이지로 이동합니다.
+    navigate("/");
   };
 
   return (
     <div className="header">
       <div
         className="header_text"
-        onClick={handleImageClick} // 이미지를 클릭했을 때 handleImageClick 함수 호출
-        style={{ cursor: "pointer" }} // 클릭 가능한 커서 스타일
+        onClick={handleImageClick}
+        style={{ cursor: "pointer" }}
       >
         <img
           src={process.env.PUBLIC_URL + "/logo192.png"}
