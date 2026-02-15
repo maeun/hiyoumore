@@ -410,6 +410,7 @@ const CommentSection = ({ quizIndex }) => {
 
   // Delete comment
   const handleDeleteComment = async (commentId) => {
+    // eslint-disable-next-line no-restricted-globals
     if (!confirm('댓글을 삭제하시겠습니까?')) {
       return;
     }

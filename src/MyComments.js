@@ -238,6 +238,7 @@ const MyComments = () => {
   const handleDelete = async (e, commentId) => {
     e.stopPropagation(); // Prevent navigation when clicking delete
 
+    // eslint-disable-next-line no-restricted-globals
     if (!confirm('댓글을 삭제하시겠습니까?')) {
       return;
     }
