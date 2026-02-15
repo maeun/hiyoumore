@@ -114,48 +114,96 @@ const SubmitButton = styled('div')(({ disabled }) => ({
 
 const LoginPrompt = styled('div')({
   textAlign: 'center',
-  padding: tokensArcade.spacing.xl,
-  backgroundColor: tokensArcade.colors.deepBlack,
-  border: tokensArcade.borders.base,
-  borderColor: tokensArcade.colors.neonCyan,
+  padding: tokensArcade.spacing.xxl,
+  background: `linear-gradient(135deg, ${tokensArcade.colors.deepBlack} 0%, #1A1A2E 100%)`,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonPink,
   borderRadius: tokensArcade.borderRadius.lg,
-  boxShadow: tokensArcade.shadows.arcade,
+  boxShadow: `${tokensArcade.shadows.deep}, 0 0 30px rgba(255, 46, 151, 0.3)`,
   marginBottom: tokensArcade.spacing.base,
+  position: 'relative',
+  overflow: 'hidden',
+
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: '-100%',
+    width: '100%',
+    height: '100%',
+    background: 'linear-gradient(90deg, transparent, rgba(255, 46, 151, 0.1), transparent)',
+    animation: 'shimmer 3s infinite',
+  },
+
+  '@keyframes shimmer': {
+    '0%': { left: '-100%' },
+    '100%': { left: '100%' },
+  },
+});
+
+const LoginPromptIcon = styled('div')({
+  fontSize: '3rem',
+  marginBottom: tokensArcade.spacing.md,
+  animation: 'bounce 2s ease-in-out infinite',
+
+  '@keyframes bounce': {
+    '0%, 100%': { transform: 'translateY(0px)' },
+    '50%': { transform: 'translateY(-10px)' },
+  },
+});
+
+const LoginPromptTitle = styled('h3')({
+  margin: `0 0 ${tokensArcade.spacing.sm} 0`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.md,
+  color: tokensArcade.colors.neonPink,
+  textShadow: tokensArcade.shadows.neonPink,
+  letterSpacing: '1px',
+  textTransform: 'uppercase',
 });
 
 const LoginPromptText = styled('p')({
-  margin: `0 0 ${tokensArcade.spacing.md} 0`,
-  fontFamily: tokensArcade.fonts.pixel,
-  fontSize: tokensArcade.fonts.xs,
+  margin: `0 0 ${tokensArcade.spacing.xl} 0`,
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
   color: tokensArcade.colors.neonCyan,
-  textShadow: tokensArcade.shadows.neonCyan,
-  letterSpacing: '0.5px',
+  lineHeight: 1.6,
+  letterSpacing: '0.3px',
 });
 
 const LoginButton = styled('div')({
-  display: 'inline-block',
-  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: tokensArcade.spacing.sm,
+  padding: `${tokensArcade.spacing.lg} ${tokensArcade.spacing.xxl}`,
   backgroundColor: tokensArcade.colors.arcadeYellow,
   color: tokensArcade.colors.deepBlack,
-  border: tokensArcade.borders.base,
+  border: tokensArcade.borders.thick,
   borderColor: tokensArcade.colors.shadowPurple,
   borderRadius: tokensArcade.borderRadius.lg,
-  boxShadow: tokensArcade.shadows.arcade,
+  boxShadow: tokensArcade.shadows.deep,
   cursor: 'pointer',
   transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.bounce}`,
   fontFamily: tokensArcade.fonts.display,
-  fontSize: tokensArcade.fonts.sm,
-  fontWeight: tokensArcade.fonts.weights.bold,
+  fontSize: tokensArcade.fonts.base,
+  fontWeight: tokensArcade.fonts.weights.black,
+  position: 'relative',
+  zIndex: 1,
 
   '&:hover': {
-    transform: 'translateY(-4px) scale(1.02)',
-    boxShadow: tokensArcade.shadows.mega,
+    transform: 'translateY(-6px) scale(1.05)',
+    boxShadow: `${tokensArcade.shadows.mega}, 0 0 20px rgba(255, 214, 0, 0.5)`,
     backgroundColor: '#FFDE33',
   },
 
   '&:active': {
-    transform: 'translateY(2px)',
+    transform: 'translateY(2px) scale(0.98)',
     boxShadow: tokensArcade.shadows.arcade,
+  },
+
+  '&::before': {
+    content: '"🎮"',
+    fontSize: '1.2rem',
   },
 });
 
@@ -574,8 +622,17 @@ const CommentSection = ({ quizIndex }) => {
         </CommentInputContainer>
       ) : (
         <LoginPrompt>
-          <LoginPromptText>로그인하면 댓글을 남길 수 있어요! 😊</LoginPromptText>
-          <LoginButton onClick={() => navigate('/login')}>카카오 로그인하기</LoginButton>
+          <LoginPromptIcon>💬</LoginPromptIcon>
+          <LoginPromptTitle>JOIN THE CONVERSATION!</LoginPromptTitle>
+          <LoginPromptText>
+            {comments.length > 0
+              ? `${comments.length}개의 댓글이 있어요! 로그인하고 함께 이야기를 나눠보세요 😊`
+              : '첫 댓글의 주인공이 되어보세요! 로그인하고 댓글을 남겨주세요 😊'
+            }
+          </LoginPromptText>
+          <LoginButton onClick={() => navigate('/login')}>
+            카카오로 시작하기
+          </LoginButton>
         </LoginPrompt>
       )}
 
