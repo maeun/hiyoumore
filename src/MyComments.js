@@ -34,26 +34,30 @@ const Container = styled('div')({
 });
 
 const Header = styled('div')({
-  backgroundColor: tokens.colors.primary,
   background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
   color: tokens.colors.white,
-  padding: '0 20px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '12px',
+  height: '60px',
   position: 'sticky',
   top: 0,
   zIndex: 100,
   boxShadow: tokens.shadows.medium,
+  width: '100%',
+});
+
+const HeaderInner = styled('div')({
   maxWidth: '500px',
-  margin: '0 auto',
   width: '100%',
   height: '60px',
+  margin: '0 auto',
+  padding: '0 20px',
+  display: 'flex',
+  alignItems: 'center',
+  position: 'relative',
 });
 
 const BackButton = styled(IconButton)({
   color: tokens.colors.white,
+  zIndex: 1,
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
@@ -64,6 +68,12 @@ const Title = styled('h1')({
   fontSize: '1.3rem',
   fontWeight: 700,
   fontFamily: tokens.fonts.korean,
+  position: 'absolute',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '8px',
 });
 
 const Content = styled('div')({
@@ -280,10 +290,12 @@ const MyComments = () => {
           <meta name="robots" content="noindex" />
         </Helmet>
         <Header>
-          <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>💬 내 댓글</Title>
+          <HeaderInner>
+            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
+              <ArrowBackIcon />
+            </BackButton>
+            <Title>💬 내 댓글</Title>
+          </HeaderInner>
         </Header>
         <Content>
           <LoginPrompt>
@@ -306,10 +318,12 @@ const MyComments = () => {
           <meta name="robots" content="noindex" />
         </Helmet>
         <Header>
-          <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>💬 내 댓글</Title>
+          <HeaderInner>
+            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
+              <ArrowBackIcon />
+            </BackButton>
+            <Title>💬 내 댓글</Title>
+          </HeaderInner>
         </Header>
         <Content>
           <LoadingContainer>
