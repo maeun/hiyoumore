@@ -22,10 +22,9 @@ import tokens from "./tokens";
  * ========================= */
 
 const Page = styled("div")({
-  minHeight: "calc(100vh - 80px)", // Account for footer height
   background: tokens.colors.background,
-  paddingTop: 16,
-  paddingBottom: 24, // Reduced from 80 to prevent excessive scrolling
+  paddingTop: 20,
+  paddingBottom: 20,
 
   // ✅ Page-level centering
   display: "flex",
