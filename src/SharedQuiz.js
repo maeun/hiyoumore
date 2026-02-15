@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
 import "./SharedQuiz.css";
@@ -10,10 +10,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Skeleton from "@mui/material/Skeleton";
 import ShareIcon from "@mui/icons-material/Share";
 import QuizIcon from "@mui/icons-material/Quiz";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { supabase } from './supabaseConfig';
 import DOMPurify from "dompurify";
 import tokens from "./tokens";
 import { handleShare } from "./shareUtils";
+import { trackFlip } from "./utils/bookmarkUtils";
+import AuthContext from "./AuthContext";
+import BottomSheet from "./components/BottomSheet";
+import CommentSection from "./components/CommentSection";
+import BookmarkButton from "./components/BookmarkButton";
 
 const ShareButton = styled(Button)({
   background: `linear-gradient(135deg, ${tokens.colors.accent} 0%, #FFB6C1 100%)`,
@@ -42,6 +48,35 @@ const ShareButton = styled(Button)({
   },
 });
 
+const CommentButton = styled(Button)({
+  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
+  borderRadius: "24px",
+  padding: "14px 28px",
+  border: "none",
+  fontSize: "1rem",
+  fontWeight: 600,
+  color: tokens.colors.white,
+  boxShadow: "0 4px 12px rgba(89, 75, 115, 0.25)",
+  transition: "all 0.3s ease",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "8px",
+  textTransform: "none",
+  width: "100%",
+  minHeight: "48px",
+  marginTop: "12px",
+  "&:hover": {
+    background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
+    boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
+    transform: "translateY(-2px)",
+  },
+  "&:active": {
+    transform: "translateY(0)",
+    boxShadow: "0 2px 8px rgba(89, 75, 115, 0.25)",
+  },
+});
+
 const SecondaryButton = styled(Button)({
   background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
   borderRadius: "24px",
@@ -58,6 +93,7 @@ const SecondaryButton = styled(Button)({
   gap: "8px",
   textTransform: "none",
   width: "100%",
+  marginTop: "12px",
   "&:hover": {
     background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, #7d6ea0 100%)`,
     boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
@@ -70,6 +106,7 @@ const SecondaryButton = styled(Button)({
 });
 
 function SharedQuiz() {
+  const { user } = useContext(AuthContext);
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const num = searchParams.get("num");
@@ -78,13 +115,20 @@ function SharedQuiz() {
   const [isFlipped, setIsFlipped] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isCommentsOpen, setIsCommentsOpen] = useState(false);
 
   const onShare = () => {
     handleShare(window.location.href);
   };
 
   const handleFlipCard = () => {
+    const wasFlipped = isFlipped;
     setIsFlipped(!isFlipped);
+
+    // Track flip when user flips to see answer (not when flipping back)
+    if (!wasFlipped && num && user?.id) {
+      trackFlip(parseInt(num), user.id);
+    }
   };
 
   useEffect(() => {
@@ -208,12 +252,29 @@ function SharedQuiz() {
         <ShareIcon sx={{ fontSize: "1.2rem" }} />
         친구에게 공유하기
       </ShareButton>
-      <a href="https://hiyoumore.vercel.app/" style={{ textDecoration: "none", width: "100%" }}>
+      <CommentButton onClick={() => setIsCommentsOpen(true)}>
+        <ChatBubbleOutlineIcon sx={{ fontSize: "1.1rem" }} />
+        댓글 보기
+      </CommentButton>
+      {num && <BookmarkButton quizIndex={parseInt(num)} />}
+      <a href="/" style={{ textDecoration: "none", width: "100%" }}>
         <SecondaryButton>
           <QuizIcon sx={{ fontSize: "1.2rem" }} />
           다른 퀴즈 풀어보기
         </SecondaryButton>
       </a>
+
+      {/* Comments Bottom Sheet */}
+      <BottomSheet
+        open={isCommentsOpen}
+        onClose={() => setIsCommentsOpen(false)}
+        title="💬 댓글"
+        maxHeight="75vh"
+      >
+        {num && (
+          <CommentSection quizIndex={parseInt(num)} />
+        )}
+      </BottomSheet>
     </div>
   );
 }

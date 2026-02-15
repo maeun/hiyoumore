@@ -1,5 +1,5 @@
 .Main {
-  --bg-color: #f2f4fb;
+  --bg-color: #F8F9FE;
   background-color: var(--bg-color);
   text-align: center;
 
@@ -11,8 +11,7 @@
   min-height: 100vh;
   box-sizing: border-box;
   width: min(500px, 100%);
-  box-shadow: 10px 20px 40px rgba(0, 0, 0, 0.1),
-    -10px 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 32px rgba(124, 92, 219, 0.08);
   padding-bottom: 10px;
 }
 
