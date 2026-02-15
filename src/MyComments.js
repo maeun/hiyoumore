@@ -40,12 +40,13 @@ const Header = styled('div')({
   padding: '20px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'center',
   gap: '12px',
   position: 'sticky',
   top: 0,
   zIndex: 100,
   boxShadow: tokens.shadows.medium,
+  maxWidth: '500px',
+  margin: '0 auto',
   width: '100%',
 });
 
