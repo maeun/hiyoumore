@@ -22,9 +22,10 @@ import tokens from "./tokens";
  * ========================= */
 
 const Page = styled("div")({
-  minHeight: "calc(100vh - 60px)",
+  minHeight: "calc(100vh - 80px)", // Account for footer height
   background: tokens.colors.background,
-  paddingBottom: 80,
+  paddingTop: 16,
+  paddingBottom: 24, // Reduced from 80 to prevent excessive scrolling
 
   // ✅ Page-level centering
   display: "flex",
@@ -65,7 +66,6 @@ const ProfileCard = styled(Box)({
   background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #8B7ADB 100%)`,
   borderRadius: 22,
   boxShadow: "0 6px 18px rgba(124, 92, 219, 0.16)",
-  marginTop: 16,
 
   // ✅ keep full width of Shell
   width: "100%",
