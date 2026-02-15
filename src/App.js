@@ -3,7 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Ha
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import "./App.css";
 
-import Header from "./Header";
+// Arcade components
+import ArcadeHeader from "./components/ArcadeHeader";
+import TabBar from "./components/TabBar";
+
+// Page components
 import Category from "./Category";
 import Quiz from "./Quiz";
 import SharedQuiz from "./SharedQuiz";
@@ -15,7 +19,7 @@ import MyHistory from "./MyHistory";
 import MyComments from "./MyComments";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
-import Footer from "./Footer";
+import NotFound from "./NotFound";
 
 import { AuthProvider } from "./AuthContext";
 
@@ -31,7 +35,7 @@ function App() {
     <AuthProvider>
       <Router basename="/">
         <div className="Main">
-          <Header />
+          <ArcadeHeader />
           <div className="Content">
             <Routes>
               <Route
@@ -117,9 +121,13 @@ function App() {
                   </div>
                 }
               />
+              <Route
+                path="*"
+                element={<NotFound />}
+              />
             </Routes>
           </div>
-          <Footer id="footer" />
+          <TabBar />
         </div>
       </Router>
     </AuthProvider>

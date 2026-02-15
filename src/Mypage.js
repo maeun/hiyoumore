@@ -2,14 +2,13 @@ import something_going_wrong from "./something_going_wrong.png";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { styled } from "@mui/system";
-import { Avatar, Box, Typography, Button } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
-import StarIcon from "@mui/icons-material/Star";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import CollectionsIcon from "@mui/icons-material/Collections";
 import AuthContext from "./AuthContext";
 import { ToastContainer } from "react-toastify";
 import { showToast, showErrorToast } from "./toastUtils";
@@ -17,222 +16,242 @@ import { supabase } from "./supabaseConfig";
 import { saveLogoutTime } from "./authUtils";
 import { getBookmarkCount, getFlipCount } from "./utils/bookmarkUtils";
 import { getCommentCount } from "./utils/commentUtils";
-import tokens from "./tokens";
+import tokensArcade from "./tokens-arcade";
+import ArcadeButton from "./components/ArcadeButton";
+import ScoreCounter from "./components/ScoreCounter";
 
 /** =========================
- * Layout primitives
+ * ARCADE MYPAGE LAYOUT
  * ========================= */
 
 const Page = styled("div")({
-  background: tokens.colors.background,
-  paddingTop: 20,
-  paddingBottom: 20,
-
-  // ✅ Page-level centering
+  background: tokensArcade.colors.softCream,
+  paddingTop: 24,
+  paddingBottom: 100, // Space for TabBar (80px) + extra margin
+  minHeight: 'calc(100vh - 70px - 80px)', // Account for header and footer
   display: "flex",
   justifyContent: "center",
 });
 
 const Shell = styled(Box)({
   width: "100%",
-  maxWidth: 620,
-  padding: "0 16px",
-
-  // ✅ Center align within Page flex
+  maxWidth: 600,
+  padding: "0 20px",
   margin: "0 auto",
-
-  // ✅ If you want everything inside to be centered by default
   display: "flex",
   justifyContent: "center",
+  boxSizing: "border-box",
 });
 
 const Stack = styled(Box)({
   display: "flex",
   flexDirection: "column",
-  gap: 16,
+  gap: tokensArcade.spacing.base,
   width: "100%",
-
-  // ✅ ensures children align consistently
+  maxWidth: "100%",
   alignItems: "center",
+  boxSizing: "border-box",
 });
 
 /** =========================
- * Profile (Hero) section
+ * PROFILE HERO - Arcade Header
  * ========================= */
 
-const ProfileCard = styled(Box)({
-  padding: "28px 20px 22px",
+const ProfileHeader = styled(Box)({
+  padding: tokensArcade.spacing.xl,
   textAlign: "center",
-  color: "#FFF",
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #8B7ADB 100%)`,
-  borderRadius: 22,
-  boxShadow: "0 6px 18px rgba(124, 92, 219, 0.16)",
-
-  // ✅ keep full width of Shell
+  background: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonCyan,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.glowCyan,
   width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
+  position: 'relative',
+  overflow: 'hidden',
+
+  // Scanline effect
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: `repeating-linear-gradient(
+      0deg,
+      rgba(0, 240, 255, 0.03) 0px,
+      rgba(0, 240, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    )`,
+    pointerEvents: 'none',
+  },
+});
+
+const AvatarFrame = styled(Box)({
+  width: 96,
+  height: 96,
+  margin: "0 auto 16px",
+  padding: 4,
+  background: tokensArcade.colors.neonPink,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.pureWhite,
+  borderRadius: tokensArcade.borderRadius.md,
+  boxShadow: tokensArcade.shadows.glowPink,
+  position: 'relative',
+  zIndex: 1,
 });
 
 const StyledAvatar = styled(Avatar)({
-  width: 86,
-  height: 86,
-  margin: "0 auto 14px",
-  border: "3px solid rgba(255, 255, 255, 0.28)",
-  boxShadow: "0 10px 26px rgba(0, 0, 0, 0.18)",
+  width: '100%',
+  height: '100%',
+  borderRadius: tokensArcade.borderRadius.sm,
 });
 
-const WelcomeText = styled(Typography)({
-  fontSize: "1.55rem",
-  fontWeight: 800,
-  marginBottom: 6,
-  fontFamily: tokens.fonts.korean,
-  color: "#FFF",
-  textShadow: "0 2px 8px rgba(0,0,0,0.14)",
+const PlayerName = styled(Typography)({
+  fontFamily: tokensArcade.fonts.number,
+  fontSize: tokensArcade.fonts.xl,
+  fontWeight: tokensArcade.fonts.weights.black,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: tokensArcade.shadows.neonCyan,
+  marginBottom: tokensArcade.spacing.xs,
+  letterSpacing: '1px',
+  position: 'relative',
+  zIndex: 1,
 });
 
-const EmailText = styled(Typography)({
-  fontSize: "0.85rem",
-  color: "rgba(255, 255, 255, 0.82)",
-  fontFamily: tokens.fonts.korean,
-  fontWeight: 500,
+const PlayerID = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.pixelGray,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  position: 'relative',
+  zIndex: 1,
 });
 
 /** =========================
- * Stats card
+ * ACHIEVEMENTS CARD
  * ========================= */
 
-const Card = styled(Box)({
-  background: "#FFF",
-  borderRadius: 22,
-  padding: "22px 18px",
-  boxShadow: "0 10px 26px rgba(16, 42, 67, 0.06)",
-  border: "1px solid rgba(124, 92, 219, 0.08)",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-
-  // ✅ keep full width of Shell
+const AchievementsCard = styled(Box)({
+  background: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  padding: tokensArcade.spacing.xl,
   width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
 });
 
-const SectionTitle = styled(Typography)({
-  fontSize: "0.78rem",
-  fontWeight: 800,
-  color: tokens.colors.textSecondary,
-  fontFamily: tokens.fonts.korean,
-  marginBottom: 14,
-  textTransform: "uppercase",
-  letterSpacing: "0.9px",
+const AchievementsTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.electricPurple,
   textAlign: "center",
-  width: "100%",
+  marginBottom: tokensArcade.spacing.lg,
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  textShadow: `2px 2px 0 ${tokensArcade.colors.pixelGray}`,
 });
 
 const StatsGrid = styled(Box)({
   display: "grid",
   gridTemplateColumns: "1fr 1fr 1fr",
-  gap: 14,
-  marginBottom: 16,
+  gap: tokensArcade.spacing.md,
+  marginBottom: tokensArcade.spacing.lg,
   width: "100%",
 });
 
-const StatItem = styled(Box)({
+const StatCard = styled(Box)({
   textAlign: "center",
-  padding: "18px 14px",
-  background: `linear-gradient(135deg, ${tokens.colors.background} 0%, #F0EDFF 100%)`,
-  borderRadius: 18,
-  border: `1px solid ${tokens.colors.borderLight}`,
-  transition: "all 0.2s ease",
+  padding: tokensArcade.spacing.base,
+  background: tokensArcade.colors.midnightBlue,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.neonPink,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.pixel,
   cursor: "pointer",
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+
   "&:hover": {
-    transform: "translateY(-2px)",
-    boxShadow: "0 10px 22px rgba(124, 92, 219, 0.12)",
-    borderColor: tokens.colors.primary,
+    transform: "translateY(-4px)",
+    boxShadow: tokensArcade.shadows.arcade,
   },
+
   "&:active": {
-    transform: "translateY(0px)",
+    transform: "translateY(2px)",
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
-const StatIconWrapper = styled(Box)({
-  width: 42,
-  height: 42,
-  margin: "0 auto 12px",
-  borderRadius: "50%",
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
+const StatIconBox = styled(Box)({
+  width: 32,
+  height: 32,
+  margin: "0 auto 8px",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  boxShadow: "0 6px 14px rgba(124, 92, 219, 0.28)",
-});
-
-const StatNumber = styled(Typography)({
-  fontSize: "2.2rem",
-  fontWeight: 900,
-  color: tokens.colors.primary,
-  marginBottom: 4,
-  lineHeight: 1,
-  fontFamily: tokens.fonts.body,
+  color: tokensArcade.colors.arcadeYellow,
+  filter: `drop-shadow(0 0 8px ${tokensArcade.colors.arcadeYellow})`,
 });
 
 const StatLabel = styled(Typography)({
-  fontSize: "0.78rem",
-  color: tokens.colors.textSecondary,
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.pixelGray,
+  fontFamily: tokensArcade.fonts.body,
+  fontWeight: tokensArcade.fonts.weights.medium,
+  marginTop: tokensArcade.spacing.xs,
 });
 
 /** =========================
- * Buttons
+ * POWER OFF BUTTON
  * ========================= */
 
-const PrimaryButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
-  color: "#FFF",
-  borderRadius: 16,
-  padding: "14px 16px",
-  fontSize: "1rem",
-  fontWeight: 800,
-  textTransform: "none",
-  fontFamily: tokens.fonts.korean,
-  boxShadow: "0 10px 22px rgba(124, 92, 219, 0.30)",
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  width: "100%",
-  transition: "all 0.2s ease",
-  "&:hover": {
-    boxShadow: "0 12px 28px rgba(124, 92, 219, 0.38)",
-    transform: "translateY(-1px)",
+const PowerOffButton = styled(Box)({
+  width: '100%',
+  maxWidth: '100%',
+  height: '44px',
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.base}`,
+  backgroundColor: tokensArcade.colors.hotOrange,
+  color: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.md,
+  boxShadow: tokensArcade.shadows.pixel,
+  boxSizing: 'border-box',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: tokensArcade.spacing.sm,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: tokensArcade.shadows.deep,
+    backgroundColor: '#FF8456',
   },
-  "&:active": {
-    transform: "translateY(0px)",
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
-const DangerButton = styled(Button)({
-  background: "rgba(239, 68, 68, 0.08)",
-  color: "#DC2626",
-  borderRadius: 16,
-  padding: "12px 16px",
-  fontSize: "0.95rem",
-  fontWeight: 700,
-  textTransform: "none",
-  fontFamily: tokens.fonts.korean,
-  border: "1px solid rgba(239, 68, 68, 0.18)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 10,
-  width: "100%",
-  transition: "all 0.2s ease",
-  "&:hover": {
-    background: "rgba(239, 68, 68, 0.14)",
-    borderColor: "rgba(239, 68, 68, 0.28)",
-    transform: "translateY(-1px)",
-  },
-  "&:active": {
-    transform: "translateY(0px)",
-  },
-});
+/** =========================
+ * MYPAGE COMPONENT
+ * ========================= */
 
 function Mypage() {
   const { user, session, platform, isLoggedIn } = useContext(AuthContext);
@@ -274,6 +293,7 @@ function Mypage() {
       setUserProfile(mockProfile);
       setBookmarkCount(42);
       setFlipCount(127);
+      setCommentCount(18);
       return;
     }
     if (user) {
@@ -307,12 +327,14 @@ function Mypage() {
   const fetchUserStats = async () => {
     if (!user?.id) return;
 
-    const [bookmarks, flips] = await Promise.all([
+    const [bookmarks, flips, comments] = await Promise.all([
       getBookmarkCount(user.id),
       getFlipCount(user.id),
+      getCommentCount(user.id),
     ]);
     setBookmarkCount(bookmarks);
     setFlipCount(flips);
+    setCommentCount(comments);
   };
 
   const handleSignout = async () => {
@@ -331,7 +353,7 @@ function Mypage() {
         return;
       }
 
-      showToast("안녕히 가세요! 👋");
+      showToast("POWER OFF! 👋");
       navigate("/");
     } catch (e) {
       console.error(e);
@@ -342,7 +364,7 @@ function Mypage() {
   return (
     <Page>
       <Helmet>
-        <title>마이페이지 | 하이유모어</title>
+        <title>PLAYER STATS | 하이유모어</title>
         <meta name="robots" content="noindex" />
       </Helmet>
       <ToastContainer />
@@ -351,63 +373,70 @@ function Mypage() {
         {mockIsLoggedIn ? (
           userProfile && (
             <Stack>
-              <ProfileCard>
-                <StyledAvatar
-                  src={userProfile.profile_image_url || defaultProfileImage}
-                  alt="Profile"
-                />
-                <WelcomeText>
-                  {(userProfile.nickname || userProfile.name) + "님"}
-                </WelcomeText>
-                <EmailText>{userProfile.email}</EmailText>
-              </ProfileCard>
+              {/* PROFILE HEADER - Arcade Style */}
+              <ProfileHeader>
+                <AvatarFrame>
+                  <StyledAvatar
+                    src={userProfile.profile_image_url || defaultProfileImage}
+                    alt="Profile"
+                  />
+                </AvatarFrame>
+                <PlayerName>
+                  {userProfile.nickname || userProfile.name || "PLAYER"}
+                </PlayerName>
+                <PlayerID>PLAYER ID: {userProfile.email}</PlayerID>
+              </ProfileHeader>
 
-              <Card>
-                <SectionTitle>My Activity</SectionTitle>
+              {/* ACHIEVEMENTS CARD */}
+              <AchievementsCard>
+                <AchievementsTitle>ACHIEVEMENTS</AchievementsTitle>
 
                 <StatsGrid>
-                  <StatItem onClick={() => navigate("/my-history")}>
-                    <StatIconWrapper>
-                      <VisibilityIcon
-                        sx={{ color: "#FFF", fontSize: "1.45rem" }}
-                      />
-                    </StatIconWrapper>
-                    <StatNumber>{flipCount}</StatNumber>
+                  {/* Viewed Quizzes */}
+                  <StatCard onClick={() => navigate("/my-history")}>
+                    <StatIconBox>
+                      <VisibilityIcon sx={{ fontSize: "1.8rem" }} />
+                    </StatIconBox>
+                    <ScoreCounter value={flipCount} color="cyan" duration={800} />
                     <StatLabel>봤던 퀴즈</StatLabel>
-                  </StatItem>
+                  </StatCard>
 
-                  <StatItem onClick={() => navigate("/my-bookmarks")}>
-                    <StatIconWrapper>
-                      <StarIcon sx={{ color: "#FFF", fontSize: "1.45rem" }} />
-                    </StatIconWrapper>
-                    <StatNumber>{bookmarkCount}</StatNumber>
+                  {/* Bookmarks */}
+                  <StatCard onClick={() => navigate("/my-bookmarks")}>
+                    <StatIconBox>
+                      <BookmarkIcon sx={{ fontSize: "1.8rem" }} />
+                    </StatIconBox>
+                    <ScoreCounter value={bookmarkCount} color="yellow" duration={800} />
                     <StatLabel>북마크</StatLabel>
-                  </StatItem>
+                  </StatCard>
 
-                  <StatItem onClick={() => navigate("/my-comments")}>
-                    <StatIconWrapper>
-                      <ChatBubbleOutlineIcon
-                        sx={{ color: "#FFF", fontSize: "1.45rem" }}
-                      />
-                    </StatIconWrapper>
-                    <StatNumber>{commentCount}</StatNumber>
+                  {/* Comments */}
+                  <StatCard onClick={() => navigate("/my-comments")}>
+                    <StatIconBox>
+                      <ChatBubbleOutlineIcon sx={{ fontSize: "1.8rem" }} />
+                    </StatIconBox>
+                    <ScoreCounter value={commentCount} color="pink" duration={800} />
                     <StatLabel>댓글</StatLabel>
-                  </StatItem>
+                  </StatCard>
                 </StatsGrid>
 
-                <PrimaryButton onClick={() => navigate("/my-bookmarks")}>
-                  <BookmarkIcon sx={{ fontSize: "1.2rem" }} />
-                  내 북마크 보기
-                  <ArrowForwardIcon
-                    sx={{ marginLeft: "auto", fontSize: "1.2rem" }}
-                  />
-                </PrimaryButton>
-              </Card>
+                {/* View Collection Button */}
+                <ArcadeButton
+                  variant="primary"
+                  size="mega"
+                  fullWidth
+                  icon={<CollectionsIcon sx={{ fontSize: "1.2rem" }} />}
+                  onClick={() => navigate("/my-bookmarks")}
+                >
+                  VIEW COLLECTION
+                </ArcadeButton>
+              </AchievementsCard>
 
-              <DangerButton onClick={handleSignout}>
-                <LogoutIcon sx={{ fontSize: "1.05rem" }} />
-                로그아웃
-              </DangerButton>
+              {/* POWER OFF (Logout) */}
+              <PowerOffButton onClick={handleSignout}>
+                <LogoutIcon sx={{ fontSize: "1rem" }} />
+                POWER OFF
+              </PowerOffButton>
             </Stack>
           )
         ) : (

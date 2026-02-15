@@ -2,174 +2,188 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { styled } from "@mui/system";
-import { CircularProgress, IconButton, Chip, Button } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import AuthContext from "./AuthContext";
 import { getUserBookmarks, deleteBookmark } from "./utils/bookmarkUtils";
-import tokens from "./tokens";
+import tokensArcade from "./tokens-arcade";
+import NeonBadge from "./components/NeonBadge";
 
-/* =========================
-   LAYOUT STYLES
-========================= */
+// ============================================
+// TRADING CARD GALLERY LAYOUT
+// ============================================
 
-const Container = styled("div")({
-  minHeight: "100vh",
-  backgroundColor: "var(--bg-color)",
-  paddingBottom: "80px",
+const GalleryContainer = styled(Box)({
+  minHeight: 'calc(100vh - 70px - 80px)',
+  backgroundColor: tokensArcade.colors.softCream,
+  paddingBottom: '100px', // Space for TabBar
+  boxSizing: 'border-box',
 });
 
-/* FULL WIDTH HEADER */
-const Header = styled("div")({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
-  height: "60px",
-  position: "sticky",
-  top: 0,
-  zIndex: 100,
-  boxShadow: tokens.shadows.medium,
-  width: "100%",
+const GalleryHeader = styled(Box)({
+  background: tokensArcade.colors.deepBlack,
+  border: `${tokensArcade.borders.base} ${tokensArcade.colors.neonCyan}`,
+  borderTop: 'none',
+  borderLeft: 'none',
+  borderRight: 'none',
+  height: '60px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: `0 4px 0 ${tokensArcade.colors.shadowPurple}`,
+  position: 'relative',
 });
 
-/* INNER 500px CENTER WRAPPER */
-const HeaderInner = styled("div")({
-  maxWidth: "500px",
-  width: "100%",
-  height: "60px",
-  margin: "0 auto",
-  padding: "0 20px",
-  display: "flex",
-  alignItems: "center",
-  position: "relative",
+const GalleryTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.neonPink,
+  textShadow: tokensArcade.shadows.neonPink,
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
 });
 
-/* BACK BUTTON LEFT */
-const BackButton = styled(IconButton)({
-  color: tokens.colors.white,
-  zIndex: 1,
-  "&:hover": {
-    backgroundColor: "rgba(255,255,255,0.1)",
+const GalleryContent = styled(Box)({
+  maxWidth: '900px',
+  margin: '0 auto',
+  padding: tokensArcade.spacing.lg,
+});
+
+// Masonry Grid Layout
+const CardGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: tokensArcade.spacing.base,
+  width: '100%',
+
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
 });
 
-/* TITLE PERFECT CENTER */
-const Title = styled("h1")({
-  margin: 0,
-  fontSize: "1.3rem",
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  position: "absolute",
-  left: "50%",
-  transform: "translateX(-50%)",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: "8px",
-});
+// Trading Card
+const TradingCard = styled(Box)({
+  position: 'relative',
+  backgroundColor: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  padding: tokensArcade.spacing.base,
+  paddingTop: tokensArcade.spacing.xxl,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  minHeight: '120px',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  boxSizing: 'border-box',
 
-const Content = styled("div")({
-  maxWidth: "500px",
-  margin: "0 auto",
-  padding: "20px",
-});
+  '&:hover': {
+    transform: 'translateY(-6px)',
+    boxShadow: tokensArcade.shadows.deep,
+    borderColor: tokensArcade.colors.neonPink,
+  },
 
-/* =========================
-   UI COMPONENT STYLES
-========================= */
-
-const EmptyState = styled("div")({
-  textAlign: "center",
-  padding: "60px 20px",
-  color: tokens.colors.textSecondary,
-});
-
-const EmptyIcon = styled("div")({
-  fontSize: "4rem",
-  marginBottom: "16px",
-});
-
-const EmptyText = styled("p")({
-  fontSize: "1rem",
-  margin: "0 0 24px 0",
-});
-
-const BookmarkList = styled("div")({
-  display: "flex",
-  flexDirection: "column",
-  gap: "12px",
-});
-
-const BookmarkItem = styled("div")({
-  backgroundColor: tokens.colors.white,
-  borderRadius: tokens.borderRadius.medium,
-  padding: "16px",
-  boxShadow: tokens.shadows.light,
-  display: "flex",
-  gap: "12px",
-  alignItems: "flex-start",
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-  border: "1px solid rgba(89, 75, 115, 0.1)",
-  "&:hover": {
-    boxShadow: tokens.shadows.medium,
-    transform: "translateY(-2px)",
-    borderColor: tokens.colors.primary,
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
-const BookmarkContent = styled("div")({
-  flex: 1,
-  minWidth: 0,
+// Category Sticker (top-left)
+const CategorySticker = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  left: tokensArcade.spacing.sm,
+  zIndex: 2,
 });
 
-const CategoryBadge = styled(Chip)({
-  fontSize: "0.75rem",
-  height: "24px",
-  marginBottom: "8px",
-  backgroundColor: tokens.colors.primary,
-  color: tokens.colors.white,
-  fontWeight: 600,
+// Delete Button (top-right)
+const DeleteButton = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  right: tokensArcade.spacing.sm,
+  width: '28px',
+  height: '28px',
+  backgroundColor: tokensArcade.colors.hotOrange,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  zIndex: 3,
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '1rem',
+    color: tokensArcade.colors.pureWhite,
+  },
+
+  '&:hover': {
+    transform: 'scale(1.2) rotate(90deg)',
+    backgroundColor: '#FF8456',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+
+  '&:active': {
+    transform: 'scale(0.9)',
+  },
 });
 
-const QuestionPreview = styled("p")({
-  margin: 0,
-  fontSize: "0.95rem",
-  color: tokens.colors.text,
+const QuestionPreview = styled(Typography)({
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.deepBlack,
   lineHeight: 1.5,
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  display: "-webkit-box",
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: "vertical",
-  wordBreak: "break-word",
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textAlign: 'center',
+  padding: `0 ${tokensArcade.spacing.xs}`,
 });
 
-const DeleteButton = styled(IconButton)({
-  color: tokens.colors.textSecondary,
-  padding: "8px",
-  "&:hover": {
-    color: "#d32f2f",
-    backgroundColor: "rgba(211,47,47,0.08)",
-  },
+// Empty State
+const EmptyState = styled(Box)({
+  textAlign: 'center',
+  padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: tokensArcade.spacing.lg,
 });
 
-const LoadMoreButton = styled(Button)({
-  alignSelf: "center",
-  color: tokens.colors.primary,
-  borderRadius: "20px",
-  padding: "8px 20px",
-  fontSize: "0.85rem",
-  marginTop: "16px",
+const EmptyIcon = styled(Typography)({
+  fontSize: '72px',
+  filter: 'grayscale(100%)',
+  opacity: 0.5,
 });
 
-const LoadingContainer = styled("div")({
-  display: "flex",
-  justifyContent: "center",
-  padding: "40px 20px",
+const EmptyText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.shadowPurple,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
 });
 
-/* =========================
-   PAGE COMPONENT
-========================= */
+const LoadingContainer = styled(Box)({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minHeight: '300px',
+});
+
+// ============================================
+// MY BOOKMARKS COMPONENT
+// ============================================
 
 const MyBookmarks = () => {
   const navigate = useNavigate();
@@ -180,12 +194,28 @@ const MyBookmarks = () => {
   useEffect(() => {
     if (user) fetchBookmarks();
     else setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchBookmarks = async () => {
-    const { data } = await getUserBookmarks(user?.id, 0, 10);
+    const { data } = await getUserBookmarks(user?.id, 0, 50);
     setBookmarks(data || []);
     setLoading(false);
+  };
+
+  const handleDelete = async (e, bookmarkId) => {
+    e.stopPropagation();
+    const confirmed = window.confirm('이 북마크를 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    const success = await deleteBookmark(bookmarkId, user?.id);
+    if (success) {
+      setBookmarks(bookmarks.filter(b => b.id !== bookmarkId));
+    }
+  };
+
+  const handleCardClick = (quizIndex) => {
+    navigate(`/shared-quiz?num=${quizIndex}`);
   };
 
   const stripHtml = (html) => {
@@ -196,63 +226,67 @@ const MyBookmarks = () => {
 
   if (loading) {
     return (
-      <Container>
-        <Header>
-          <HeaderInner>
-            <BackButton onClick={() => navigate(-1)}>
-              <ArrowBackIcon />
-            </BackButton>
-            <Title>⭐ 내 북마크</Title>
-          </HeaderInner>
-        </Header>
-        <Content>
+      <GalleryContainer>
+        <GalleryHeader>
+          <GalleryTitle>⭐ MY COLLECTION</GalleryTitle>
+        </GalleryHeader>
+        <GalleryContent>
           <LoadingContainer>
-            <CircularProgress sx={{ color: tokens.colors.primary }} />
+            <CircularProgress sx={{ color: tokensArcade.colors.neonPink }} />
           </LoadingContainer>
-        </Content>
-      </Container>
+        </GalleryContent>
+      </GalleryContainer>
     );
   }
 
   return (
-    <Container>
+    <GalleryContainer>
       <Helmet>
-        <title>내 북마크 | 하이유모어</title>
+        <title>MY COLLECTION | 하이유모어</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 
-      <Header>
-        <HeaderInner>
-          <BackButton onClick={() => navigate(-1)}>
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>⭐ 내 북마크</Title>
-        </HeaderInner>
-      </Header>
+      <GalleryHeader>
+        <GalleryTitle>⭐ MY COLLECTION</GalleryTitle>
+      </GalleryHeader>
 
-      <Content>
+      <GalleryContent>
         {bookmarks.length === 0 ? (
           <EmptyState>
-            <EmptyIcon>⭐</EmptyIcon>
-            <EmptyText>아직 북마크한 퀴즈가 없어요.</EmptyText>
+            <EmptyIcon>😢</EmptyIcon>
+            <EmptyText>NO ITEMS COLLECTED</EmptyText>
           </EmptyState>
         ) : (
-          <BookmarkList>
+          <CardGrid>
             {bookmarks.map((b) => (
-              <BookmarkItem key={b.id}>
-                <BookmarkContent>
-                  <CategoryBadge label={b.category} size="small" />
-                  <QuestionPreview>{stripHtml(b.question)}</QuestionPreview>
-                </BookmarkContent>
-                <DeleteButton>
-                  <DeleteIcon fontSize="small" />
+              <TradingCard
+                key={b.id}
+                onClick={() => handleCardClick(b.quiz_index)}
+              >
+                {/* Category Sticker */}
+                {b.category && (
+                  <CategorySticker>
+                    <NeonBadge color="purple" size="sm">
+                      {b.category}
+                    </NeonBadge>
+                  </CategorySticker>
+                )}
+
+                {/* Delete Button */}
+                <DeleteButton onClick={(e) => handleDelete(e, b.id)}>
+                  <CloseIcon />
                 </DeleteButton>
-              </BookmarkItem>
+
+                {/* Question Preview */}
+                <QuestionPreview>
+                  {stripHtml(b.question)}
+                </QuestionPreview>
+              </TradingCard>
             ))}
-          </BookmarkList>
+          </CardGrid>
         )}
-      </Content>
-    </Container>
+      </GalleryContent>
+    </GalleryContainer>
   );
 };
 

@@ -2,207 +2,229 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/system';
-import {
-  CircularProgress,
-  IconButton,
-  Chip,
-  Button,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import AuthContext from './AuthContext';
 import { getUserComments, deleteComment } from './utils/commentUtils';
-import tokens from './tokens';
+import tokensArcade from './tokens-arcade';
+import NeonBadge from './components/NeonBadge';
 
-/**
- * MyComments Page
- *
- * Displays user's comments across all quizzes with:
- * - Comment text preview
- * - Quiz question preview
- * - Likes count badge
- * - Delete button
- * - Click to view quiz
- * - Pagination (10 per page)
- */
+// ============================================
+// TRADING CARD GALLERY (Comments)
+// Reusing design from MyBookmarks
+// ============================================
 
-const Container = styled('div')({
-  minHeight: '100vh',
-  backgroundColor: 'var(--bg-color)',
-  paddingBottom: '80px',
+const GalleryContainer = styled(Box)({
+  minHeight: 'calc(100vh - 70px - 80px)',
+  backgroundColor: tokensArcade.colors.softCream,
+  paddingBottom: '100px',
+  boxSizing: 'border-box',
 });
 
-const Header = styled('div')({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
+const GalleryHeader = styled(Box)({
+  background: tokensArcade.colors.deepBlack,
+  border: `${tokensArcade.borders.base} ${tokensArcade.colors.arcadeYellow}`,
+  borderTop: 'none',
+  borderLeft: 'none',
+  borderRight: 'none',
   height: '60px',
-  position: 'sticky',
-  top: 0,
-  zIndex: 100,
-  boxShadow: tokens.shadows.medium,
-  width: '100%',
-});
-
-const HeaderInner = styled('div')({
-  maxWidth: '500px',
-  width: '100%',
-  height: '60px',
-  margin: '0 auto',
-  padding: '0 20px',
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: `0 4px 0 ${tokensArcade.colors.shadowPurple}`,
   position: 'relative',
 });
 
-const BackButton = styled(IconButton)({
-  color: tokens.colors.white,
-  zIndex: 1,
-  '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+const GalleryTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.arcadeYellow,
+  textShadow: tokensArcade.shadows.neonYellow,
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+});
+
+const GalleryContent = styled(Box)({
+  maxWidth: '900px',
+  margin: '0 auto',
+  padding: tokensArcade.spacing.lg,
+});
+
+const CardGrid = styled(Box)({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: tokensArcade.spacing.base,
+  width: '100%',
+
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
 });
 
-const Title = styled('h1')({
-  margin: 0,
-  fontSize: '1.3rem',
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  position: 'absolute',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
-});
-
-const Content = styled('div')({
-  maxWidth: '500px',
-  margin: '0 auto',
-  padding: '20px',
-});
-
-const EmptyState = styled('div')({
-  textAlign: 'center',
-  padding: '60px 20px',
-  color: tokens.colors.textSecondary,
-});
-
-const EmptyIcon = styled('div')({
-  fontSize: '4rem',
-  marginBottom: '16px',
-});
-
-const EmptyText = styled('p')({
-  fontSize: '1rem',
-  margin: '0 0 24px 0',
-});
-
-const CommentList = styled('div')({
+const TradingCard = styled(Box)({
+  position: 'relative',
+  backgroundColor: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  padding: tokensArcade.spacing.base,
+  paddingTop: tokensArcade.spacing.xxl,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  minHeight: '120px',
   display: 'flex',
   flexDirection: 'column',
-  gap: '12px',
-});
+  justifyContent: 'center',
+  boxSizing: 'border-box',
 
-const CommentItem = styled('div')({
-  backgroundColor: tokens.colors.white,
-  borderRadius: tokens.borderRadius.medium,
-  padding: '16px',
-  boxShadow: tokens.shadows.light,
-  display: 'flex',
-  gap: '12px',
-  alignItems: 'flex-start',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  border: '1px solid rgba(89, 75, 115, 0.1)',
   '&:hover': {
-    boxShadow: tokens.shadows.medium,
-    transform: 'translateY(-2px)',
-    borderColor: tokens.colors.primary,
+    transform: 'translateY(-6px)',
+    boxShadow: tokensArcade.shadows.deep,
+    borderColor: tokensArcade.colors.arcadeYellow,
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
-const CommentContent = styled('div')({
-  flex: 1,
-  minWidth: 0,
+const LikesBadge = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  left: tokensArcade.spacing.sm,
+  zIndex: 2,
 });
 
-const LikesBadge = styled(Chip)({
-  fontSize: '0.75rem',
-  height: '24px',
-  marginBottom: '8px',
-  backgroundColor: '#FF9999',
-  color: tokens.colors.white,
-  fontWeight: 600,
+const DeleteButton = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  right: tokensArcade.spacing.sm,
+  width: '28px',
+  height: '28px',
+  backgroundColor: tokensArcade.colors.hotOrange,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  zIndex: 3,
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '1rem',
+    color: tokensArcade.colors.pureWhite,
+  },
+
+  '&:hover': {
+    transform: 'scale(1.2) rotate(90deg)',
+    backgroundColor: '#FF8456',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+
+  '&:active': {
+    transform: 'scale(0.9)',
+  },
 });
 
-const CommentText = styled('p')({
-  margin: '0 0 8px 0',
-  fontSize: '0.95rem',
-  color: tokens.colors.text,
+const CommentPreview = styled(Typography)({
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.deepBlack,
   lineHeight: 1.5,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   display: '-webkit-box',
-  WebkitLineClamp: 2,
+  WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
-  wordBreak: 'break-word',
-  whiteSpace: 'pre-wrap',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textAlign: 'center',
+  padding: `0 ${tokensArcade.spacing.xs}`,
+  marginBottom: tokensArcade.spacing.xs,
 });
 
-const QuizPreview = styled('p')({
-  margin: 0,
-  fontSize: '0.85rem',
-  color: tokens.colors.textSecondary,
+const QuizHint = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.pixelGray,
+  textAlign: 'center',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
+  padding: `0 ${tokensArcade.spacing.xs}`,
 });
 
-const DeleteButton = styled(IconButton)({
-  color: tokens.colors.textSecondary,
-  padding: '8px',
-  '&:hover': {
-    color: '#d32f2f',
-    backgroundColor: 'rgba(211, 47, 47, 0.08)',
-  },
+const EmptyState = styled(Box)({
+  textAlign: 'center',
+  padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: tokensArcade.spacing.lg,
 });
 
-const LoadMoreButton = styled(Button)({
-  alignSelf: 'center',
-  color: tokens.colors.primary,
-  borderRadius: '20px',
-  padding: '8px 20px',
-  fontSize: '0.85rem',
-  marginTop: '16px',
-  '&:hover': {
-    backgroundColor: 'rgba(89, 75, 115, 0.08)',
-  },
+const EmptyIcon = styled(Typography)({
+  fontSize: '72px',
+  filter: 'grayscale(100%)',
+  opacity: 0.5,
 });
 
-const LoadingContainer = styled('div')({
+const EmptyText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.shadowPurple,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+});
+
+const LoadingContainer = styled(Box)({
   display: 'flex',
   justifyContent: 'center',
-  padding: '40px 20px',
+  alignItems: 'center',
+  minHeight: '300px',
 });
 
-const LoginPrompt = styled('div')({
+const LoadMoreButton = styled(Box)({
+  marginTop: tokensArcade.spacing.lg,
   textAlign: 'center',
-  padding: '60px 20px',
 });
 
-const LoginButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
-  borderRadius: '24px',
-  padding: '12px 32px',
-  fontSize: '1rem',
-  fontWeight: 600,
-  marginTop: '16px',
+const LoadMoreButtonInner = styled(Box)({
+  display: 'inline-block',
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
+  backgroundColor: tokensArcade.colors.electricPurple,
+  color: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+
   '&:hover': {
-    background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
+    transform: 'translateY(-4px)',
+    boxShadow: tokensArcade.shadows.deep,
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
+
+// ============================================
+// MY COMMENTS COMPONENT
+// ============================================
 
 const MyComments = () => {
   const navigate = useNavigate();
@@ -213,15 +235,11 @@ const MyComments = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const COMMENTS_PER_PAGE = 10;
+  const COMMENTS_PER_PAGE = 50;
 
-  // Fetch comments on mount
   useEffect(() => {
-    if (user) {
-      fetchComments(0, true);
-    } else {
-      setLoading(false);
-    }
+    if (user) fetchComments(0, true);
+    else setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
@@ -251,23 +269,17 @@ const MyComments = () => {
   };
 
   const handleDelete = async (e, commentId) => {
-    e.stopPropagation(); // Prevent navigation when clicking delete
-
-    // eslint-disable-next-line no-restricted-globals
-    if (!confirm('댓글을 삭제하시겠습니까?')) {
-      return;
-    }
+    e.stopPropagation();
+    const confirmed = window.confirm('이 댓글을 삭제하시겠습니까?');
+    if (!confirmed) return;
 
     const success = await deleteComment(commentId, user?.id);
-
     if (success) {
-      // Remove from UI
-      setComments((prev) => prev.filter((c) => c.id !== commentId));
+      setComments(comments.filter(c => c.id !== commentId));
     }
   };
 
-  const handleCommentClick = (quizIndex) => {
-    // Navigate to shared quiz page to view the full quiz
+  const handleCardClick = (quizIndex) => {
     navigate(`/shared-quiz?num=${quizIndex}`);
   };
 
@@ -275,134 +287,99 @@ const MyComments = () => {
     fetchComments(offset, false);
   };
 
-  // Strip HTML tags for preview
   const stripHtml = (html) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    return tmp.textContent || '';
   };
-
-  if (!user) {
-    return (
-      <Container>
-        <Helmet>
-          <title>내 댓글 | 하이유모어</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
-        <Header>
-          <HeaderInner>
-            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-              <ArrowBackIcon />
-            </BackButton>
-            <Title>💬 내 댓글</Title>
-          </HeaderInner>
-        </Header>
-        <Content>
-          <LoginPrompt>
-            <EmptyIcon>💬</EmptyIcon>
-            <EmptyText>로그인하면 댓글 기록을 확인할 수 있어요!</EmptyText>
-            <LoginButton onClick={() => navigate('/login')}>
-              카카오 로그인하기
-            </LoginButton>
-          </LoginPrompt>
-        </Content>
-      </Container>
-    );
-  }
 
   if (loading) {
     return (
-      <Container>
-        <Helmet>
-          <title>내 댓글 | 하이유모어</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
-        <Header>
-          <HeaderInner>
-            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-              <ArrowBackIcon />
-            </BackButton>
-            <Title>💬 내 댓글</Title>
-          </HeaderInner>
-        </Header>
-        <Content>
+      <GalleryContainer>
+        <GalleryHeader>
+          <GalleryTitle>💬 COMMENTS HISTORY</GalleryTitle>
+        </GalleryHeader>
+        <GalleryContent>
           <LoadingContainer>
-            <CircularProgress sx={{ color: tokens.colors.primary }} />
+            <CircularProgress sx={{ color: tokensArcade.colors.arcadeYellow }} />
           </LoadingContainer>
-        </Content>
-      </Container>
+        </GalleryContent>
+      </GalleryContainer>
     );
   }
 
   return (
-    <Container>
+    <GalleryContainer>
       <Helmet>
-        <title>{`내 댓글 (${comments.length}개) | 하이유모어`}</title>
+        <title>COMMENTS HISTORY | 하이유모어</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 
-      <Header>
-        <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-          <ArrowBackIcon />
-        </BackButton>
-        <Title>💬 내 댓글</Title>
-      </Header>
+      <GalleryHeader>
+        <GalleryTitle>💬 COMMENTS HISTORY</GalleryTitle>
+      </GalleryHeader>
 
-      <Content>
+      <GalleryContent>
         {comments.length === 0 ? (
           <EmptyState>
-            <EmptyIcon>💬</EmptyIcon>
-            <EmptyText>
-              아직 남긴 댓글이 없어요.
-              <br />
-              퀴즈를 풀고 댓글을 남겨보세요!
-            </EmptyText>
+            <EmptyIcon>😢</EmptyIcon>
+            <EmptyText>NO ITEMS COLLECTED</EmptyText>
           </EmptyState>
         ) : (
           <>
-            <CommentList>
-              {comments.map((comment) => (
-                <CommentItem
-                  key={comment.id}
-                  onClick={() => handleCommentClick(comment.quiz_index)}
+            <CardGrid>
+              {comments.map((c) => (
+                <TradingCard
+                  key={c.id}
+                  onClick={() => handleCardClick(c.quiz_index)}
                 >
-                  <CommentContent>
-                    {comment.likes_count > 0 && (
-                      <LikesBadge
-                        icon={<FavoriteIcon sx={{ fontSize: '0.9rem' }} />}
-                        label={`${comment.likes_count}`}
-                        size="small"
-                      />
-                    )}
-                    <CommentText>{comment.comment_text}</CommentText>
-                    <QuizPreview>
-                      퀴즈: {stripHtml(comment.question).substring(0, 40)}
-                      {stripHtml(comment.question).length > 40 ? '...' : ''}
-                    </QuizPreview>
-                  </CommentContent>
-                  <DeleteButton
-                    onClick={(e) => handleDelete(e, comment.id)}
-                    aria-label="댓글 삭제"
-                  >
-                    <DeleteIcon fontSize="small" />
+                  {/* Likes Badge */}
+                  {c.likes_count > 0 && (
+                    <LikesBadge>
+                      <NeonBadge color="pink" size="sm">
+                        <FavoriteIcon sx={{ fontSize: '0.7rem', marginRight: '2px' }} />
+                        {c.likes_count}
+                      </NeonBadge>
+                    </LikesBadge>
+                  )}
+
+                  {/* Delete Button */}
+                  <DeleteButton onClick={(e) => handleDelete(e, c.id)}>
+                    <CloseIcon />
                   </DeleteButton>
-                </CommentItem>
+
+                  {/* Comment Preview */}
+                  <CommentPreview>
+                    {c.comment_text}
+                  </CommentPreview>
+
+                  {/* Quiz Hint */}
+                  <QuizHint>
+                    퀴즈: {stripHtml(c.question).substring(0, 20)}
+                    {stripHtml(c.question).length > 20 ? '...' : ''}
+                  </QuizHint>
+                </TradingCard>
               ))}
-            </CommentList>
+            </CardGrid>
 
             {hasMore && (
-              <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-                {loadingMore ? (
-                  <CircularProgress size={20} />
-                ) : (
-                  '더 보기'
-                )}
+              <LoadMoreButton>
+                <LoadMoreButtonInner onClick={handleLoadMore}>
+                  {loadingMore ? (
+                    <CircularProgress
+                      size={16}
+                      sx={{ color: tokensArcade.colors.pureWhite }}
+                    />
+                  ) : (
+                    'LOAD MORE'
+                  )}
+                </LoadMoreButtonInner>
               </LoadMoreButton>
             )}
           </>
         )}
-      </Content>
-    </Container>
+      </GalleryContent>
+    </GalleryContainer>
   );
 };
 

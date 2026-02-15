@@ -1,66 +1,60 @@
 import React, { useEffect } from 'react';
-import { Modal, IconButton } from '@mui/material';
+import { Modal } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/system';
-import tokens from '../tokens';
+import tokensArcade from '../tokens-arcade';
 
 /**
- * BottomSheet Component
+ * BottomSheet Component - Arcade Edition
  *
- * Mobile-first bottom sheet modal for HiYouMore.
- * First modal component in the app - establishes z-index hierarchy.
+ * Mobile-first bottom sheet modal with retro arcade styling.
  *
  * Features:
  * - Slide-up animation from bottom
- * - Backdrop click to close
+ * - Midnight blue background with neon border
+ * - Arcade-style close button
  * - Mobile keyboard handling (iOS/Android)
- * - Max width 500px to match .Main container
+ * - Max width 500px to match main container
  * - Accessible (ESC to close, focus trap, ARIA labels)
  *
  * z-index Hierarchy:
- * - Header: 100
+ * - ArcadeHeader: 100
  * - BottomSheet Backdrop: 1000
  * - BottomSheet Container: 1001
- *
- * Usage:
- * <BottomSheet
- *   open={isOpen}
- *   onClose={() => setIsOpen(false)}
- *   title="💬 댓글"
- *   maxHeight="75vh"
- * >
- *   {children}
- * </BottomSheet>
  */
 
-// Styled backdrop - purple tint overlay
+// Arcade backdrop - deep black overlay
 const StyledBackdrop = styled('div')({
   position: 'fixed',
   inset: 0,
-  backgroundColor: 'rgba(89, 75, 115, 0.4)', // tokens.colors.primary with opacity
+  backgroundColor: 'rgba(10, 10, 15, 0.85)', // Deep black with high opacity
+  backdropFilter: 'blur(4px)',
   zIndex: 1000,
   WebkitTapHighlightColor: 'transparent',
 });
 
-// Styled container - white rounded sheet
+// Arcade container - midnight blue with neon border
 const StyledContainer = styled('div')(({ maxHeight }) => ({
   position: 'fixed',
   bottom: 0,
   left: '50%',
   transform: 'translateX(-50%)',
-  width: 'min(500px, 100vw)', // Match .Main container
+  width: 'min(500px, 100vw)',
   maxHeight: maxHeight || '70vh',
-  backgroundColor: tokens.colors.white,
-  borderTopLeftRadius: '24px',
-  borderTopRightRadius: '24px',
-  boxShadow: tokens.shadows.strong,
+  backgroundColor: tokensArcade.colors.midnightBlue,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonPink,
+  borderBottom: 'none',
+  borderTopLeftRadius: tokensArcade.borderRadius.lg,
+  borderTopRightRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.mega,
   zIndex: 1001,
   display: 'flex',
   flexDirection: 'column',
   overflow: 'hidden',
 
   // Slide-up animation
-  animation: 'slideUp 0.3s ease-out',
+  animation: 'slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
   '@keyframes slideUp': {
     from: {
       transform: 'translateX(-50%) translateY(100%)',
@@ -71,47 +65,89 @@ const StyledContainer = styled('div')(({ maxHeight }) => ({
   },
 }));
 
-// Header with title and close button
+// Arcade header with neon title and close button
 const Header = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  padding: '16px 20px',
-  borderBottom: `1px solid ${tokens.colors.border}`,
+  padding: `${tokensArcade.spacing.base} ${tokensArcade.spacing.lg}`,
+  borderBottom: `${tokensArcade.borders.base} ${tokensArcade.colors.neonPink}`,
   flexShrink: 0,
+  backgroundColor: tokensArcade.colors.deepBlack,
 });
 
 const Title = styled('h2')({
   margin: 0,
-  fontSize: '1.1rem',
-  fontWeight: 600,
-  color: tokens.colors.text,
-  fontFamily: tokens.fonts.korean,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.neonPink,
+  textShadow: tokensArcade.shadows.neonPink,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
 });
 
-// Scrollable content area
+// Arcade close button - red circle with X
+const CloseButton = styled('div')({
+  width: '32px',
+  height: '32px',
+  backgroundColor: tokensArcade.colors.hotOrange,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '1.1rem',
+    color: tokensArcade.colors.pureWhite,
+  },
+
+  '&:hover': {
+    transform: 'scale(1.2) rotate(90deg)',
+    backgroundColor: '#FF8456',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+
+  '&:active': {
+    transform: 'scale(0.9)',
+  },
+});
+
+// Scrollable content area with arcade background
 const Content = styled('div')({
   flex: 1,
   overflowY: 'auto',
   overflowX: 'hidden',
-  WebkitOverflowScrolling: 'touch', // Smooth scroll on iOS
-  padding: '16px 20px',
+  WebkitOverflowScrolling: 'touch',
+  padding: `${tokensArcade.spacing.lg} ${tokensArcade.spacing.lg}`,
+  backgroundColor: tokensArcade.colors.midnightBlue,
+
+  // Hide scrollbar but keep functionality
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
 });
 
-const BottomSheet = ({ open, onClose, title, children, maxHeight }) => {
+const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
+  // Backward compatibility: accept both 'open' and 'isOpen' props
+  const open = isOpen;
+
   // Lock body scroll when modal is open
   useEffect(() => {
     if (open) {
-      // Save original body style
       const originalOverflow = document.body.style.overflow;
       const originalPosition = document.body.style.position;
 
-      // Lock scroll
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'relative';
 
       return () => {
-        // Restore original styles
         document.body.style.overflow = originalOverflow;
         document.body.style.position = originalPosition;
       };
@@ -127,16 +163,13 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight }) => {
     const handleResize = () => {
       const currentHeight = window.innerHeight;
 
-      // Keyboard opened (height decreased)
       if (currentHeight < prevHeight) {
-        // Reduce max height to prevent content being hidden
         const keyboardHeight = prevHeight - currentHeight;
         document.documentElement.style.setProperty(
           '--bottom-sheet-keyboard-offset',
           `${keyboardHeight}px`
         );
       } else {
-        // Keyboard closed
         document.documentElement.style.setProperty(
           '--bottom-sheet-keyboard-offset',
           '0px'
@@ -146,9 +179,7 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight }) => {
       prevHeight = currentHeight;
     };
 
-    // Listen for viewport height changes (keyboard open/close)
     window.addEventListener('resize', handleResize);
-    // Also listen for visual viewport (iOS Safari)
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
     }
@@ -171,7 +202,7 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight }) => {
       onClose={onClose}
       closeAfterTransition
       disableAutoFocus
-      keepMounted={false} // Unmount when closed for performance
+      keepMounted={false}
       aria-labelledby="bottom-sheet-title"
       aria-describedby="bottom-sheet-content"
       BackdropComponent={StyledBackdrop}
@@ -180,19 +211,9 @@ const BottomSheet = ({ open, onClose, title, children, maxHeight }) => {
       <StyledContainer maxHeight={maxHeight}>
         <Header>
           <Title id="bottom-sheet-title">{title}</Title>
-          <IconButton
-            onClick={onClose}
-            size="small"
-            aria-label="닫기"
-            sx={{
-              color: tokens.colors.textSecondary,
-              '&:hover': {
-                backgroundColor: 'rgba(89, 75, 115, 0.08)',
-              },
-            }}
-          >
+          <CloseButton onClick={onClose} aria-label="닫기">
             <CloseIcon />
-          </IconButton>
+          </CloseButton>
         </Header>
         <Content id="bottom-sheet-content">
           {children}

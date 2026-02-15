@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, CircularProgress } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
+import { Box } from '@mui/material';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import AuthContext from '../AuthContext';
 import { toggleBookmark, checkIfBookmarked } from '../utils/bookmarkUtils';
-import tokens from '../tokens';
+import tokensArcade from '../tokens-arcade';
 
 /**
  * BookmarkButton Component
@@ -25,47 +26,58 @@ import tokens from '../tokens';
  * <BookmarkButton quizIndex={quiz.index} />
  */
 
-const StyledBookmarkButton = styled(Button)(({ isBookmarked }) => ({
-  background: isBookmarked
-    ? `linear-gradient(135deg, #FFB800 0%, #FFA000 100%)` // Gold gradient when bookmarked
-    : `linear-gradient(135deg, #B8B8D8 0%, #D8D8E8 100%)`, // Purple-tinted gray when not bookmarked
-  borderRadius: '24px',
-  padding: '14px 28px',
-  border: 'none',
-  fontSize: '1rem',
-  fontWeight: 600,
-  color: tokens.colors.white,
-  fontFamily: tokens.fonts.korean,
-  boxShadow: isBookmarked
-    ? '0 4px 12px rgba(255, 184, 0, 0.3)'
-    : '0 4px 12px rgba(184, 184, 216, 0.25)',
-  transition: 'all 0.3s ease',
+const StyledBookmarkButton = styled(Box)(({ isBookmarked }) => ({
+  // Match ArcadeButton small size exactly
+  height: '36px',
+  padding: `${tokensArcade.spacing.sm} ${tokensArcade.spacing.base}`,
+  boxSizing: 'border-box',
+
+  // Arcade styling
+  fontFamily: tokensArcade.fonts.display,
+  fontWeight: tokensArcade.fonts.weights.bold,
+  fontSize: tokensArcade.fonts.xs,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  border: tokensArcade.borders.base,
+  borderRadius: tokensArcade.borderRadius.md,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '8px',
-  textTransform: 'none',
-  width: '100%',
-  height: '48px',
+  gap: tokensArcade.spacing.xs,
+
+  // Color variants
+  backgroundColor: isBookmarked ? tokensArcade.colors.arcadeYellow : tokensArcade.colors.pixelGray,
+  borderColor: tokensArcade.colors.shadowPurple,
+  color: tokensArcade.colors.deepBlack,
+  boxShadow: isBookmarked ? tokensArcade.shadows.arcade : tokensArcade.shadows.pixel,
+
   '&:hover': {
-    background: isBookmarked
-      ? `linear-gradient(135deg, #FFA000 0%, #FFB800 100%)`
-      : `linear-gradient(135deg, #A8A8C8 0%, #C8C8D8 100%)`,
-    boxShadow: isBookmarked
-      ? '0 6px 16px rgba(255, 184, 0, 0.4)'
-      : '0 6px 16px rgba(184, 184, 216, 0.35)',
+    backgroundColor: isBookmarked ? '#FFDE33' : '#D0D0D0',
+    boxShadow: tokensArcade.shadows.deep,
     transform: 'translateY(-2px)',
   },
+
   '&:active': {
-    transform: 'translateY(0)',
-    boxShadow: isBookmarked
-      ? '0 2px 8px rgba(255, 184, 0, 0.3)'
-      : '0 2px 8px rgba(184, 184, 216, 0.25)',
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
-  '&:disabled': {
-    background: '#E8E8E8',
-    color: '#A0A0A0',
-    boxShadow: 'none',
+
+  '&.disabled': {
+    backgroundColor: tokensArcade.colors.pixelGray,
+    color: tokensArcade.colors.shadowPurple,
+    borderColor: tokensArcade.colors.pixelGray,
+    cursor: 'not-allowed',
+    opacity: 0.6,
+    transform: 'none',
+  },
+
+  // Focus state (accessibility)
+  '&:focus-visible': {
+    outline: `3px solid ${tokensArcade.colors.neonCyan}`,
+    outlineOffset: '3px',
   },
 }));
 
@@ -118,12 +130,14 @@ const BookmarkButton = ({ quizIndex }) => {
   return (
     <StyledBookmarkButton
       onClick={handleToggle}
-      disabled={loading}
+      className={loading ? 'disabled' : ''}
       isBookmarked={isBookmarked}
       aria-label={isBookmarked ? '북마크 해제' : '북마크 추가'}
+      role="button"
+      tabIndex={0}
     >
       {loading ? (
-        <CircularProgress size={14} color="inherit" />
+        <CircularProgress size={14} sx={{ color: tokensArcade.colors.deepBlack }} />
       ) : isBookmarked ? (
         <>
           <StarIcon sx={{ fontSize: '0.9rem' }} />

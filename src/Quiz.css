@@ -1,6 +1,7 @@
 .QAcardSet {
   margin: auto;
   width: 90%;
+  padding-bottom: 100px; /* Space for TabBar (80px) + extra margin */
 }
 
 .Card_Front_Que {

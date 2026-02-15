@@ -1,109 +1,284 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
-import "./SharedQuiz.css";
-import Button from "@mui/joy/Button";
-import ReactCardFlip from "react-card-flip";
-import { Card } from "@mui/joy";
 import { styled } from "@mui/system";
+import { Box, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import Skeleton from "@mui/material/Skeleton";
 import ShareIcon from "@mui/icons-material/Share";
 import QuizIcon from "@mui/icons-material/Quiz";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
+import ConfettiExplosion from "react-confetti-explosion";
 import { supabase } from './supabaseConfig';
 import DOMPurify from "dompurify";
-import tokens from "./tokens";
+import tokensArcade from "./tokens-arcade";
+import ArcadeButton from "./components/ArcadeButton";
+import NeonBadge from "./components/NeonBadge";
 import { handleShare } from "./shareUtils";
 import { trackFlip } from "./utils/bookmarkUtils";
 import AuthContext from "./AuthContext";
 import BottomSheet from "./components/BottomSheet";
 import CommentSection from "./components/CommentSection";
 import BookmarkButton from "./components/BookmarkButton";
+import "./SharedQuiz.css";
 
-const ShareButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.accent} 0%, #FFB6C1 100%)`,
-  borderRadius: "24px",
-  padding: "14px 28px",
-  border: "none",
-  fontSize: "1rem",
-  fontWeight: 600,
-  color: tokens.colors.white,
-  boxShadow: "0 4px 12px rgba(255, 153, 153, 0.3)",
-  transition: "all 0.3s ease",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  textTransform: "none",
-  width: "100%",
-  height: "48px",
-  "&:hover": {
-    background: `linear-gradient(135deg, #FF7A7A 0%, ${tokens.colors.accent} 100%)`,
-    boxShadow: "0 6px 16px rgba(255, 153, 153, 0.4)",
-    transform: "translateY(-2px)",
-  },
-  "&:active": {
-    transform: "translateY(0)",
-    boxShadow: "0 2px 8px rgba(255, 153, 153, 0.3)",
+// ============================================
+// BOSS BATTLE SCREEN LAYOUT
+// ============================================
+
+const BattleArena = styled(Box)({
+  padding: `${tokensArcade.spacing.xl} ${tokensArcade.spacing.base}`,
+  minHeight: 'calc(100vh - 70px - 80px)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: tokensArcade.spacing.lg,
+  paddingBottom: '100px', // Space for TabBar
+  boxSizing: 'border-box',
+  maxWidth: '500px',
+  margin: '0 auto',
+  width: '100%',
+});
+
+// Challenge banner
+const ChallengeBanner = styled(Box)({
+  background: tokensArcade.colors.arcadeYellow,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.lg}`,
+  boxShadow: tokensArcade.shadows.arcade,
+  position: 'relative',
+  textAlign: 'center',
+  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
+
+  // Speech bubble arrow
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    bottom: '-12px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: 0,
+    height: 0,
+    borderLeft: '12px solid transparent',
+    borderRight: '12px solid transparent',
+    borderTop: `12px solid ${tokensArcade.colors.arcadeYellow}`,
   },
 });
 
-const CommentButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  borderRadius: "24px",
-  padding: "14px 28px",
-  border: "none",
-  fontSize: "1rem",
-  fontWeight: 600,
-  color: tokens.colors.white,
-  boxShadow: "0 4px 12px rgba(89, 75, 115, 0.25)",
-  transition: "all 0.3s ease",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  textTransform: "none",
-  width: "100%",
-  height: "48px",
-  "&:hover": {
-    background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
-    boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
-    transform: "translateY(-2px)",
+const ChallengeText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.deepBlack,
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
+  textShadow: `2px 2px 0 ${tokensArcade.colors.pixelGray}`,
+});
+
+// Boss Battle Card - FRONT
+const BossCardFront = styled(Box)({
+  position: 'relative',
+  width: '100%',
+  minHeight: '280px',
+  height: 'auto',
+  maxHeight: '360px',
+  backgroundColor: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.deep,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  padding: tokensArcade.spacing.xxl,
+  overflow: 'hidden',
+  boxSizing: 'border-box',
+
+  // Animated sparkle background
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: `
+      radial-gradient(circle at 20% 30%, rgba(255, 46, 151, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(0, 240, 255, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 50% 50%, rgba(255, 214, 0, 0.1) 0%, transparent 50%)
+    `,
+    animation: 'sparkle 4s ease-in-out infinite',
+    pointerEvents: 'none',
   },
-  "&:active": {
-    transform: "translateY(0)",
-    boxShadow: "0 2px 8px rgba(89, 75, 115, 0.25)",
+
+  '@keyframes sparkle': {
+    '0%, 100%': {
+      opacity: 0.3,
+    },
+    '50%': {
+      opacity: 0.8,
+    },
+  },
+
+  '&:hover': {
+    transform: 'translateY(-4px) scale(1.02)',
+    boxShadow: tokensArcade.shadows.mega,
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.arcade,
+  },
+
+  '@media (max-width: 400px)': {
+    minHeight: '240px',
+    maxHeight: '320px',
+    padding: tokensArcade.spacing.lg,
   },
 });
 
-const SecondaryButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
-  borderRadius: "24px",
-  padding: "14px 28px",
-  border: "none",
-  fontSize: "1rem",
-  fontWeight: 600,
-  color: tokens.colors.white,
-  boxShadow: "0 4px 12px rgba(89, 75, 115, 0.25)",
-  transition: "all 0.3s ease",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "8px",
-  textTransform: "none",
-  width: "100%",
-  height: "48px",
-  "&:hover": {
-    background: `linear-gradient(135deg, ${tokens.colors.primaryLight} 0%, #7d6ea0 100%)`,
-    boxShadow: "0 6px 16px rgba(89, 75, 115, 0.35)",
-    transform: "translateY(-2px)",
+// Boss Battle Card - BACK
+const BossCardBack = styled(Box)({
+  position: 'relative',
+  width: '100%',
+  minHeight: '280px',
+  height: 'auto',
+  maxHeight: '360px',
+  backgroundColor: tokensArcade.colors.midnightBlue,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.neonPink,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.mega,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  padding: tokensArcade.spacing.xxl,
+  overflow: 'visible',
+  boxSizing: 'border-box',
+
+  '&:hover': {
+    transform: 'translateY(-4px) scale(1.02)',
   },
-  "&:active": {
-    transform: "translateY(0)",
-    boxShadow: "0 2px 8px rgba(89, 75, 115, 0.25)",
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.deep,
+  },
+
+  '@media (max-width: 400px)': {
+    minHeight: '240px',
+    maxHeight: '320px',
+    padding: tokensArcade.spacing.lg,
   },
 });
+
+const QuestionText = styled(Box)({
+  fontFamily: 'Maplestory_Light, sans-serif',
+  fontSize: 'clamp(1.2rem, 4vw, 1.6rem)',
+  lineHeight: 1.5,
+  color: tokensArcade.colors.deepBlack,
+  textAlign: 'center',
+  maxWidth: '100%',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  position: 'relative',
+  zIndex: 1,
+
+  '& p': {
+    margin: 0,
+    padding: 0,
+    display: '-webkit-box',
+    WebkitLineClamp: 5,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  },
+});
+
+const AnswerText = styled(Box)({
+  fontFamily: 'Maplestory_Light, sans-serif',
+  fontWeight: 700,
+  fontSize: 'clamp(1.3rem, 4.5vw, 1.9rem)',
+  lineHeight: 1.45,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: tokensArcade.shadows.neonCyan,
+  textAlign: 'center',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  position: 'relative',
+  zIndex: 1,
+
+  '& p': {
+    margin: 0,
+    padding: 0,
+    maxWidth: '100%',
+    display: '-webkit-box',
+    WebkitLineClamp: 4,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  },
+});
+
+const TapHint = styled('span')({
+  position: 'absolute',
+  bottom: tokensArcade.spacing.base,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.electricPurple,
+  textTransform: 'uppercase',
+  animation: 'pulse 2s ease-in-out infinite',
+
+  '@keyframes pulse': {
+    '0%, 100%': {
+      opacity: 0.6,
+      transform: 'translateX(-50%) scale(1)',
+    },
+    '50%': {
+      opacity: 1,
+      transform: 'translateX(-50%) scale(1.05)',
+    },
+  },
+});
+
+const ConfettiContainer = styled(Box)({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  pointerEvents: 'none',
+  zIndex: 100,
+});
+
+const BookmarkFloating = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.base,
+  right: tokensArcade.spacing.base,
+  zIndex: 10,
+});
+
+// Action buttons container
+const ActionsStack = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: tokensArcade.spacing.md,
+  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
+});
+
+// ============================================
+// SHARED QUIZ COMPONENT
+// ============================================
 
 function SharedQuiz() {
   const { user } = useContext(AuthContext);
@@ -116,6 +291,7 @@ function SharedQuiz() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const onShare = () => {
     handleShare(window.location.href);
@@ -125,9 +301,15 @@ function SharedQuiz() {
     const wasFlipped = isFlipped;
     setIsFlipped(!isFlipped);
 
-    // Track flip when user flips to see answer (not when flipping back)
-    if (!wasFlipped && num && user?.id) {
-      trackFlip(parseInt(num), user.id);
+    // Show confetti when flipping to answer
+    if (!wasFlipped) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 1000);
+
+      // Track flip when user flips to see answer
+      if (num && user?.id) {
+        trackFlip(parseInt(num), user.id);
+      }
     }
   };
 
@@ -143,14 +325,13 @@ function SharedQuiz() {
         .from('quizzes')
         .select('question, answer, index')
         .eq('index', parseInt(num))
-        .single();  // Returns single object instead of array
+        .single();
 
       if (error) {
         console.error('Error fetching data:', error);
         setError('퀴즈를 찾을 수 없습니다.');
         setLoading(false);
       } else if (quiz) {
-        // Map to existing format
         setQuestion({ que: quiz.question, ans: quiz.answer });
         setLoading(false);
       } else {
@@ -160,20 +341,38 @@ function SharedQuiz() {
     };
 
     fetchQuestionAndAnswer();
-  }, [num]);
+  }, [num, user]);
 
   if (loading) {
     return (
-      <div className="SharedQuiz_Frame" style={{ alignItems: "center" }}>
-        <CircularProgress sx={{ color: tokens.colors.primary, marginBottom: "16px" }} />
-        <Skeleton variant="rounded" width="100%" height={180} sx={{ borderRadius: tokens.borderRadius.card, marginBottom: "16px" }} />
-        <Skeleton variant="rounded" width="100%" height={40} sx={{ borderRadius: "8px" }} />
-      </div>
+      <BattleArena style={{ justifyContent: 'center' }}>
+        <CircularProgress sx={{ color: tokensArcade.colors.neonPink, marginBottom: "16px" }} />
+        <Skeleton
+          variant="rounded"
+          width="100%"
+          height={280}
+          sx={{
+            borderRadius: tokensArcade.borderRadius.lg,
+            backgroundColor: tokensArcade.colors.pixelGray,
+          }}
+        />
+      </BattleArena>
     );
   }
 
   if (error) {
-    return <div>{error}</div>;
+    return (
+      <BattleArena>
+        <NeonBadge color="orange" size="lg">ERROR!</NeonBadge>
+        <Typography sx={{
+          fontFamily: tokensArcade.fonts.pixel,
+          fontSize: tokensArcade.fonts.sm,
+          color: tokensArcade.colors.deepBlack,
+        }}>
+          {error}
+        </Typography>
+      </BattleArena>
+    );
   }
 
   // Strip HTML tags for OG description
@@ -188,108 +387,111 @@ function SharedQuiz() {
     : "친구가 보낸 퀴즈가 도착했어요! 한 번 맞춰볼까요?";
 
   return (
-    <div className="SharedQuiz_Frame">
+    <BattleArena>
       <Helmet>
-        <title>친구가 보낸 퀴즈 | 하이유모어</title>
+        <title>FRIEND CHALLENGE | 하이유모어</title>
         <meta name="description" content={ogDescription} />
         <meta property="og:title" content="친구가 보낸 퀴즈 | 하이유모어" />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="https://hiyoumore.vercel.app/meta_img.png" />
       </Helmet>
-      <p className="text">
-        ☺️친구에게 받은 퀴즈예요☺️
-        <br />한 번 맞춰볼까요?
-      </p>
 
-      <ReactCardFlip isFlipped={isFlipped} flipDirection="vertical">
-        <Card
-          sx={{
-            minHeight: "200px",
-            height: "auto",
-            maxHeight: "280px",
-            backgroundColor: tokens.colors.background,
-            borderRadius: tokens.borderRadius.card,
-            marginBottom: tokens.spacing.cardMarginBottom,
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: tokens.shadows.cardFront,
-            transform: "perspective(600px) rotateY(0)",
-            transition: "0.6s",
-            backfaceVisibility: "hidden",
-            position: "relative",
-            border: "2px solid rgba(89, 75, 115, 0.08)",
-            overflow: "hidden",
-            "@media (max-width: 400px)": {
-              minHeight: "180px",
-              maxHeight: "260px",
-            },
-          }}
-          className="Card_Front"
-          onClick={handleFlipCard}
+      {/* Challenge Banner */}
+      <ChallengeBanner>
+        <ChallengeText>⚔️ FRIEND CHALLENGE! ⚔️</ChallengeText>
+      </ChallengeBanner>
+
+      {/* Boss Battle Card */}
+      <Box sx={{ position: 'relative', width: '100%' }}>
+        {/* Floating Bookmark */}
+        {num && !isFlipped && (
+          <BookmarkFloating>
+            <BookmarkButton quizIndex={parseInt(num)} />
+          </BookmarkFloating>
+        )}
+
+        {!isFlipped ? (
+          /* FRONT - Question */
+          <BossCardFront onClick={handleFlipCard}>
+            <QuestionText>
+              <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.que) }} />
+            </QuestionText>
+            <TapHint>TAP!</TapHint>
+          </BossCardFront>
+        ) : (
+          /* BACK - Answer with Confetti */
+          <BossCardBack onClick={handleFlipCard}>
+            {showConfetti && (
+              <ConfettiContainer>
+                <ConfettiExplosion
+                  force={0.8}
+                  duration={2500}
+                  particleCount={60}
+                  width={1000}
+                  colors={[
+                    tokensArcade.colors.neonPink,
+                    tokensArcade.colors.neonCyan,
+                    tokensArcade.colors.arcadeYellow,
+                    tokensArcade.colors.electricPurple,
+                    tokensArcade.colors.mintGreen,
+                  ]}
+                />
+              </ConfettiContainer>
+            )}
+            <AnswerText>
+              <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.ans) }} />
+            </AnswerText>
+          </BossCardBack>
+        )}
+      </Box>
+
+      {/* Action Buttons */}
+      <ActionsStack>
+        {/* Share Button */}
+        <ArcadeButton
+          variant="primary"
+          size="mega"
+          fullWidth
+          icon={<ShareIcon sx={{ fontSize: "1.2rem" }} />}
+          onClick={onShare}
         >
-          <div className="Card_Front_Que">
-            <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.que) }} />
-          </div>
-          <span className="tap-hint">탭하여 정답 보기</span>
-        </Card>
-        <Card
-          sx={{
-            minHeight: "200px",
-            height: "auto",
-            maxHeight: "280px",
-            backgroundColor: tokens.colors.cardBack,
-            borderRadius: tokens.borderRadius.card,
-            marginBottom: tokens.spacing.cardMarginBottom,
-            justifyContent: "center",
-            alignItems: "center",
-            boxShadow: tokens.shadows.cardBack,
-            transform: "perspective(600px) rotateY(0)",
-            transition: "0.6s",
-            backfaceVisibility: "hidden",
-            border: "2px solid rgba(89, 75, 115, 0.15)",
-            overflow: "hidden",
-            "@media (max-width: 400px)": {
-              minHeight: "180px",
-              maxHeight: "260px",
-            },
-          }}
-          className="Card_Back"
-          onClick={handleFlipCard}
+          SHARE
+        </ArcadeButton>
+
+        {/* Comments Button */}
+        <ArcadeButton
+          variant="secondary"
+          size="large"
+          fullWidth
+          icon={<ChatBubbleOutlineIcon sx={{ fontSize: "1.1rem" }} />}
+          onClick={() => setIsCommentsOpen(true)}
         >
-          <div className="Card_Back_Ans">
-            <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(question.ans) }} />
-          </div>
-        </Card>
-      </ReactCardFlip>
-      <ShareButton onClick={onShare}>
-        <ShareIcon sx={{ fontSize: "1.2rem" }} />
-        친구에게 공유하기
-      </ShareButton>
-      <CommentButton onClick={() => setIsCommentsOpen(true)}>
-        <ChatBubbleOutlineIcon sx={{ fontSize: "1.1rem" }} />
-        댓글 보기
-      </CommentButton>
-      {num && <BookmarkButton quizIndex={parseInt(num)} />}
-      <a href="/" style={{ textDecoration: "none", width: "100%" }}>
-        <SecondaryButton>
-          <QuizIcon sx={{ fontSize: "1.2rem" }} />
-          다른 퀴즈 풀어보기
-        </SecondaryButton>
-      </a>
+          COMMENTS
+        </ArcadeButton>
+
+        {/* More Quizzes Button */}
+        <a href="/" style={{ textDecoration: "none", width: "100%" }}>
+          <ArcadeButton
+            variant="yellow"
+            size="large"
+            fullWidth
+            icon={<QuizIcon sx={{ fontSize: "1.2rem" }} />}
+          >
+            INSERT COIN
+          </ArcadeButton>
+        </a>
+      </ActionsStack>
 
       {/* Comments Bottom Sheet */}
       <BottomSheet
-        open={isCommentsOpen}
+        isOpen={isCommentsOpen}
         onClose={() => setIsCommentsOpen(false)}
         title="💬 댓글"
-        maxHeight="75vh"
       >
-        {num && (
-          <CommentSection quizIndex={parseInt(num)} />
-        )}
+        {num && <CommentSection quizIndex={parseInt(num)} />}
       </BottomSheet>
-    </div>
+    </BattleArena>
   );
 }
 

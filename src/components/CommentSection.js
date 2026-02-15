@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, CircularProgress, Avatar, IconButton, TextField } from '@mui/material';
+import { CircularProgress, Avatar } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import DeleteIcon from '@mui/icons-material/Delete';
+import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
@@ -10,142 +10,225 @@ import { supabase } from '../supabaseConfig';
 import AuthContext from '../AuthContext';
 import { showToast, showErrorToast } from '../toastUtils';
 import { deleteComment } from '../utils/commentUtils';
-import tokens from '../tokens';
+import tokensArcade from '../tokens-arcade';
 
 /**
- * CommentSection Component
+ * CommentSection Component - Arcade Edition
  *
- * Displays comments for a specific quiz with pagination and likes.
- *
- * Features:
- * - Fetch comments from Supabase (comments_with_profiles view)
- * - Pagination (10 comments per page)
- * - Like/unlike with optimistic UI
- * - Login prompt for anonymous users
- * - Real-time character count (500 max)
- *
- * Props:
- * - quizIndex: INTEGER (matches quizzes.index, NOT quizzes.id!)
- *
- * Usage:
- * <CommentSection quizIndex={quiz.index} />
+ * Displays comments with retro arcade styling.
+ * Features pixel shadow bubbles, neon borders, and arcade buttons.
  */
 
 const COMMENTS_PER_PAGE = 10;
 
-// Styled Components
+// Container
 const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: tokensArcade.spacing.base,
   minHeight: '200px',
 });
 
+// Comment Input - Arcade Style
 const CommentInputContainer = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  gap: '8px',
-  paddingBottom: '16px',
-  borderBottom: `1px solid ${tokens.colors.border}`,
+  gap: tokensArcade.spacing.sm,
+  paddingBottom: tokensArcade.spacing.base,
+  borderBottom: `${tokensArcade.borders.base} ${tokensArcade.colors.neonPink}`,
+});
+
+const ArcadeTextArea = styled('textarea')({
+  width: '100%',
+  minHeight: '80px',
+  padding: tokensArcade.spacing.md,
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.pureWhite,
+  backgroundColor: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.md,
+  boxShadow: tokensArcade.shadows.pixel,
+  resize: 'vertical',
+  outline: 'none',
+  lineHeight: 1.5,
+  boxSizing: 'border-box',
+
+  '&::placeholder': {
+    color: tokensArcade.colors.pixelGray,
+  },
+
+  '&:focus': {
+    borderColor: tokensArcade.colors.neonPink,
+    boxShadow: tokensArcade.shadows.arcade,
+  },
+
+  // Hide scrollbar but keep functionality
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
 });
 
 const CharCount = styled('div')(({ isOverLimit }) => ({
-  fontSize: '0.75rem',
-  color: isOverLimit ? '#d32f2f' : tokens.colors.textSecondary,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: isOverLimit ? tokensArcade.colors.hotOrange : tokensArcade.colors.pixelGray,
   textAlign: 'right',
-  marginTop: '-4px',
+  marginTop: `-${tokensArcade.spacing.xs}`,
 }));
 
-const SubmitButton = styled(Button)({
+const SubmitButton = styled('div')(({ disabled }) => ({
   alignSelf: 'flex-end',
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
-  borderRadius: '20px',
-  padding: '8px 24px',
-  fontSize: '0.9rem',
-  fontWeight: 600,
-  minHeight: '40px',
-  boxShadow: '0 2px 8px rgba(89, 75, 115, 0.2)',
-  '&:hover': {
-    background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
-    boxShadow: '0 4px 12px rgba(89, 75, 115, 0.3)',
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
+  backgroundColor: disabled ? tokensArcade.colors.pixelGray : tokensArcade.colors.neonPink,
+  color: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: disabled ? tokensArcade.shadows.pixel : tokensArcade.shadows.arcade,
+  cursor: disabled ? 'not-allowed' : 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  minHeight: '36px',
+  opacity: disabled ? 0.6 : 1,
+
+  '&:hover': disabled ? {} : {
+    transform: 'translateY(-2px)',
+    boxShadow: tokensArcade.shadows.deep,
   },
-  '&:disabled': {
-    background: '#ddd',
-    color: '#999',
+
+  '&:active': disabled ? {} : {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
-});
+}));
 
 const LoginPrompt = styled('div')({
   textAlign: 'center',
-  padding: '24px 16px',
-  backgroundColor: '#f5f3f8',
-  borderRadius: tokens.borderRadius.medium,
-  marginBottom: '16px',
+  padding: tokensArcade.spacing.xl,
+  backgroundColor: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.neonCyan,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  marginBottom: tokensArcade.spacing.base,
 });
 
 const LoginPromptText = styled('p')({
-  margin: '0 0 12px 0',
-  color: tokens.colors.textSecondary,
-  fontSize: '0.9rem',
+  margin: `0 0 ${tokensArcade.spacing.md} 0`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: tokensArcade.shadows.neonCyan,
+  letterSpacing: '0.5px',
 });
 
-const LoginButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
-  borderRadius: '20px',
-  padding: '10px 24px',
-  fontSize: '0.9rem',
-  fontWeight: 600,
+const LoginButton = styled('div')({
+  display: 'inline-block',
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
+  backgroundColor: tokensArcade.colors.arcadeYellow,
+  color: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.bounce}`,
+  fontFamily: tokensArcade.fonts.display,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.bold,
+
   '&:hover': {
-    background: `linear-gradient(135deg, #6b5c8a 0%, ${tokens.colors.primary} 100%)`,
+    transform: 'translateY(-4px) scale(1.02)',
+    boxShadow: tokensArcade.shadows.mega,
+    backgroundColor: '#FFDE33',
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.arcade,
   },
 });
 
+// Comment List
 const CommentList = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: tokensArcade.spacing.base,
 });
 
+// Arcade Comment Bubble
 const CommentItem = styled('div')({
   display: 'flex',
-  gap: '12px',
-  padding: '12px 0',
-  borderBottom: `1px solid ${tokens.colors.border}`,
-  '&:last-child': {
-    borderBottom: 'none',
+  gap: tokensArcade.spacing.md,
+  padding: tokensArcade.spacing.base,
+  backgroundColor: tokensArcade.colors.deepBlack,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.md,
+  boxShadow: tokensArcade.shadows.pixel,
+  position: 'relative',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+
+  '&:hover': {
+    borderColor: tokensArcade.colors.neonPink,
+    boxShadow: tokensArcade.shadows.arcade,
   },
+});
+
+const AvatarFrame = styled('div')({
+  width: '36px',
+  height: '36px',
+  flexShrink: 0,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.neonCyan,
+  borderRadius: tokensArcade.borderRadius.sm,
+  overflow: 'hidden',
+  boxShadow: tokensArcade.shadows.pixel,
 });
 
 const CommentContent = styled('div')({
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
-  gap: '4px',
+  gap: tokensArcade.spacing.xs,
+  minWidth: 0,
 });
 
 const CommentHeader = styled('div')({
   display: 'flex',
   alignItems: 'center',
-  gap: '8px',
+  gap: tokensArcade.spacing.sm,
 });
 
 const Nickname = styled('span')({
-  fontWeight: 600,
-  fontSize: '0.9rem',
-  color: tokens.colors.text,
+  fontFamily: tokensArcade.fonts.display,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.bold,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: tokensArcade.shadows.neonCyan,
 });
 
 const Timestamp = styled('span')({
-  fontSize: '0.75rem',
-  color: tokens.colors.textSecondary,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: '0.6rem',
+  color: tokensArcade.colors.pixelGray,
 });
 
 const CommentText = styled('p')({
   margin: 0,
-  fontSize: '0.95rem',
-  color: tokens.colors.text,
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.pureWhite,
   lineHeight: 1.5,
   whiteSpace: 'pre-wrap',
   wordBreak: 'break-word',
@@ -154,54 +237,111 @@ const CommentText = styled('p')({
 const CommentActions = styled('div')({
   display: 'flex',
   alignItems: 'center',
+  gap: tokensArcade.spacing.sm,
+  marginTop: tokensArcade.spacing.xs,
+});
+
+const LikeButton = styled('div')(({ isLiked }) => ({
+  display: 'flex',
+  alignItems: 'center',
   gap: '4px',
-  marginTop: '4px',
-});
+  padding: `4px ${tokensArcade.spacing.sm}`,
+  backgroundColor: isLiked ? 'rgba(255, 46, 151, 0.2)' : 'transparent',
+  border: tokensArcade.borders.base,
+  borderColor: isLiked ? tokensArcade.colors.neonPink : tokensArcade.colors.pixelGray,
+  borderRadius: tokensArcade.borderRadius.pill,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
 
-const LikeButton = styled(IconButton)({
-  padding: '4px',
   '&:hover': {
-    backgroundColor: 'rgba(255, 153, 153, 0.1)',
+    transform: 'scale(1.1)',
+    borderColor: tokensArcade.colors.neonPink,
   },
-});
 
-const LikeCount = styled('span')(({ isLiked }) => ({
-  fontSize: '0.85rem',
-  color: isLiked ? '#FF9999' : tokens.colors.textSecondary,
-  fontWeight: isLiked ? 600 : 400,
+  '&:active': {
+    transform: 'scale(0.95)',
+  },
 }));
 
-const DeleteButton = styled(IconButton)({
-  padding: '4px',
+const LikeCount = styled('span')(({ isLiked }) => ({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: '0.6rem',
+  color: isLiked ? tokensArcade.colors.neonPink : tokensArcade.colors.pixelGray,
+  fontWeight: tokensArcade.fonts.weights.bold,
+}));
+
+const DeleteButton = styled('div')({
+  width: '24px',
+  height: '24px',
+  backgroundColor: tokensArcade.colors.hotOrange,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
   marginLeft: 'auto',
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '0.9rem',
+    color: tokensArcade.colors.pureWhite,
+  },
+
   '&:hover': {
-    backgroundColor: 'rgba(211, 47, 47, 0.1)',
-    color: '#d32f2f',
+    transform: 'scale(1.2) rotate(90deg)',
+    backgroundColor: '#FF8456',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+
+  '&:active': {
+    transform: 'scale(0.9)',
   },
 });
 
-const LoadMoreButton = styled(Button)({
+const LoadMoreButton = styled('div')({
   alignSelf: 'center',
-  color: tokens.colors.primary,
-  borderRadius: '20px',
-  padding: '8px 20px',
-  fontSize: '0.85rem',
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
+  backgroundColor: tokensArcade.colors.electricPurple,
+  color: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+  marginTop: tokensArcade.spacing.base,
+
   '&:hover': {
-    backgroundColor: 'rgba(89, 75, 115, 0.08)',
+    transform: 'translateY(-4px)',
+    boxShadow: tokensArcade.shadows.deep,
+  },
+
+  '&:active': {
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
 const EmptyState = styled('div')({
   textAlign: 'center',
-  padding: '40px 20px',
-  color: tokens.colors.textSecondary,
-  fontSize: '0.95rem',
+  padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.pixelGray,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
 });
 
 const LoadingContainer = styled('div')({
   display: 'flex',
   justifyContent: 'center',
-  padding: '40px 20px',
+  padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
 });
 
 // Helper: Format timestamp to Korean relative time
@@ -230,7 +370,6 @@ const CommentSection = ({ quizIndex }) => {
   const { user } = useContext(AuthContext);
   const isLoggedIn = !!user;
 
-  // State
   const [comments, setComments] = useState([]);
   const [userLikes, setUserLikes] = useState(new Set());
   const [commentText, setCommentText] = useState('');
@@ -239,7 +378,6 @@ const CommentSection = ({ quizIndex }) => {
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
 
-  // Fetch comments on mount and when quizIndex changes
   useEffect(() => {
     fetchComments(quizIndex, 0, true);
     if (isLoggedIn) {
@@ -248,7 +386,6 @@ const CommentSection = ({ quizIndex }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizIndex, isLoggedIn]);
 
-  // Fetch comments from Supabase
   const fetchComments = async (quizIdx, currentOffset = 0, reset = false) => {
     setLoading(true);
 
@@ -278,7 +415,6 @@ const CommentSection = ({ quizIndex }) => {
     setLoading(false);
   };
 
-  // Fetch user's liked comments
   const fetchUserLikes = async () => {
     if (!user) return;
 
@@ -296,7 +432,6 @@ const CommentSection = ({ quizIndex }) => {
     setUserLikes(likedSet);
   };
 
-  // Submit new comment
   const handleSubmitComment = async () => {
     if (!isLoggedIn) {
       showToast('로그인하면 댓글을 남길 수 있어요! 😊');
@@ -334,7 +469,6 @@ const CommentSection = ({ quizIndex }) => {
       return;
     }
 
-    // Optimistic UI: Add comment to top of list immediately
     const newComment = {
       ...data,
       nickname: user.user_metadata?.nickname || user.user_metadata?.name || '익명',
@@ -347,7 +481,6 @@ const CommentSection = ({ quizIndex }) => {
     showToast('댓글이 등록되었습니다! 💬');
   };
 
-  // Toggle like/unlike
   const handleToggleLike = async (commentId) => {
     if (!isLoggedIn) {
       showToast('로그인하면 좋아요를 누를 수 있어요! 😊');
@@ -356,7 +489,6 @@ const CommentSection = ({ quizIndex }) => {
 
     const isLiked = userLikes.has(commentId);
 
-    // Optimistic UI update
     setUserLikes((prev) => {
       const newSet = new Set(prev);
       if (isLiked) {
@@ -375,7 +507,6 @@ const CommentSection = ({ quizIndex }) => {
       )
     );
 
-    // Server update
     if (isLiked) {
       const { error } = await supabase
         .from('comment_likes')
@@ -385,7 +516,6 @@ const CommentSection = ({ quizIndex }) => {
 
       if (error) {
         console.error('Error unliking comment:', error);
-        // Revert on error
         fetchComments(quizIndex, 0, true);
         fetchUserLikes();
       }
@@ -396,19 +526,16 @@ const CommentSection = ({ quizIndex }) => {
 
       if (error) {
         console.error('Error liking comment:', error);
-        // Revert on error
         fetchComments(quizIndex, 0, true);
         fetchUserLikes();
       }
     }
   };
 
-  // Load more comments
   const handleLoadMore = () => {
     fetchComments(quizIndex, offset, false);
   };
 
-  // Delete comment
   const handleDeleteComment = async (commentId) => {
     // eslint-disable-next-line no-restricted-globals
     if (!confirm('댓글을 삭제하시겠습니까?')) {
@@ -418,7 +545,6 @@ const CommentSection = ({ quizIndex }) => {
     const success = await deleteComment(commentId, user?.id);
 
     if (success) {
-      // Remove from UI
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     }
   };
@@ -428,24 +554,13 @@ const CommentSection = ({ quizIndex }) => {
 
   return (
     <Container>
-      {/* Comment Input - Only for logged-in users */}
+      {/* Comment Input - Arcade Style */}
       {isLoggedIn ? (
         <CommentInputContainer>
-          <TextField
-            multiline
-            rows={3}
+          <ArcadeTextArea
             placeholder="댓글을 남겨보세요..."
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
-            variant="outlined"
-            fullWidth
-            sx={{
-              '& .MuiOutlinedInput-root': {
-                borderRadius: tokens.borderRadius.medium,
-                fontSize: '0.95rem',
-                fontFamily: tokens.fonts.korean,
-              },
-            }}
           />
           <CharCount isOverLimit={isOverLimit}>
             {charCount} / 500
@@ -454,7 +569,7 @@ const CommentSection = ({ quizIndex }) => {
             onClick={handleSubmitComment}
             disabled={!commentText.trim() || isOverLimit || submitting}
           >
-            {submitting ? <CircularProgress size={20} color="inherit" /> : '댓글 남기기'}
+            {submitting ? <CircularProgress size={16} sx={{ color: tokensArcade.colors.pureWhite }} /> : 'POST COMMENT'}
           </SubmitButton>
         </CommentInputContainer>
       ) : (
@@ -467,7 +582,7 @@ const CommentSection = ({ quizIndex }) => {
       {/* Comments List */}
       {loading && comments.length === 0 ? (
         <LoadingContainer>
-          <CircularProgress sx={{ color: tokens.colors.primary }} />
+          <CircularProgress sx={{ color: tokensArcade.colors.neonPink }} />
         </LoadingContainer>
       ) : comments.length === 0 ? (
         <EmptyState>첫 댓글을 남겨보세요! 💬</EmptyState>
@@ -479,13 +594,15 @@ const CommentSection = ({ quizIndex }) => {
 
               return (
                 <CommentItem key={comment.id}>
-                  <Avatar
-                    src={comment.profile_image_url}
-                    alt={comment.nickname}
-                    sx={{ width: 36, height: 36 }}
-                  >
-                    {!comment.profile_image_url && <PersonIcon />}
-                  </Avatar>
+                  <AvatarFrame>
+                    <Avatar
+                      src={comment.profile_image_url}
+                      alt={comment.nickname}
+                      sx={{ width: '100%', height: '100%' }}
+                    >
+                      {!comment.profile_image_url && <PersonIcon />}
+                    </Avatar>
+                  </AvatarFrame>
                   <CommentContent>
                     <CommentHeader>
                       <Nickname>{comment.nickname}</Nickname>
@@ -495,26 +612,25 @@ const CommentSection = ({ quizIndex }) => {
                     <CommentActions>
                       <LikeButton
                         onClick={() => handleToggleLike(comment.id)}
-                        size="small"
+                        isLiked={isLiked}
                         aria-label={isLiked ? '좋아요 취소' : '좋아요'}
                       >
                         {isLiked ? (
-                          <FavoriteIcon sx={{ fontSize: '1rem', color: '#FF9999' }} />
+                          <FavoriteIcon sx={{ fontSize: '0.9rem', color: tokensArcade.colors.neonPink }} />
                         ) : (
-                          <FavoriteBorderIcon sx={{ fontSize: '1rem', color: tokens.colors.textSecondary }} />
+                          <FavoriteBorderIcon sx={{ fontSize: '0.9rem', color: tokensArcade.colors.pixelGray }} />
+                        )}
+                        {comment.likes_count > 0 && (
+                          <LikeCount isLiked={isLiked}>{comment.likes_count}</LikeCount>
                         )}
                       </LikeButton>
-                      {comment.likes_count > 0 && (
-                        <LikeCount isLiked={isLiked}>{comment.likes_count}</LikeCount>
-                      )}
                       {/* Delete button - only show for comment owner */}
                       {user?.id === comment.user_id && (
                         <DeleteButton
                           onClick={() => handleDeleteComment(comment.id)}
-                          size="small"
                           aria-label="댓글 삭제"
                         >
-                          <DeleteIcon sx={{ fontSize: '0.9rem' }} />
+                          <CloseIcon />
                         </DeleteButton>
                       )}
                     </CommentActions>
@@ -526,8 +642,8 @@ const CommentSection = ({ quizIndex }) => {
 
           {/* Load More Button */}
           {hasMore && (
-            <LoadMoreButton onClick={handleLoadMore} disabled={loading}>
-              {loading ? <CircularProgress size={20} /> : '댓글 더보기'}
+            <LoadMoreButton onClick={handleLoadMore}>
+              {loading ? <CircularProgress size={16} sx={{ color: tokensArcade.colors.pureWhite }} /> : 'LOAD MORE'}
             </LoadMoreButton>
           )}
         </>

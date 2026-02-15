@@ -1,534 +1,288 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { styled, keyframes } from '@mui/system';
-import {
-  CircularProgress,
-  IconButton,
-  Button,
-} from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { styled } from '@mui/system';
+import { Box, CircularProgress, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import AuthContext from './AuthContext';
-import { getUserFlipHistory } from './utils/bookmarkUtils';
-import tokens from './tokens';
+import { getUserFlipHistory, deleteFlipHistory } from './utils/bookmarkUtils';
+import tokensArcade from './tokens-arcade';
+import NeonBadge from './components/NeonBadge';
 
-/**
- * MyHistory Page - Refined Design
- *
- * Clean, readable layout optimized for mobile and desktop.
- * Consistent with MyComments and Mypage styling.
- */
+// ============================================
+// TRADING CARD GALLERY (History)
+// Reusing design from MyBookmarks
+// ============================================
 
-// Animations
-const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const float = keyframes`
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-8px); }
-`;
-
-// Layout Components
-const Container = styled('div')({
-  minHeight: '100vh',
-  backgroundColor: 'var(--bg-color)',
-  paddingBottom: '80px',
+const GalleryContainer = styled(Box)({
+  minHeight: 'calc(100vh - 70px - 80px)',
+  backgroundColor: tokensArcade.colors.softCream,
+  paddingBottom: '100px',
+  boxSizing: 'border-box',
 });
 
-const Header = styled('div')({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #6b5c8a 100%)`,
-  color: tokens.colors.white,
+const GalleryHeader = styled(Box)({
+  background: tokensArcade.colors.deepBlack,
+  border: `${tokensArcade.borders.base} ${tokensArcade.colors.neonCyan}`,
+  borderTop: 'none',
+  borderLeft: 'none',
+  borderRight: 'none',
   height: '60px',
-  position: 'sticky',
-  top: 0,
-  zIndex: 100,
-  boxShadow: tokens.shadows.medium,
-  width: '100%',
-});
-
-const HeaderInner = styled('div')({
-  maxWidth: '500px',
-  width: '100%',
-  height: '60px',
-  margin: '0 auto',
-  padding: '0 20px',
   display: 'flex',
   alignItems: 'center',
+  justifyContent: 'center',
+  boxShadow: `0 4px 0 ${tokensArcade.colors.shadowPurple}`,
   position: 'relative',
 });
 
-const BackButton = styled(IconButton)({
-  color: tokens.colors.white,
-  zIndex: 1,
-  '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
+const GalleryTitle = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.sm,
+  fontWeight: tokensArcade.fonts.weights.normal,
+  color: tokensArcade.colors.neonCyan,
+  textShadow: tokensArcade.shadows.neonCyan,
+  textTransform: 'uppercase',
+  letterSpacing: '1px',
 });
 
-const Title = styled('h1')({
-  margin: 0,
-  fontSize: '1.3rem',
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  position: 'absolute',
-  left: '50%',
-  transform: 'translateX(-50%)',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '8px',
-});
-
-const Content = styled('div')({
-  maxWidth: '500px',
+const GalleryContent = styled(Box)({
+  maxWidth: '900px',
   margin: '0 auto',
-  padding: '20px',
+  padding: tokensArcade.spacing.lg,
 });
 
-// Stats Card
-const StatsCard = styled('div')({
-  backgroundColor: tokens.colors.white,
-  borderRadius: tokens.borderRadius.medium,
-  padding: '24px',
-  marginBottom: '20px',
-  boxShadow: tokens.shadows.light,
-  border: '1px solid rgba(89, 75, 115, 0.1)',
-});
-
-const StatsGrid = styled('div')({
+const CardGrid = styled(Box)({
   display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '24px',
-  textAlign: 'center',
-});
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: tokensArcade.spacing.base,
+  width: '100%',
 
-const StatBox = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: '8px',
-});
-
-const StatNumber = styled('div')({
-  fontSize: '2rem',
-  fontWeight: 700,
-  color: tokens.colors.primary,
-  lineHeight: 1,
-  fontFamily: tokens.fonts.body,
-});
-
-const StatLabel = styled('div')({
-  fontSize: '0.85rem',
-  fontWeight: 600,
-  color: tokens.colors.text,
-  fontFamily: tokens.fonts.korean,
-});
-
-// History List
-const HistoryList = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '12px',
-});
-
-const HistoryCard = styled('div')(({ index }) => ({
-  backgroundColor: tokens.colors.white,
-  borderRadius: tokens.borderRadius.medium,
-  padding: '16px',
-  boxShadow: tokens.shadows.light,
-  border: '1px solid rgba(89, 75, 115, 0.1)',
-  cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  animation: `${fadeInUp} 0.4s ease ${index * 0.05}s backwards`,
-
-  '&:hover': {
-    boxShadow: tokens.shadows.medium,
-    transform: 'translateY(-2px)',
-    borderColor: tokens.colors.primary,
+  '@media (min-width: 768px)': {
+    gridTemplateColumns: 'repeat(3, 1fr)',
   },
-}));
+});
 
-const CardTop = styled('div')({
+const TradingCard = styled(Box)({
+  position: 'relative',
+  backgroundColor: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.thick,
+  borderColor: tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.lg,
+  boxShadow: tokensArcade.shadows.arcade,
+  padding: tokensArcade.spacing.base,
+  paddingTop: tokensArcade.spacing.xxl,
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  minHeight: '120px',
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  marginBottom: '8px',
-  gap: '12px',
-});
-
-const ViewBadge = styled('div')({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  padding: '6px 12px',
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
-  borderRadius: '20px',
-  fontSize: '0.85rem',
-  fontWeight: 700,
-  color: tokens.colors.white,
-  fontFamily: tokens.fonts.korean,
-  boxShadow: '0 2px 8px rgba(89, 75, 115, 0.2)',
-});
-
-const Timestamp = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4px',
-  fontSize: '0.75rem',
-  color: tokens.colors.textSecondary,
-  fontWeight: 500,
-  fontFamily: tokens.fonts.korean,
-});
-
-const QuestionText = styled('p')({
-  margin: 0,
-  fontSize: '0.95rem',
-  color: tokens.colors.text,
-  lineHeight: 1.5,
-  fontWeight: 400,
-  fontFamily: tokens.fonts.korean,
-  textAlign: 'left',
-
-  // Line clamping
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  wordBreak: 'keep-all',
-  overflowWrap: 'break-word',
-});
-
-// Empty State
-const EmptyState = styled('div')({
-  textAlign: 'center',
-  padding: '100px 20px',
-  animation: `${fadeInUp} 0.6s cubic-bezier(0.4, 0, 0.2, 1)`,
-});
-
-const EmptyIcon = styled('div')({
-  fontSize: '6rem',
-  marginBottom: '24px',
-  opacity: 0.4,
-  animation: `${float} 3s ease-in-out infinite`,
-});
-
-const EmptyTitle = styled('h2')({
-  margin: '0 0 12px 0',
-  fontSize: '1.4rem',
-  fontWeight: 800,
-  color: tokens.colors.text,
-  fontFamily: tokens.fonts.korean,
-  letterSpacing: '-0.5px',
-});
-
-const EmptyText = styled('p')({
-  margin: '0 0 32px 0',
-  fontSize: '0.95rem',
-  color: tokens.colors.textSecondary,
-  lineHeight: 1.6,
-  fontFamily: tokens.fonts.korean,
-});
-
-const StartButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, ${tokens.colors.primaryLight} 100%)`,
-  color: tokens.colors.white,
-  borderRadius: '16px',
-  padding: '14px 32px',
-  fontSize: '1rem',
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  textTransform: 'none',
-  boxShadow: '0 8px 24px rgba(89, 75, 115, 0.3), 0 4px 8px rgba(89, 75, 115, 0.2)',
-  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  boxSizing: 'border-box',
 
   '&:hover': {
-    background: `linear-gradient(135deg, #7d6ea0 0%, ${tokens.colors.primary} 100%)`,
-    transform: 'translateY(-3px)',
-    boxShadow: '0 12px 32px rgba(89, 75, 115, 0.4), 0 6px 12px rgba(89, 75, 115, 0.25)',
+    transform: 'translateY(-6px)',
+    boxShadow: tokensArcade.shadows.deep,
+    borderColor: tokensArcade.colors.neonCyan,
   },
 
   '&:active': {
-    transform: 'translateY(-1px)',
+    transform: 'translateY(2px)',
+    boxShadow: tokensArcade.shadows.pixel,
   },
 });
 
-// Load More
-const LoadMoreButton = styled(Button)({
-  display: 'block',
-  margin: '32px auto 0',
-  color: tokens.colors.primary,
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  borderRadius: '12px',
-  padding: '12px 28px',
-  fontSize: '0.9rem',
-  textTransform: 'none',
-  border: `2px solid ${tokens.colors.primary}`,
-  background: 'transparent',
-  transition: 'all 0.3s ease',
+const CategorySticker = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  left: tokensArcade.spacing.sm,
+  zIndex: 2,
+});
+
+const DeleteButton = styled(Box)({
+  position: 'absolute',
+  top: tokensArcade.spacing.sm,
+  right: tokensArcade.spacing.sm,
+  width: '28px',
+  height: '28px',
+  backgroundColor: tokensArcade.colors.hotOrange,
+  border: tokensArcade.borders.base,
+  borderColor: tokensArcade.colors.shadowPurple,
+  borderRadius: '50%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+  zIndex: 3,
+
+  '& .MuiSvgIcon-root': {
+    fontSize: '1rem',
+    color: tokensArcade.colors.pureWhite,
+  },
 
   '&:hover': {
-    background: tokens.colors.primary,
-    color: '#FFFFFF',
-    transform: 'translateY(-2px)',
-    boxShadow: '0 8px 20px rgba(89, 75, 115, 0.25)',
+    transform: 'scale(1.2) rotate(90deg)',
+    backgroundColor: '#FF8456',
+    boxShadow: tokensArcade.shadows.pixel,
+  },
+
+  '&:active': {
+    transform: 'scale(0.9)',
   },
 });
 
-const LoadingContainer = styled('div')({
+const QuestionPreview = styled(Typography)({
+  fontFamily: tokensArcade.fonts.body,
+  fontSize: tokensArcade.fonts.sm,
+  color: tokensArcade.colors.deepBlack,
+  lineHeight: 1.5,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  display: '-webkit-box',
+  WebkitLineClamp: 3,
+  WebkitBoxOrient: 'vertical',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textAlign: 'center',
+  padding: `0 ${tokensArcade.spacing.xs}`,
+});
+
+const EmptyState = styled(Box)({
+  textAlign: 'center',
+  padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: tokensArcade.spacing.lg,
+});
+
+const EmptyIcon = styled(Typography)({
+  fontSize: '72px',
+  filter: 'grayscale(100%)',
+  opacity: 0.5,
+});
+
+const EmptyText = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: tokensArcade.fonts.xs,
+  color: tokensArcade.colors.shadowPurple,
+  textTransform: 'uppercase',
+  letterSpacing: '0.5px',
+});
+
+const LoadingContainer = styled(Box)({
   display: 'flex',
   justifyContent: 'center',
-  padding: '60px 20px',
+  alignItems: 'center',
+  minHeight: '300px',
 });
 
-const LoginPrompt = styled('div')({
-  textAlign: 'center',
-  padding: '60px 20px',
-  animation: `${fadeInUp} 0.6s cubic-bezier(0.4, 0, 0.2, 1)`,
-});
-
-const LoginButton = styled(Button)({
-  background: `linear-gradient(135deg, ${tokens.colors.primary} 0%, #7d6ea0 100%)`,
-  color: tokens.colors.white,
-  borderRadius: '16px',
-  padding: '14px 32px',
-  fontSize: '1rem',
-  fontWeight: 700,
-  fontFamily: tokens.fonts.korean,
-  textTransform: 'none',
-  marginTop: '20px',
-  boxShadow: '0 8px 24px rgba(89, 75, 115, 0.3)',
-
-  '&:hover': {
-    background: `linear-gradient(135deg, #7d6ea0 0%, ${tokens.colors.primary} 100%)`,
-    transform: 'translateY(-2px)',
-    boxShadow: '0 12px 32px rgba(89, 75, 115, 0.4)',
-  },
-});
+// ============================================
+// MY HISTORY COMPONENT
+// ============================================
 
 const MyHistory = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
 
-  const ITEMS_PER_PAGE = 10;
-
-  // Fetch history on mount
   useEffect(() => {
-    if (user) {
-      fetchHistory(0, true);
-    } else {
-      setLoading(false);
-    }
+    if (user) fetchHistory();
+    else setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const fetchHistory = async (currentOffset, reset = false) => {
-    if (reset) {
-      setLoading(true);
-    } else {
-      setLoadingMore(true);
-    }
-
-    const { data, hasMore: more } = await getUserFlipHistory(
-      user?.id,
-      currentOffset,
-      ITEMS_PER_PAGE
-    );
-
-    if (reset) {
-      setHistory(data);
-    } else {
-      setHistory((prev) => [...prev, ...data]);
-    }
-
-    setHasMore(more);
-    setOffset(currentOffset + ITEMS_PER_PAGE);
+  const fetchHistory = async () => {
+    const { data } = await getUserFlipHistory(user?.id, 0, 50);
+    setHistory(data || []);
     setLoading(false);
-    setLoadingMore(false);
   };
 
-  const handleHistoryClick = (quizIndex) => {
+  const handleDelete = async (e, historyId) => {
+    e.stopPropagation();
+    const confirmed = window.confirm('이 기록을 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    const success = await deleteFlipHistory(historyId, user?.id);
+    if (success) {
+      setHistory(history.filter(h => h.id !== historyId));
+    }
+  };
+
+  const handleCardClick = (quizIndex) => {
     navigate(`/shared-quiz?num=${quizIndex}`);
   };
 
-  const handleLoadMore = () => {
-    fetchHistory(offset, false);
-  };
-
-  // Strip HTML tags for preview
   const stripHtml = (html) => {
     const tmp = document.createElement('div');
     tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
+    return tmp.textContent || '';
   };
-
-  // Format timestamp to Korean relative time
-  const formatTimestamp = (timestamp) => {
-    const now = new Date();
-    const viewedDate = new Date(timestamp);
-    const diffMs = now - viewedDate;
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
-
-    if (diffMins < 1) return '방금 전';
-    if (diffMins < 60) return `${diffMins}분 전`;
-    if (diffHours < 24) return `${diffHours}시간 전`;
-    if (diffDays < 7) return `${diffDays}일 전`;
-
-    return viewedDate.toLocaleDateString('ko-KR', {
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
-  // Calculate total views
-  const totalViews = history.reduce((sum, item) => sum + item.flip_count, 0);
-
-  if (!user) {
-    return (
-      <Container>
-        <Helmet>
-          <title>봤던 퀴즈 | 하이유모어</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
-        <Header>
-          <HeaderInner>
-            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-              <ArrowBackIcon />
-            </BackButton>
-            <Title>👀 봤던 퀴즈</Title>
-          </HeaderInner>
-        </Header>
-        <Content>
-          <LoginPrompt>
-            <EmptyIcon>👀</EmptyIcon>
-            <EmptyTitle>로그인이 필요해요</EmptyTitle>
-            <EmptyText>로그인하면 본 퀴즈 기록을 확인할 수 있어요!</EmptyText>
-            <LoginButton onClick={() => navigate('/login')}>
-              카카오 로그인하기
-            </LoginButton>
-          </LoginPrompt>
-        </Content>
-      </Container>
-    );
-  }
 
   if (loading) {
     return (
-      <Container>
-        <Helmet>
-          <title>봤던 퀴즈 | 하이유모어</title>
-          <meta name="robots" content="noindex" />
-        </Helmet>
-        <Header>
-          <HeaderInner>
-            <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-              <ArrowBackIcon />
-            </BackButton>
-            <Title>👀 봤던 퀴즈</Title>
-          </HeaderInner>
-        </Header>
-        <Content>
+      <GalleryContainer>
+        <GalleryHeader>
+          <GalleryTitle>👁️ QUIZ HISTORY</GalleryTitle>
+        </GalleryHeader>
+        <GalleryContent>
           <LoadingContainer>
-            <CircularProgress sx={{ color: tokens.colors.primary }} />
+            <CircularProgress sx={{ color: tokensArcade.colors.neonCyan }} />
           </LoadingContainer>
-        </Content>
-      </Container>
+        </GalleryContent>
+      </GalleryContainer>
     );
   }
 
   return (
-    <Container>
+    <GalleryContainer>
       <Helmet>
-        <title>{`봤던 퀴즈 (${history.length}개) | 하이유모어`}</title>
+        <title>QUIZ HISTORY | 하이유모어</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 
-      <Header>
-        <HeaderInner>
-          <BackButton onClick={() => navigate(-1)} aria-label="뒤로가기">
-            <ArrowBackIcon />
-          </BackButton>
-          <Title>👀 봤던 퀴즈</Title>
-        </HeaderInner>
-      </Header>
+      <GalleryHeader>
+        <GalleryTitle>👁️ QUIZ HISTORY</GalleryTitle>
+      </GalleryHeader>
 
-      <Content>
+      <GalleryContent>
         {history.length === 0 ? (
           <EmptyState>
-            <EmptyIcon>👀</EmptyIcon>
-            <EmptyTitle>아직 본 퀴즈가 없어요</EmptyTitle>
-            <EmptyText>
-              재미있는 퀴즈를 풀어보면
-              <br />
-              여기에 기록이 남아요!
-            </EmptyText>
-            <StartButton onClick={() => navigate('/')}>
-              퀴즈 풀러가기
-            </StartButton>
+            <EmptyIcon>😢</EmptyIcon>
+            <EmptyText>NO ITEMS COLLECTED</EmptyText>
           </EmptyState>
         ) : (
-          <>
-            <StatsCard>
-              <StatsGrid>
-                <StatBox>
-                  <StatNumber>{history.length}</StatNumber>
-                  <StatLabel>퀴즈</StatLabel>
-                </StatBox>
-                <StatBox>
-                  <StatNumber>{totalViews}</StatNumber>
-                  <StatLabel>조회수</StatLabel>
-                </StatBox>
-              </StatsGrid>
-            </StatsCard>
+          <CardGrid>
+            {history.map((h) => (
+              <TradingCard
+                key={h.id}
+                onClick={() => handleCardClick(h.quiz_index)}
+              >
+                {/* Category Sticker */}
+                {h.category && (
+                  <CategorySticker>
+                    <NeonBadge color="cyan" size="sm">
+                      {h.category}
+                    </NeonBadge>
+                  </CategorySticker>
+                )}
 
-            <HistoryList>
-              {history.map((item, index) => (
-                <HistoryCard
-                  key={item.id}
-                  index={index}
-                  onClick={() => handleHistoryClick(item.quiz_index)}
-                >
-                  <CardTop>
-                    <ViewBadge>
-                      <VisibilityIcon sx={{ fontSize: '0.9rem' }} />
-                      {item.flip_count}번
-                    </ViewBadge>
-                    <Timestamp>
-                      <CalendarTodayIcon sx={{ fontSize: '0.7rem' }} />
-                      {formatTimestamp(item.last_flipped_at)}
-                    </Timestamp>
-                  </CardTop>
-                  <QuestionText>{stripHtml(item.question)}</QuestionText>
-                </HistoryCard>
-              ))}
-            </HistoryList>
+                {/* Delete Button */}
+                <DeleteButton onClick={(e) => handleDelete(e, h.id)}>
+                  <CloseIcon />
+                </DeleteButton>
 
-            {hasMore && (
-              <LoadMoreButton onClick={handleLoadMore} disabled={loadingMore}>
-                {loadingMore ? <CircularProgress size={20} /> : '더 보기'}
-              </LoadMoreButton>
-            )}
-          </>
+                {/* Question Preview */}
+                <QuestionPreview>
+                  {stripHtml(h.question)}
+                </QuestionPreview>
+              </TradingCard>
+            ))}
+          </CardGrid>
         )}
-      </Content>
-    </Container>
+      </GalleryContent>
+    </GalleryContainer>
   );
 };
 

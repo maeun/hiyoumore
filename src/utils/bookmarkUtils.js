@@ -313,3 +313,35 @@ export const getUserFlipHistory = async (userId, offset = 0, limit = 10) => {
     return { data: [], hasMore: false };
   }
 };
+
+/**
+ * Delete a flip history entry
+ *
+ * @param {number} quizIndex - Quiz index to delete from history
+ * @param {string} userId - User ID (for verification)
+ * @returns {Promise<boolean>} - true if successful
+ */
+export const deleteFlipHistory = async (quizIndex, userId) => {
+  if (!userId) return false;
+
+  try {
+    const { error } = await supabase
+      .from('user_flip_history')
+      .delete()
+      .eq('quiz_index', quizIndex)
+      .eq('user_id', userId); // Ensure user owns this history
+
+    if (error) {
+      console.error('Error deleting flip history:', error);
+      showErrorToast('기록 삭제에 실패했습니다');
+      return false;
+    }
+
+    showToast('기록을 삭제했어요');
+    return true;
+  } catch (error) {
+    console.error('Unexpected error in deleteFlipHistory:', error);
+    showErrorToast('기록 삭제 중 오류가 발생했습니다');
+    return false;
+  }
+};
