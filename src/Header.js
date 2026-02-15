@@ -1,7 +1,5 @@
 import "./Header.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import IconButton from '@mui/material/IconButton';
 
 function Header() {
   const navigate = useNavigate();
@@ -23,17 +21,12 @@ function Header() {
     <div className="header">
       {showBackButton ? (
         <div className="header_with_back">
-          <IconButton
+          <div
+            className="back_button"
             onClick={handleBackClick}
-            sx={{
-              color: 'white',
-              marginRight: '8px',
-              '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
-            }}
-            aria-label="뒤로가기"
           >
-            <ArrowBackIcon />
-          </IconButton>
+            ← 뒤로
+          </div>
           <div
             className="header_text"
             onClick={handleImageClick}
