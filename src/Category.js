@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import StarIcon from "@mui/icons-material/Star";
 import tokensArcade from "./tokens-arcade";
-import { showToast } from "./toastUtils";
+import { showLoginToast } from "./toastUtils";
 import "./Category.css";
 
 const CATEGORY_MAP = {
@@ -244,7 +244,10 @@ function Category({ handleSelectedQuestions }) {
     // Check for login success query parameter
     const params = new URLSearchParams(location.search);
     if (params.get('loginSuccess') === 'true') {
-      showToast('👋 로그인 되었습니다 👋');
+      // Show toast at top of page after small delay to ensure page is ready
+      setTimeout(() => {
+        showLoginToast('👋 로그인 되었습니다 👋');
+      }, 300);
       // Remove query parameter from URL
       navigate('/', { replace: true });
     }

@@ -66,6 +66,18 @@ const SUCCESS_TOAST_CONFIG = {
   },
 };
 
+const LOGIN_TOAST_CONFIG = {
+  ...SUCCESS_TOAST_CONFIG,
+  position: "top-center",
+  autoClose: 2000,
+  style: {
+    ...SUCCESS_TOAST_CONFIG.style,
+    top: '80px', // Below header (70px) + margin
+    bottom: 'auto',
+  },
+};
+
 export const showToast = (message) => toast(message, SUCCESS_TOAST_CONFIG);
+export const showLoginToast = (message) => toast(message, LOGIN_TOAST_CONFIG);
 export const showErrorToast = (message) => toast.error(message, ERROR_TOAST_CONFIG);
 export const showInfoToast = (message) => toast.info(message, ARCADE_TOAST_CONFIG);

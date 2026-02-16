@@ -149,6 +149,9 @@ const CommentPreview = styled(Typography)({
   textAlign: 'left',
   padding: `0 ${tokensArcade.spacing.xs}`,
   marginBottom: tokensArcade.spacing.xs,
+  width: '100%',
+  maxWidth: '100%',
+  boxSizing: 'border-box',
 });
 
 const QuizHint = styled(Typography)({
