@@ -6,6 +6,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AuthContext from "./AuthContext";
 import { getUserBookmarks, deleteBookmark } from "./utils/bookmarkUtils";
+import { handleKakaoLogin } from "./utils/loginUtils";
 import tokensArcade from "./tokens-arcade";
 import NeonBadge from "./components/NeonBadge";
 import ArcadeButton from "./components/ArcadeButton";
@@ -290,7 +291,7 @@ const MyBookmarks = () => {
               variant="primary"
               size="large"
               fullWidth
-              onClick={() => navigate('/login')}
+              onClick={handleKakaoLogin}
             >
               카카오로 시작하기
             </ArcadeButton>

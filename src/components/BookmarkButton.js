@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CircularProgress, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import { Box } from '@mui/material';
@@ -7,6 +6,7 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
 import AuthContext from '../AuthContext';
 import { toggleBookmark, checkIfBookmarked } from '../utils/bookmarkUtils';
+import { handleKakaoLogin } from '../utils/loginUtils';
 import tokensArcade from '../tokens-arcade';
 import BottomSheet from './BottomSheet';
 import ArcadeButton from './ArcadeButton';
@@ -123,7 +123,6 @@ const LoginPromptText = styled(Typography)({
 
 const BookmarkButton = ({ quizIndex }) => {
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(true);
@@ -172,7 +171,7 @@ const BookmarkButton = ({ quizIndex }) => {
 
   const handleLoginClick = () => {
     setShowLoginPrompt(false);
-    navigate('/login');
+    handleKakaoLogin();
   };
 
   // Don't show button while checking initial status

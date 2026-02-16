@@ -16,6 +16,7 @@ import { supabase } from "./supabaseConfig";
 import { saveLogoutTime } from "./authUtils";
 import { getBookmarkCount, getFlipCount } from "./utils/bookmarkUtils";
 import { getCommentCount } from "./utils/commentUtils";
+import { handleKakaoLogin } from "./utils/loginUtils";
 import tokensArcade from "./tokens-arcade";
 import ArcadeButton from "./components/ArcadeButton";
 import ScoreCounter from "./components/ScoreCounter";
@@ -479,7 +480,7 @@ function Mypage() {
               variant="primary"
               size="large"
               fullWidth
-              onClick={() => navigate('/login')}
+              onClick={handleKakaoLogin}
             >
               카카오로 시작하기
             </ArcadeButton>

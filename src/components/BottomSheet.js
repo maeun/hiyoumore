@@ -141,7 +141,7 @@ const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (open) {
-      // Save original styles
+      // Save original styles before locking
       const originalOverflow = document.body.style.overflow;
       const originalPosition = document.body.style.position;
 
@@ -149,16 +149,13 @@ const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'relative';
 
-      // Cleanup: Always restore scroll on unmount or when modal closes
+      // Cleanup: Restore scroll when modal closes or component unmounts
       return () => {
         document.body.style.overflow = originalOverflow || '';
         document.body.style.position = originalPosition || '';
       };
-    } else {
-      // Ensure scroll is unlocked when modal is closed
-      document.body.style.overflow = '';
-      document.body.style.position = '';
     }
+    // No else clause - cleanup function handles restoration
   }, [open]);
 
   // Handle mobile keyboard (adjust height when keyboard opens)

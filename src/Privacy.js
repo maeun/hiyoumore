@@ -118,6 +118,7 @@ const SectionContent = styled('p')({
   margin: `${tokensArcade.spacing.sm} 0`,
   paddingLeft: tokensArcade.spacing.lg,
   opacity: 0.9,
+  textAlign: 'left',
 
   '&::before': {
     content: '"• "',
