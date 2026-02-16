@@ -55,14 +55,13 @@ const GalleryContent = styled(Box)({
 
 const CardGrid = styled(Box)({
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: tokensArcade.spacing.sm,
+  gridTemplateColumns: '1fr',
+  gap: tokensArcade.spacing.base,
   width: '100%',
   boxSizing: 'border-box',
 
   '@media (min-width: 768px)': {
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: tokensArcade.spacing.base,
+    gridTemplateColumns: 'repeat(2, 1fr)',
   },
 });
 

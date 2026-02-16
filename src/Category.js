@@ -1,12 +1,14 @@
 import { supabase } from './supabaseConfig';
 
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { styled } from "@mui/system";
 import { Box } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import StarIcon from "@mui/icons-material/Star";
 import tokensArcade from "./tokens-arcade";
+import { showToast } from "./toastUtils";
 import "./Category.css";
 
 const CATEGORY_MAP = {
@@ -231,10 +233,22 @@ const CategoryTitle = styled('h2')({
 function Category({ handleSelectedQuestions }) {
   const [selectedItem, setSelectedItem] = useState("📆 Today's");
   const [refreshCount, setRefreshCount] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchTodays().then(handleSelectedQuestions);
   }, []);
+
+  useEffect(() => {
+    // Check for login success query parameter
+    const params = new URLSearchParams(location.search);
+    if (params.get('loginSuccess') === 'true') {
+      showToast('👋 로그인 되었습니다 👋');
+      // Remove query parameter from URL
+      navigate('/', { replace: true });
+    }
+  }, [location.search, navigate]);
 
   const handleItemClick = async (item) => {
     setSelectedItem(item);
