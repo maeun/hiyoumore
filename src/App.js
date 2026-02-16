@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // HashRouter -> BrowserRouter
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // HashRouter -> BrowserRouter
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import "./App.css";
+import { showToast } from "./toastUtils";
 
 // Arcade components
 import ArcadeHeader from "./components/ArcadeHeader";
@@ -24,20 +25,23 @@ import NotFound from "./NotFound";
 
 import { AuthProvider } from "./AuthContext";
 
-function App() {
-  const [selectedQuestions, setSelectedQuestions] = useState([]);
+function AppContent({ selectedQuestions, handleSelectedQuestions }) {
+  const location = useLocation();
 
-  const handleSelectedQuestions = (questions) => {
-    setSelectedQuestions(questions);
-  };
+  useEffect(() => {
+    // Check if navigated from login callback
+    if (location.state?.loginSuccess) {
+      showToast('👋 로그인 되었습니다 👋');
+      // Clear the state to prevent toast on refresh
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   return (
-    <HelmetProvider>
-    <AuthProvider>
-      <Router basename="/">
-        <div className="Main">
-          <ArcadeHeader />
-          <div className="Content">
+    <>
+      <div className="Main">
+        <ArcadeHeader />
+        <div className="Content">
             <Routes>
               <Route
                 path="/"
@@ -138,8 +142,27 @@ function App() {
           </div>
           <TabBar />
         </div>
-      </Router>
-    </AuthProvider>
+      </>
+  );
+}
+
+function App() {
+  const [selectedQuestions, setSelectedQuestions] = useState([]);
+
+  const handleSelectedQuestions = (questions) => {
+    setSelectedQuestions(questions);
+  };
+
+  return (
+    <HelmetProvider>
+      <AuthProvider>
+        <Router basename="/">
+          <AppContent
+            selectedQuestions={selectedQuestions}
+            handleSelectedQuestions={handleSelectedQuestions}
+          />
+        </Router>
+      </AuthProvider>
     </HelmetProvider>
   );
 }

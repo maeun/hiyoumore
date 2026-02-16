@@ -1,5 +1,5 @@
 import something_going_wrong from "./something_going_wrong.png";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { styled } from "@mui/system";
 import { Avatar, Box, Typography } from "@mui/material";
@@ -27,7 +27,6 @@ const Page = styled("div")({
   background: tokensArcade.colors.softCream,
   paddingTop: 24,
   paddingBottom: 100, // Space for TabBar (80px) + extra margin
-  minHeight: 'calc(100vh - 70px - 80px)', // Account for header and footer
   display: "flex",
   justifyContent: "center",
 });
@@ -389,11 +388,6 @@ function Mypage() {
       showErrorToast("로그아웃 실패");
     }
   };
-
-  // Redirect to login if not authenticated (must be after all hooks)
-  if (!PREVIEW_MODE && !user) {
-    return <Navigate to="/login" replace />;
-  }
 
   return (
     <Page>
