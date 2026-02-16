@@ -327,6 +327,11 @@ function Mypage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, PREVIEW_MODE]);
 
+  // Prevent rendering while redirecting
+  if (!PREVIEW_MODE && !user) {
+    return null;
+  }
+
   useEffect(() => {
     if (PREVIEW_MODE) {
       setUserProfile(mockProfile);
