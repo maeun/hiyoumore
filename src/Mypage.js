@@ -327,11 +327,6 @@ function Mypage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, PREVIEW_MODE]);
 
-  // Prevent rendering while redirecting
-  if (!PREVIEW_MODE && !user) {
-    return null;
-  }
-
   useEffect(() => {
     if (PREVIEW_MODE) {
       setUserProfile(mockProfile);
@@ -404,6 +399,11 @@ function Mypage() {
       showErrorToast("로그아웃 실패");
     }
   };
+
+  // Prevent rendering while redirecting (must be after all hooks)
+  if (!PREVIEW_MODE && !user) {
+    return null;
+  }
 
   return (
     <Page>
