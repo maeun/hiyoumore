@@ -8,6 +8,7 @@ import ArcadeHeader from "./components/ArcadeHeader";
 import TabBar from "./components/TabBar";
 
 // Page components
+import Home from "./Home";
 import Category from "./Category";
 import Quiz from "./Quiz";
 import SharedQuiz from "./SharedQuiz";
@@ -30,107 +31,95 @@ function AppContent({ selectedQuestions, handleSelectedQuestions }) {
       <div className="Main">
         <ArcadeHeader />
         <div className="Content">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <div className="PageWrapper">
-                    <Helmet>
-                      <title>hiyoumore</title>
-                      <meta name="description" content="친구에게 재미있는 퀴즈를 공유해보세요! 다양한 카테고리의 퀴즈를 풀고 친구와 함께 즐기세요." />
-                    </Helmet>
-                    <Category
-                      handleSelectedQuestions={handleSelectedQuestions}
-                    />
-                    <Quiz selectedQuestions={selectedQuestions} />
-                  </div>
-                }
-              />
-              <Route
-                path="/shared-quiz"
-                element={<SharedQuiz />}
-              />
-              <Route
-                path="/login"
-                element={
-                  <div className="PageWrapper">
-                    <Login />
-                  </div>
-                }
-              />
-              <Route
-                path="/auth/callback"
-                element={
-                  <div>
-                    <AuthCallback />
-                  </div>
-                }
-              />
-              <Route
-                path="/mypage"
-                element={
-                  <div className="PageWrapper">
-                    <Mypage />
-                  </div>
-                }
-              />
-              <Route
-                path="/my-bookmarks"
-                element={
-                  <div className="PageWrapper">
-                    <MyBookmarks />
-                  </div>
-                }
-              />
-              <Route
-                path="/my-history"
-                element={
-                  <div className="PageWrapper">
-                    <MyHistory />
-                  </div>
-                }
-              />
-              <Route
-                path="/my-comments"
-                element={
-                  <div className="PageWrapper">
-                    <MyComments />
-                  </div>
-                }
-              />
-              <Route
-                path="/info"
-                element={
-                  <div className="PageWrapper">
-                    <Info />
-                  </div>
-                }
-              />
-              <Route
-                path="/terms"
-                element={
-                  <div className="PageWrapper">
-                    <Terms />
-                  </div>
-                }
-              />
-              <Route
-                path="/privacy"
-                element={
-                  <div className="PageWrapper">
-                    <Privacy />
-                  </div>
-                }
-              />
-              <Route
-                path="*"
-                element={<NotFound />}
-              />
-            </Routes>
-          </div>
-          <TabBar />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  selectedQuestions={selectedQuestions}
+                  handleSelectedQuestions={handleSelectedQuestions}
+                />
+              }
+            />
+            <Route path="/shared-quiz" element={<SharedQuiz />} />
+            <Route
+              path="/login"
+              element={
+                <div className="PageWrapper">
+                  <Login />
+                </div>
+              }
+            />
+            <Route
+              path="/auth/callback"
+              element={
+                <div>
+                  <AuthCallback />
+                </div>
+              }
+            />
+            <Route
+              path="/mypage"
+              element={
+                <div className="PageWrapper">
+                  <Mypage />
+                </div>
+              }
+            />
+            <Route
+              path="/my-bookmarks"
+              element={
+                <div className="PageWrapper">
+                  <MyBookmarks />
+                </div>
+              }
+            />
+            <Route
+              path="/my-history"
+              element={
+                <div className="PageWrapper">
+                  <MyHistory />
+                </div>
+              }
+            />
+            <Route
+              path="/my-comments"
+              element={
+                <div className="PageWrapper">
+                  <MyComments />
+                </div>
+              }
+            />
+            <Route
+              path="/info"
+              element={
+                <div className="PageWrapper">
+                  <Info />
+                </div>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <div className="PageWrapper">
+                  <Terms />
+                </div>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <div className="PageWrapper">
+                  <Privacy />
+                </div>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </div>
-      </>
+        <TabBar />
+      </div>
+    </>
   );
 }
 
