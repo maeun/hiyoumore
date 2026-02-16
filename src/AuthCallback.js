@@ -15,8 +15,9 @@ function AuthCallback() {
         console.error('Auth callback error:', error);
         navigate('/login');
       } else if (session) {
-        // Navigate with state to trigger toast on homepage
-        navigate('/', { state: { loginSuccess: true } });
+        // Set flag in sessionStorage to trigger toast on homepage
+        sessionStorage.setItem('loginSuccess', 'true');
+        navigate('/');
       } else {
         showErrorToast('세션을 찾을 수 없습니다');
         navigate('/login');

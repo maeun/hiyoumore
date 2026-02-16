@@ -29,13 +29,13 @@ function AppContent({ selectedQuestions, handleSelectedQuestions }) {
   const location = useLocation();
 
   useEffect(() => {
-    // Check if navigated from login callback
-    if (location.state?.loginSuccess) {
+    // Check for login success flag from sessionStorage
+    const loginSuccess = sessionStorage.getItem('loginSuccess');
+    if (loginSuccess === 'true') {
       showToast('👋 로그인 되었습니다 👋');
-      // Clear the state to prevent toast on refresh
-      window.history.replaceState({}, document.title);
+      sessionStorage.removeItem('loginSuccess');
     }
-  }, [location]);
+  }, [location.pathname]);
 
   return (
     <>

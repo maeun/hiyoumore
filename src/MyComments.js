@@ -158,6 +158,8 @@ const QuizHint = styled(Typography)({
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
   padding: `0 ${tokensArcade.spacing.xs}`,
+  width: '100%',
+  boxSizing: 'border-box',
 });
 
 const EmptyState = styled(Box)({
