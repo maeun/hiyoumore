@@ -207,7 +207,7 @@ const BookmarkButton = ({ quizIndex }) => {
 
       {/* Login Prompt BottomSheet */}
       <BottomSheet
-        open={showLoginPrompt}
+        isOpen={showLoginPrompt}
         onClose={() => setShowLoginPrompt(false)}
         title="⭐ LOGIN REQUIRED"
         maxHeight="50vh"

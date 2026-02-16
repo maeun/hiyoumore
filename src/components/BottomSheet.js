@@ -141,16 +141,23 @@ const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (open) {
+      // Save original styles
       const originalOverflow = document.body.style.overflow;
       const originalPosition = document.body.style.position;
 
+      // Lock scroll
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'relative';
 
+      // Cleanup: Always restore scroll on unmount or when modal closes
       return () => {
-        document.body.style.overflow = originalOverflow;
-        document.body.style.position = originalPosition;
+        document.body.style.overflow = originalOverflow || '';
+        document.body.style.position = originalPosition || '';
       };
+    } else {
+      // Ensure scroll is unlocked when modal is closed
+      document.body.style.overflow = '';
+      document.body.style.position = '';
     }
   }, [open]);
 
