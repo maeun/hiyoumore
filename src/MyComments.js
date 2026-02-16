@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
-import { styled } from '@mui/system';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import AuthContext from './AuthContext';
-import { getUserComments, deleteComment } from './utils/commentUtils';
-import tokensArcade from './tokens-arcade';
-import NeonBadge from './components/NeonBadge';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { styled } from "@mui/system";
+import { Box, CircularProgress, Typography } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AuthContext from "./AuthContext";
+import { getUserComments, deleteComment } from "./utils/commentUtils";
+import tokensArcade from "./tokens-arcade";
+import NeonBadge from "./components/NeonBadge";
 
 // ============================================
 // TRADING CARD GALLERY (Comments)
@@ -16,24 +16,25 @@ import NeonBadge from './components/NeonBadge';
 // ============================================
 
 const GalleryContainer = styled(Box)({
-  minHeight: 'calc(100vh - 70px - 80px)',
+  minHeight: "calc(100vh - 70px - 80px)",
   backgroundColor: tokensArcade.colors.softCream,
-  paddingBottom: '100px',
-  boxSizing: 'border-box',
+  paddingBottom: "100px",
+  boxSizing: "border-box",
+  overflowX: "hidden",
 });
 
 const GalleryHeader = styled(Box)({
   background: tokensArcade.colors.deepBlack,
   border: `${tokensArcade.borders.base} ${tokensArcade.colors.arcadeYellow}`,
-  borderTop: 'none',
-  borderLeft: 'none',
-  borderRight: 'none',
-  height: '60px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  borderTop: "none",
+  borderLeft: "none",
+  borderRight: "none",
+  height: "60px",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   boxShadow: `0 4px 0 ${tokensArcade.colors.shadowPurple}`,
-  position: 'relative',
+  position: "relative",
 });
 
 const GalleryTitle = styled(Typography)({
@@ -42,31 +43,31 @@ const GalleryTitle = styled(Typography)({
   fontWeight: tokensArcade.fonts.weights.normal,
   color: tokensArcade.colors.arcadeYellow,
   textShadow: tokensArcade.shadows.neonYellow,
-  textTransform: 'uppercase',
-  letterSpacing: '1px',
+  textTransform: "uppercase",
+  letterSpacing: "1px",
 });
 
 const GalleryContent = styled(Box)({
-  maxWidth: '900px',
-  margin: '0 auto',
+  maxWidth: "900px",
+  margin: "0 auto",
   padding: tokensArcade.spacing.md,
-  boxSizing: 'border-box',
+  boxSizing: "border-box",
 });
 
 const CardGrid = styled(Box)({
-  display: 'grid',
-  gridTemplateColumns: '1fr',
+  display: "grid",
+  gridTemplateColumns: "1fr",
   gap: tokensArcade.spacing.base,
-  width: '100%',
-  boxSizing: 'border-box',
+  width: "100%",
+  boxSizing: "border-box",
 
-  '@media (min-width: 768px)': {
-    gridTemplateColumns: 'repeat(2, 1fr)',
+  "@media (min-width: 768px)": {
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))", // 🔥 변경
   },
 });
 
 const TradingCard = styled(Box)({
-  position: 'relative',
+  position: "relative",
   backgroundColor: tokensArcade.colors.pureWhite,
   border: tokensArcade.borders.thick,
   borderColor: tokensArcade.colors.electricPurple,
@@ -74,63 +75,64 @@ const TradingCard = styled(Box)({
   boxShadow: tokensArcade.shadows.arcade,
   padding: tokensArcade.spacing.base,
   paddingTop: tokensArcade.spacing.xxl,
-  cursor: 'pointer',
+  cursor: "pointer",
   transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
-  minHeight: '180px',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  boxSizing: 'border-box',
+  minHeight: "180px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  boxSizing: "border-box",
 
-  '&:hover': {
-    transform: 'translateY(-6px)',
+  "&:hover": {
+    transform: "translateY(-6px)",
     boxShadow: tokensArcade.shadows.deep,
     borderColor: tokensArcade.colors.arcadeYellow,
   },
 
-  '&:active': {
-    transform: 'translateY(2px)',
+  "&:active": {
+    transform: "translateY(2px)",
     boxShadow: tokensArcade.shadows.pixel,
   },
+  minWidth: 0,
 });
 
 const LikesBadge = styled(Box)({
-  position: 'absolute',
+  position: "absolute",
   top: tokensArcade.spacing.sm,
   left: tokensArcade.spacing.sm,
   zIndex: 2,
 });
 
 const DeleteButton = styled(Box)({
-  position: 'absolute',
+  position: "absolute",
   top: tokensArcade.spacing.sm,
   right: tokensArcade.spacing.sm,
-  width: '28px',
-  height: '28px',
+  width: "28px",
+  height: "28px",
   backgroundColor: tokensArcade.colors.hotOrange,
   border: tokensArcade.borders.base,
   borderColor: tokensArcade.colors.shadowPurple,
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
   transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
   zIndex: 3,
 
-  '& .MuiSvgIcon-root': {
-    fontSize: '1rem',
+  "& .MuiSvgIcon-root": {
+    fontSize: "1rem",
     color: tokensArcade.colors.pureWhite,
   },
 
-  '&:hover': {
-    transform: 'scale(1.2) rotate(90deg)',
-    backgroundColor: '#FF8456',
+  "&:hover": {
+    transform: "scale(1.2) rotate(90deg)",
+    backgroundColor: "#FF8456",
     boxShadow: tokensArcade.shadows.pixel,
   },
 
-  '&:active': {
-    transform: 'scale(0.9)',
+  "&:active": {
+    transform: "scale(0.9)",
   },
 });
 
@@ -139,46 +141,48 @@ const CommentPreview = styled(Typography)({
   fontSize: tokensArcade.fonts.sm,
   color: tokensArcade.colors.deepBlack,
   lineHeight: 1.5,
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  display: '-webkit-box',
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  display: "-webkit-box",
   WebkitLineClamp: 3,
-  WebkitBoxOrient: 'vertical',
-  wordBreak: 'break-word',
-  overflowWrap: 'break-word',
-  textAlign: 'left',
+  WebkitBoxOrient: "vertical",
+  wordBreak: "break-word",
+  overflowWrap: "break-word",
+  textAlign: "left",
   padding: `0 ${tokensArcade.spacing.xs}`,
   marginBottom: tokensArcade.spacing.xs,
-  width: '100%',
-  maxWidth: '100%',
-  boxSizing: 'border-box',
+  width: "100%",
+  maxWidth: "100%",
+  boxSizing: "border-box",
+  minWidth: 0,
 });
 
 const QuizHint = styled(Typography)({
   fontFamily: tokensArcade.fonts.pixel,
   fontSize: tokensArcade.fonts.xs,
   color: tokensArcade.colors.pixelGray,
-  textAlign: 'center',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
+  textAlign: "center",
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  whiteSpace: "nowrap",
   padding: `0 ${tokensArcade.spacing.xs}`,
-  width: '100%',
-  boxSizing: 'border-box',
+  width: "100%",
+  boxSizing: "border-box",
+  minWidth: 0,
 });
 
 const EmptyState = styled(Box)({
-  textAlign: 'center',
+  textAlign: "center",
   padding: `${tokensArcade.spacing.mega} ${tokensArcade.spacing.lg}`,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
   gap: tokensArcade.spacing.lg,
 });
 
 const EmptyIcon = styled(Typography)({
-  fontSize: '72px',
-  filter: 'grayscale(100%)',
+  fontSize: "72px",
+  filter: "grayscale(100%)",
   opacity: 0.5,
 });
 
@@ -186,24 +190,24 @@ const EmptyText = styled(Typography)({
   fontFamily: tokensArcade.fonts.pixel,
   fontSize: tokensArcade.fonts.xs,
   color: tokensArcade.colors.shadowPurple,
-  textTransform: 'uppercase',
-  letterSpacing: '0.5px',
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
 });
 
 const LoadingContainer = styled(Box)({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minHeight: '300px',
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "300px",
 });
 
 const LoadMoreButton = styled(Box)({
   marginTop: tokensArcade.spacing.lg,
-  textAlign: 'center',
+  textAlign: "center",
 });
 
 const LoadMoreButtonInner = styled(Box)({
-  display: 'inline-block',
+  display: "inline-block",
   padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.xl}`,
   backgroundColor: tokensArcade.colors.electricPurple,
   color: tokensArcade.colors.pureWhite,
@@ -211,20 +215,20 @@ const LoadMoreButtonInner = styled(Box)({
   borderColor: tokensArcade.colors.shadowPurple,
   borderRadius: tokensArcade.borderRadius.lg,
   boxShadow: tokensArcade.shadows.arcade,
-  cursor: 'pointer',
+  cursor: "pointer",
   transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
   fontFamily: tokensArcade.fonts.pixel,
   fontSize: tokensArcade.fonts.xs,
-  textTransform: 'uppercase',
-  letterSpacing: '0.5px',
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
 
-  '&:hover': {
-    transform: 'translateY(-4px)',
+  "&:hover": {
+    transform: "translateY(-4px)",
     boxShadow: tokensArcade.shadows.deep,
   },
 
-  '&:active': {
-    transform: 'translateY(2px)',
+  "&:active": {
+    transform: "translateY(2px)",
     boxShadow: tokensArcade.shadows.pixel,
   },
 });
@@ -260,7 +264,7 @@ const MyComments = () => {
     const { data, hasMore: more } = await getUserComments(
       user?.id,
       currentOffset,
-      COMMENTS_PER_PAGE
+      COMMENTS_PER_PAGE,
     );
 
     if (reset) {
@@ -277,12 +281,12 @@ const MyComments = () => {
 
   const handleDelete = async (e, commentId) => {
     e.stopPropagation();
-    const confirmed = window.confirm('이 댓글을 삭제하시겠습니까?');
+    const confirmed = window.confirm("이 댓글을 삭제하시겠습니까?");
     if (!confirmed) return;
 
     const success = await deleteComment(commentId, user?.id);
     if (success) {
-      setComments(comments.filter(c => c.id !== commentId));
+      setComments(comments.filter((c) => c.id !== commentId));
     }
   };
 
@@ -295,9 +299,9 @@ const MyComments = () => {
   };
 
   const stripHtml = (html) => {
-    const tmp = document.createElement('div');
+    const tmp = document.createElement("div");
     tmp.innerHTML = html;
-    return tmp.textContent || '';
+    return tmp.textContent || "";
   };
 
   if (loading) {
@@ -308,7 +312,9 @@ const MyComments = () => {
         </GalleryHeader>
         <GalleryContent>
           <LoadingContainer>
-            <CircularProgress sx={{ color: tokensArcade.colors.arcadeYellow }} />
+            <CircularProgress
+              sx={{ color: tokensArcade.colors.arcadeYellow }}
+            />
           </LoadingContainer>
         </GalleryContent>
       </GalleryContainer>
@@ -344,7 +350,9 @@ const MyComments = () => {
                   {c.likes_count > 0 && (
                     <LikesBadge>
                       <NeonBadge color="pink" size="sm">
-                        <FavoriteIcon sx={{ fontSize: '0.7rem', marginRight: '2px' }} />
+                        <FavoriteIcon
+                          sx={{ fontSize: "0.7rem", marginRight: "2px" }}
+                        />
                         {c.likes_count}
                       </NeonBadge>
                     </LikesBadge>
@@ -356,14 +364,12 @@ const MyComments = () => {
                   </DeleteButton>
 
                   {/* Comment Preview */}
-                  <CommentPreview>
-                    {c.comment_text}
-                  </CommentPreview>
+                  <CommentPreview>{c.comment_text}</CommentPreview>
 
                   {/* Quiz Hint */}
                   <QuizHint>
                     퀴즈: {stripHtml(c.question).substring(0, 20)}
-                    {stripHtml(c.question).length > 20 ? '...' : ''}
+                    {stripHtml(c.question).length > 20 ? "..." : ""}
                   </QuizHint>
                 </TradingCard>
               ))}
@@ -378,7 +384,7 @@ const MyComments = () => {
                       sx={{ color: tokensArcade.colors.pureWhite }}
                     />
                   ) : (
-                    'LOAD MORE'
+                    "LOAD MORE"
                   )}
                 </LoadMoreButtonInner>
               </LoadMoreButton>
