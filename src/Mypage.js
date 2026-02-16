@@ -1,5 +1,5 @@
 import something_going_wrong from "./something_going_wrong.png";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { styled } from "@mui/system";
 import { Avatar, Box, Typography } from "@mui/material";
@@ -319,14 +319,6 @@ function Mypage() {
     return profileImages[Math.floor(Math.random() * profileImages.length)];
   }, [profileImages]);
 
-  // Auto-redirect to login if not logged in (unless in preview mode)
-  useEffect(() => {
-    if (!PREVIEW_MODE && !user) {
-      navigate('/login');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, PREVIEW_MODE]);
-
   useEffect(() => {
     if (PREVIEW_MODE) {
       setUserProfile(mockProfile);
@@ -400,9 +392,9 @@ function Mypage() {
     }
   };
 
-  // Prevent rendering while redirecting (must be after all hooks)
+  // Redirect to login if not authenticated (must be after all hooks)
   if (!PREVIEW_MODE && !user) {
-    return null;
+    return <Navigate to="/login" replace />;
   }
 
   return (
