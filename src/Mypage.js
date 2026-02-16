@@ -255,69 +255,28 @@ const PowerOffButton = styled(Box)({
 
 const LoginPromptContainer = styled(Box)({
   padding: tokensArcade.spacing.xxl,
-  background: `linear-gradient(135deg, ${tokensArcade.colors.deepBlack} 0%, #1A1A2E 100%)`,
+  background: tokensArcade.colors.pureWhite,
   border: tokensArcade.borders.thick,
-  borderColor: tokensArcade.colors.neonPink,
+  borderColor: tokensArcade.colors.electricPurple,
   borderRadius: tokensArcade.borderRadius.lg,
-  boxShadow: `${tokensArcade.shadows.deep}, 0 0 30px rgba(255, 46, 151, 0.3)`,
+  boxShadow: tokensArcade.shadows.arcade,
   textAlign: 'center',
-  position: 'relative',
-  overflow: 'hidden',
   width: '100%',
   maxWidth: '100%',
   boxSizing: 'border-box',
-
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: '-100%',
-    width: '100%',
-    height: '100%',
-    background: 'linear-gradient(90deg, transparent, rgba(255, 46, 151, 0.1), transparent)',
-    animation: 'shimmer 3s infinite',
-  },
-
-  '@keyframes shimmer': {
-    '0%': { left: '-100%' },
-    '100%': { left: '100%' },
-  },
 });
 
 const LoginPromptIcon = styled('div')({
-  fontSize: '4rem',
-  marginBottom: tokensArcade.spacing.lg,
-  animation: 'bounce 2s ease-in-out infinite',
-  position: 'relative',
-  zIndex: 1,
-
-  '@keyframes bounce': {
-    '0%, 100%': { transform: 'translateY(0px)' },
-    '50%': { transform: 'translateY(-12px)' },
-  },
-});
-
-const LoginPromptTitle = styled(Typography)({
-  fontFamily: tokensArcade.fonts.pixel,
-  fontSize: tokensArcade.fonts.md,
-  color: tokensArcade.colors.neonPink,
-  textShadow: tokensArcade.shadows.neonPink,
-  letterSpacing: '1px',
-  textTransform: 'uppercase',
-  marginBottom: tokensArcade.spacing.sm,
-  position: 'relative',
-  zIndex: 1,
+  fontSize: '3rem',
+  marginBottom: tokensArcade.spacing.md,
 });
 
 const LoginPromptText = styled(Typography)({
   fontFamily: tokensArcade.fonts.body,
-  fontSize: tokensArcade.fonts.sm,
-  color: tokensArcade.colors.neonCyan,
-  textShadow: `0 0 10px rgba(0, 240, 255, 0.5)`,
-  marginBottom: tokensArcade.spacing.lg,
+  fontSize: tokensArcade.fonts.base,
+  color: tokensArcade.colors.deepBlack,
+  marginBottom: tokensArcade.spacing.xl,
   lineHeight: 1.6,
-  position: 'relative',
-  zIndex: 1,
 });
 
 /** =========================
@@ -512,18 +471,17 @@ function Mypage() {
           )
         ) : (
           <LoginPromptContainer>
-            <LoginPromptIcon>🎮</LoginPromptIcon>
-            <LoginPromptTitle>INSERT COIN TO CONTINUE</LoginPromptTitle>
+            <LoginPromptIcon>🔒</LoginPromptIcon>
             <LoginPromptText>
               나의 퀴즈 활동을 보려면 로그인이 필요해요!
             </LoginPromptText>
             <ArcadeButton
-              variant="yellow"
-              size="mega"
+              variant="primary"
+              size="large"
               fullWidth
               onClick={() => navigate('/login')}
             >
-              🎮 카카오로 시작하기
+              카카오로 시작하기
             </ArcadeButton>
           </LoginPromptContainer>
         )}

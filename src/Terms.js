@@ -64,7 +64,7 @@ const SystemHeader = styled('div')({
   borderBottom: '2px solid #00FF00',
   paddingBottom: tokensArcade.spacing.md,
   marginBottom: tokensArcade.spacing.xl,
-  textAlign: 'center',
+  textAlign: 'left',
 });
 
 const SystemTitle = styled('div')({
