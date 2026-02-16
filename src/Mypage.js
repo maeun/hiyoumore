@@ -10,7 +10,6 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import CollectionsIcon from "@mui/icons-material/Collections";
 import AuthContext from "./AuthContext";
-import { ToastContainer } from "react-toastify";
 import { showToast, showErrorToast } from "./toastUtils";
 import { supabase } from "./supabaseConfig";
 import { saveLogoutTime } from "./authUtils";
@@ -403,7 +402,6 @@ function Mypage() {
         <title>PLAYER STATS | 하이유모어</title>
         <meta name="robots" content="noindex" />
       </Helmet>
-      <ToastContainer />
 
       <Shell>
         {mockIsLoggedIn ? (
