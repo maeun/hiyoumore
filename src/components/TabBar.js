@@ -136,7 +136,7 @@ const TabBar = () => {
     { path: '/', icon: <HomeIcon />, label: 'Home' },
     { path: '/my-bookmarks', icon: <BookmarkIcon />, label: 'Saved' },
     { path: '/mypage', icon: <PersonIcon />, label: 'Profile' },
-    { path: '/terms', icon: <InfoIcon />, label: 'Info' },
+    { path: '/info', icon: <InfoIcon />, label: 'Info' },
   ];
 
   return (

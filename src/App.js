@@ -17,6 +17,7 @@ import Mypage from "./Mypage";
 import MyBookmarks from "./MyBookmarks";
 import MyHistory from "./MyHistory";
 import MyComments from "./MyComments";
+import Info from "./Info";
 import Terms from "./Terms";
 import Privacy from "./Privacy";
 import NotFound from "./NotFound";
@@ -102,6 +103,14 @@ function App() {
                 element={
                   <div className="PageWrapper">
                     <MyComments />
+                  </div>
+                }
+              />
+              <Route
+                path="/info"
+                element={
+                  <div className="PageWrapper">
+                    <Info />
                   </div>
                 }
               />
