@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // HashRouter -> BrowserRouter
-import { HelmetProvider, Helmet } from "react-helmet-async";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 import "./App.css";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Arcade components
 import ArcadeHeader from "./components/ArcadeHeader";
@@ -9,8 +12,6 @@ import TabBar from "./components/TabBar";
 
 // Page components
 import Home from "./Home";
-import Category from "./Category";
-import Quiz from "./Quiz";
 import SharedQuiz from "./SharedQuiz";
 import Login from "./Login";
 import AuthCallback from "./AuthCallback";
@@ -50,14 +51,7 @@ function AppContent({ selectedQuestions, handleSelectedQuestions }) {
                 </div>
               }
             />
-            <Route
-              path="/auth/callback"
-              element={
-                <div>
-                  <AuthCallback />
-                </div>
-              }
-            />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route
               path="/mypage"
               element={
@@ -119,6 +113,17 @@ function AppContent({ selectedQuestions, handleSelectedQuestions }) {
         </div>
         <TabBar />
       </div>
+
+      {/* ✅ ToastContainer는 앱 전체에서 1번만, 항상 렌더되게 */}
+      <ToastContainer
+        autoClose={2000}
+        newestOnTop
+        closeOnClick
+        pauseOnFocusLoss={false}
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
     </>
   );
 }

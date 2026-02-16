@@ -51,7 +51,7 @@ function Oauth_Kakao_Callback() {
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
           },
-        }
+        },
       );
 
       const accessToken = response.data.access_token;
@@ -81,10 +81,9 @@ function Oauth_Kakao_Callback() {
       saveLoginTime(userData.id, accessToken, "KAKAO");
       saveUserInfo(userData);
 
-      showToast("👋 로그인 되었습니다 👋");
-
-      // navigate 호출
-      navigate("/");
+      navigate("/", {
+        state: { toast: "👋 로그인 되었습니다 👋" },
+      });
     } catch (error) {
       console.error("Error fetching the user info:", error);
     }
@@ -113,7 +112,16 @@ function Oauth_Kakao_Callback() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh", gap: "16px" }}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "50vh",
+        gap: "16px",
+      }}
+    >
       <Helmet>
         <meta name="robots" content="noindex" />
       </Helmet>
