@@ -145,7 +145,6 @@ const Info = () => {
             </IconWrapper>
             <MenuText>
               <MenuTitle>이용약관</MenuTitle>
-              <MenuDescription>서비스 이용에 관한 약관</MenuDescription>
             </MenuText>
           </MenuItem>
 
@@ -155,7 +154,6 @@ const Info = () => {
             </IconWrapper>
             <MenuText>
               <MenuTitle>개인정보처리방침</MenuTitle>
-              <MenuDescription>개인정보 수집 및 이용에 관한 방침</MenuDescription>
             </MenuText>
           </MenuItem>
         </MenuCard>

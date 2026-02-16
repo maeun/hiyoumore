@@ -15,8 +15,11 @@ function AuthCallback() {
         console.error('Auth callback error:', error);
         navigate('/login');
       } else if (session) {
-        showToast('👋 로그인 되었습니다 👋');
+        // Navigate first, then show toast on homepage for better visibility
         navigate('/');
+        setTimeout(() => {
+          showToast('👋 로그인 되었습니다 👋');
+        }, 100);
       } else {
         showErrorToast('세션을 찾을 수 없습니다');
         navigate('/login');

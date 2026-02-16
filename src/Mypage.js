@@ -8,7 +8,6 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import LogoutIcon from "@mui/icons-material/Logout";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import CollectionsIcon from "@mui/icons-material/Collections";
 import AuthContext from "./AuthContext";
 import { showToast, showErrorToast } from "./toastUtils";
 import { supabase } from "./supabaseConfig";
@@ -453,17 +452,6 @@ function Mypage() {
                     <StatLabel>댓글</StatLabel>
                   </StatCard>
                 </StatsGrid>
-
-                {/* View Collection Button */}
-                <ArcadeButton
-                  variant="primary"
-                  size="mega"
-                  fullWidth
-                  icon={<CollectionsIcon sx={{ fontSize: "1.2rem" }} />}
-                  onClick={() => navigate("/my-bookmarks")}
-                >
-                  VIEW COLLECTION
-                </ArcadeButton>
               </AchievementsCard>
 
               {/* POWER OFF (Logout) */}

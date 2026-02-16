@@ -74,7 +74,7 @@ const TradingCard = styled(Box)({
   paddingTop: tokensArcade.spacing.xxl,
   cursor: 'pointer',
   transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
-  minHeight: '120px',
+  minHeight: '180px',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
