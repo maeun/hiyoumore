@@ -141,18 +141,15 @@ const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (open) {
-      // Save original styles before locking
+      // Save original overflow style before locking
       const originalOverflow = document.body.style.overflow;
-      const originalPosition = document.body.style.position;
 
-      // Lock scroll
+      // Lock scroll (ONLY set overflow, don't touch position)
       document.body.style.overflow = 'hidden';
-      document.body.style.position = 'relative';
 
       // Cleanup: Restore scroll when modal closes or component unmounts
       return () => {
-        document.body.style.overflow = originalOverflow || '';
-        document.body.style.position = originalPosition || '';
+        document.body.style.overflow = originalOverflow;
       };
     }
     // No else clause - cleanup function handles restoration

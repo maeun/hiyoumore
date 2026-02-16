@@ -131,11 +131,13 @@ const TerminalList = styled('ul')({
   listStyle: 'none',
   paddingLeft: tokensArcade.spacing.xl,
   margin: `${tokensArcade.spacing.sm} 0`,
+  textAlign: 'left',
 });
 
 const TerminalListItem = styled('li')({
   margin: `${tokensArcade.spacing.xs} 0`,
   opacity: 0.9,
+  textAlign: 'left',
 
   '&::before': {
     content: '"- "',
