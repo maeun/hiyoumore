@@ -142,9 +142,9 @@ const CommentPreview = styled(Typography)({
   display: '-webkit-box',
   WebkitLineClamp: 3,
   WebkitBoxOrient: 'vertical',
-  wordBreak: 'keep-all',
+  wordBreak: 'break-word',
   overflowWrap: 'break-word',
-  textAlign: 'center',
+  textAlign: 'left',
   padding: `0 ${tokensArcade.spacing.xs}`,
   marginBottom: tokensArcade.spacing.xs,
 });

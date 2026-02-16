@@ -319,6 +319,14 @@ function Mypage() {
     return profileImages[Math.floor(Math.random() * profileImages.length)];
   }, [profileImages]);
 
+  // Auto-redirect to login if not logged in (unless in preview mode)
+  useEffect(() => {
+    if (!PREVIEW_MODE && !user) {
+      navigate('/login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, PREVIEW_MODE]);
+
   useEffect(() => {
     if (PREVIEW_MODE) {
       setUserProfile(mockProfile);
