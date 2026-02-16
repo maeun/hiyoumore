@@ -48,17 +48,20 @@ const GalleryTitle = styled(Typography)({
 const GalleryContent = styled(Box)({
   maxWidth: '900px',
   margin: '0 auto',
-  padding: tokensArcade.spacing.lg,
+  padding: tokensArcade.spacing.md,
+  boxSizing: 'border-box',
 });
 
 const CardGrid = styled(Box)({
   display: 'grid',
   gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: tokensArcade.spacing.base,
+  gap: tokensArcade.spacing.sm,
   width: '100%',
+  boxSizing: 'border-box',
 
   '@media (min-width: 768px)': {
     gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: tokensArcade.spacing.base,
   },
 });
 

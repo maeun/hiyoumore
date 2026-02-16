@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseConfig';
-import { showErrorToast } from './toastUtils';
+import { showToast, showErrorToast } from './toastUtils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 function AuthCallback() {
@@ -15,9 +15,11 @@ function AuthCallback() {
         console.error('Auth callback error:', error);
         navigate('/login');
       } else if (session) {
-        // Set flag in sessionStorage to trigger toast on homepage
-        sessionStorage.setItem('loginSuccess', 'true');
+        // Navigate first, then show toast with delay to ensure page is loaded
         navigate('/');
+        setTimeout(() => {
+          showToast('👋 로그인 되었습니다 👋');
+        }, 500);
       } else {
         showErrorToast('세션을 찾을 수 없습니다');
         navigate('/login');

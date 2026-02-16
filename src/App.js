@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom"; // HashRouter -> BrowserRouter
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // HashRouter -> BrowserRouter
 import { HelmetProvider, Helmet } from "react-helmet-async";
 import "./App.css";
-import { showToast } from "./toastUtils";
 
 // Arcade components
 import ArcadeHeader from "./components/ArcadeHeader";
@@ -26,17 +25,6 @@ import NotFound from "./NotFound";
 import { AuthProvider } from "./AuthContext";
 
 function AppContent({ selectedQuestions, handleSelectedQuestions }) {
-  const location = useLocation();
-
-  useEffect(() => {
-    // Check for login success flag from sessionStorage
-    const loginSuccess = sessionStorage.getItem('loginSuccess');
-    if (loginSuccess === 'true') {
-      showToast('👋 로그인 되었습니다 👋');
-      sessionStorage.removeItem('loginSuccess');
-    }
-  }, [location.pathname]);
-
   return (
     <>
       <div className="Main">
