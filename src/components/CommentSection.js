@@ -10,6 +10,7 @@ import { supabase } from '../supabaseConfig';
 import AuthContext from '../AuthContext';
 import { showToast, showErrorToast } from '../toastUtils';
 import { deleteComment } from '../utils/commentUtils';
+import { handleKakaoLogin } from '../utils/loginUtils';
 import tokensArcade from '../tokens-arcade';
 
 /**
@@ -630,7 +631,7 @@ const CommentSection = ({ quizIndex }) => {
               : '첫 댓글의 주인공이 되어보세요! 로그인하고 댓글을 남겨주세요 😊'
             }
           </LoginPromptText>
-          <LoginButton onClick={() => navigate('/login')}>
+          <LoginButton onClick={handleKakaoLogin}>
             카카오로 시작하기
           </LoginButton>
         </LoginPrompt>

@@ -138,22 +138,8 @@ const BottomSheet = ({ isOpen, onClose, title, children, maxHeight }) => {
   // Backward compatibility: accept both 'open' and 'isOpen' props
   const open = isOpen;
 
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (open) {
-      // Save original overflow style before locking
-      const originalOverflow = document.body.style.overflow;
-
-      // Lock scroll (ONLY set overflow, don't touch position)
-      document.body.style.overflow = 'hidden';
-
-      // Cleanup: Restore scroll when modal closes or component unmounts
-      return () => {
-        document.body.style.overflow = originalOverflow;
-      };
-    }
-    // No else clause - cleanup function handles restoration
-  }, [open]);
+  // NOTE: MUI Modal handles scroll lock automatically - no manual management needed
+  // Removed manual scroll lock to prevent conflicts with MUI's built-in behavior
 
   // Handle mobile keyboard (adjust height when keyboard opens)
   useEffect(() => {
