@@ -2,7 +2,7 @@
 
 ## Project Concept
 
-**HiYouMore** (하이유모어) is a Korean quiz-sharing web app with a bold **Neo-Kawaii Arcade** aesthetic. Users browse categorized trivia quizzes (3 cards per view), flip cards to reveal answers with confetti explosions, and share individual quizzes with friends via mobile share or clipboard. The core loop is: **discover → solve → share → invite**.
+**HIYOUMORE** is a Korean quiz-sharing web app with a bold **Neo-Kawaii Arcade** aesthetic. Users browse categorized trivia quizzes (3 cards per view), flip cards to reveal answers with confetti explosions, and share individual quizzes with friends via mobile share or clipboard. The core loop is: **discover → solve → share → invite**.
 
 ### Product Philosophy
 **"Make every quiz feel like winning an arcade game"**
@@ -999,6 +999,51 @@ const handleFlip = () => {
 - Vercel Analytics for performance
 
 ## Recent Improvements
+
+### Branding & Contact Info Fixes (2026-02-19 - v2.0.23)
+
+**🎯 Service name standardized to HIYOUMORE + Privacy contact info updated**
+
+#### Problem
+- Service was referred to as "하이유모어" (Korean transliteration) in page titles, OG meta tags, and legal page body text — inconsistent with the official English brand name **HIYOUMORE**
+- Privacy policy contact section only listed a KakaoTalk open chat link after an earlier session removed it; email address was added but KakaoTalk channel was missing
+
+#### Solution
+
+**1. Service Name Standardization (v2.0.23)**
+
+Replaced all occurrences of `하이유모어` with `HIYOUMORE` across 10 source files:
+
+| File | Location |
+|------|----------|
+| `public/index.html` | OG `site_name` meta tag |
+| `src/Info.js` | `<title>` tag |
+| `src/Login.js` | `<title>` tag |
+| `src/MyBookmarks.js` | `<title>` tag |
+| `src/MyComments.js` | `<title>` tag |
+| `src/MyHistory.js` | `<title>` tag |
+| `src/Mypage.js` | `<title>` tag |
+| `src/SharedQuiz.js` | `<title>` + OG title meta tag |
+| `src/Terms.js` | Legal body text |
+| `src/Privacy.js` | Legal body text + contact email |
+
+**2. Privacy Contact Info Update**
+
+- Replaced KakaoTalk-only contact with **both** email and KakaoTalk:
+  - Email: `we.select.studio@gmail.com` (mailto link)
+  - KakaoTalk: `https://open.kakao.com/o/sPjylDmf` (open chat)
+- Updated section description from "아래 이메일로" → "아래 연락처로" to reflect dual contact options
+
+#### Files Modified
+- `src/Privacy.js` — contact section (제6조): dual contact links
+- 10 files — `하이유모어` → `HIYOUMORE` (brand name fix)
+
+#### Impact
+- ✅ Consistent English branding across all page titles and social share previews
+- ✅ Users have two contact options (email + KakaoTalk)
+- ✅ Legal page accurately reflects official service name
+
+---
 
 ### Login Toast Solution + Grid Overflow Fix (2026-02-16 - v2.0.14 to v2.0.20)
 
