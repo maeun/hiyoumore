@@ -293,13 +293,20 @@ function Privacy() {
         <TerminalSection>
           <SectionTitle>제6조 (연락처)</SectionTitle>
           <SectionContent>
-            개인정보 관련 문의는 아래 이메일로 접수하실 수 있습니다.
+            개인정보 관련 문의는 아래 연락처로 접수하실 수 있습니다.
           </SectionContent>
-          <div style={{ paddingLeft: tokensArcade.spacing.xl, marginTop: tokensArcade.spacing.md }}>
+          <div style={{ paddingLeft: tokensArcade.spacing.xl, marginTop: tokensArcade.spacing.md, display: 'flex', flexDirection: 'column', gap: tokensArcade.spacing.sm }}>
             <TerminalLink
               href="mailto:we.select.studio@gmail.com"
             >
               we.select.studio@gmail.com
+            </TerminalLink>
+            <TerminalLink
+              href="https://open.kakao.com/o/sPjylDmf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              카카오톡 오픈채팅 문의
             </TerminalLink>
           </div>
         </TerminalSection>
