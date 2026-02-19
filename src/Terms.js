@@ -180,7 +180,7 @@ function Terms() {
         <TerminalSection>
           <SectionTitle>제1조 (목적)</SectionTitle>
           <SectionContent>
-            본 약관은 하이유모어(이하 "서비스")가 제공하는 퀴즈 공유 서비스의 이용과
+            본 약관은 HIYOUMORE(이하 "서비스")가 제공하는 퀴즈 공유 서비스의 이용과
             관련하여 서비스와 이용자 간의 권리, 의무 및 책임 사항을 규정함을 목적으로
             합니다.
           </SectionContent>

@@ -240,7 +240,7 @@ const MyHistory = () => {
   return (
     <GalleryContainer>
       <Helmet>
-        <title>QUIZ HISTORY | 하이유모어</title>
+        <title>QUIZ HISTORY | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

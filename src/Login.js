@@ -228,7 +228,7 @@ function Login() {
   return (
     <ArcadeScreen>
       <Helmet>
-        <title>INSERT COIN | 하이유모어</title>
+        <title>INSERT COIN | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

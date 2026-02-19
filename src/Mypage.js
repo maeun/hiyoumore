@@ -392,7 +392,7 @@ function Mypage() {
   return (
     <Page>
       <Helmet>
-        <title>PLAYER STATS | 하이유모어</title>
+        <title>PLAYER STATS | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

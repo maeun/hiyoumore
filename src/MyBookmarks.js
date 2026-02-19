@@ -274,7 +274,7 @@ const MyBookmarks = () => {
   return (
     <GalleryContainer>
       <Helmet>
-        <title>MY COLLECTION | 하이유모어</title>
+        <title>MY COLLECTION | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

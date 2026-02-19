@@ -389,9 +389,9 @@ function SharedQuiz() {
   return (
     <BattleArena>
       <Helmet>
-        <title>FRIEND CHALLENGE | 하이유모어</title>
+        <title>FRIEND CHALLENGE | HIYOUMORE</title>
         <meta name="description" content={ogDescription} />
-        <meta property="og:title" content="친구가 보낸 퀴즈 | 하이유모어" />
+        <meta property="og:title" content="친구가 보낸 퀴즈 | HIYOUMORE" />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:url" content={window.location.href} />
         <meta property="og:image" content="https://hiyoumore.vercel.app/meta_img.png" />

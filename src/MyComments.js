@@ -324,7 +324,7 @@ const MyComments = () => {
   return (
     <GalleryContainer>
       <Helmet>
-        <title>COMMENTS HISTORY | 하이유모어</title>
+        <title>COMMENTS HISTORY | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 

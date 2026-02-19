@@ -129,7 +129,7 @@ const Info = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>INFO | 하이유모어</title>
+        <title>INFO | HIYOUMORE</title>
         <meta name="robots" content="noindex" />
       </Helmet>
 
