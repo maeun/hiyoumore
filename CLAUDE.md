@@ -1000,6 +1000,59 @@ const handleFlip = () => {
 
 ## Recent Improvements
 
+### Mypage Mobile Layout Overhaul (2026-03-06 - v2.0.24)
+
+**🎯 Fixed stats overflow + compacted profile card + added quick-link navigation**
+
+#### Problem
+- Third stat card (댓글) was partially cut off/hidden on mobile — stats grid overflowed the container
+- Profile card wasted ~40% of screen height with large centered avatar and excessive padding
+- Full email address (`maeuniyee@naver.com`) displayed — privacy concern + wraps awkwardly
+- Logout button and quick navigation not visible without scrolling
+- No explicit navigation links to collection pages (only stat cards as implicit nav)
+
+#### Solution
+
+**1. Stats Grid Overflow Fix**
+```javascript
+// Before (caused overflow)
+gridTemplateColumns: "1fr 1fr 1fr"
+
+// After (prevents overflow)
+gridTemplateColumns: "repeat(3, minmax(0, 1fr))"
+gap: tokensArcade.spacing.sm  // Reduced from md to sm
+```
+
+**2. Compact Horizontal Profile Card**
+- Layout changed from vertical (centered) → horizontal (avatar left, info right)
+- Avatar reduced: 96px → 68px (still prominent, saves vertical space)
+- Profile card height: ~250px → ~100px (~60% reduction)
+- `ProfileInfo` flex column added for name + masked email
+
+**3. Email Masking**
+```javascript
+userProfile.email.replace(/(.{3}).*(@.*)/, "$1***$2")
+// "maeuniyee@naver.com" → "mae***@naver.com"
+```
+
+**4. Quick Links Row (New)**
+Added 3 shortcut buttons inside AchievementsCard below stats:
+- 👁 퀴즈 기록 → `/my-history` (cyan border)
+- 🔖 저장 목록 → `/my-bookmarks` (yellow border)
+- 💬 내 댓글 → `/my-comments` (pink border)
+Each color-coded to match the respective page's theme.
+
+#### Files Modified
+- `src/Mypage.js` — ProfileHeader, AvatarFrame, new ProfileInfo, StatsGrid, new QuickLinksRow
+
+#### Impact
+- ✅ All 3 stat cards fully visible, no overflow on any mobile screen
+- ✅ Key content (profile + stats + quick links + logout) fits above the fold
+- ✅ Email privacy preserved
+- ✅ Explicit navigation shortcuts reduce friction to collection pages
+
+---
+
 ### Branding & Contact Info Fixes (2026-02-19 - v2.0.23)
 
 **🎯 Service name standardized to HIYOUMORE + Privacy contact info updated**

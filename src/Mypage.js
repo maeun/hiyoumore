@@ -56,8 +56,11 @@ const Stack = styled(Box)({
  * ========================= */
 
 const ProfileHeader = styled(Box)({
-  padding: tokensArcade.spacing.xl,
-  textAlign: "center",
+  padding: `${tokensArcade.spacing.md} ${tokensArcade.spacing.lg}`,
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  gap: tokensArcade.spacing.lg,
   background: tokensArcade.colors.deepBlack,
   border: tokensArcade.borders.thick,
   borderColor: tokensArcade.colors.neonCyan,
@@ -69,7 +72,6 @@ const ProfileHeader = styled(Box)({
   position: 'relative',
   overflow: 'hidden',
 
-  // Scanline effect
   '&::before': {
     content: '""',
     position: 'absolute',
@@ -89,10 +91,10 @@ const ProfileHeader = styled(Box)({
 });
 
 const AvatarFrame = styled(Box)({
-  width: 96,
-  height: 96,
-  margin: "0 auto 16px",
-  padding: 4,
+  flexShrink: 0,
+  width: 68,
+  height: 68,
+  padding: 3,
   background: tokensArcade.colors.neonPink,
   border: tokensArcade.borders.thick,
   borderColor: tokensArcade.colors.pureWhite,
@@ -108,26 +110,37 @@ const StyledAvatar = styled(Avatar)({
   borderRadius: tokensArcade.borderRadius.sm,
 });
 
+const ProfileInfo = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: tokensArcade.spacing.xs,
+  position: 'relative',
+  zIndex: 1,
+  minWidth: 0,
+});
+
 const PlayerName = styled(Typography)({
   fontFamily: tokensArcade.fonts.number,
-  fontSize: tokensArcade.fonts.xl,
+  fontSize: tokensArcade.fonts.lg,
   fontWeight: tokensArcade.fonts.weights.black,
   color: tokensArcade.colors.neonCyan,
   textShadow: tokensArcade.shadows.neonCyan,
-  marginBottom: tokensArcade.spacing.xs,
   letterSpacing: '1px',
-  position: 'relative',
-  zIndex: 1,
+  lineHeight: 1.2,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  maxWidth: '100%',
 });
 
 const PlayerID = styled(Typography)({
   fontFamily: tokensArcade.fonts.pixel,
-  fontSize: tokensArcade.fonts.xs,
+  fontSize: '0.55rem',
   color: tokensArcade.colors.pixelGray,
   textTransform: 'uppercase',
   letterSpacing: '0.5px',
-  position: 'relative',
-  zIndex: 1,
+  lineHeight: 1.4,
 });
 
 /** =========================
@@ -160,8 +173,8 @@ const AchievementsTitle = styled(Typography)({
 
 const StatsGrid = styled(Box)({
   display: "grid",
-  gridTemplateColumns: "1fr 1fr 1fr",
-  gap: tokensArcade.spacing.md,
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: tokensArcade.spacing.sm,
   marginBottom: tokensArcade.spacing.lg,
   width: "100%",
 });
@@ -205,6 +218,50 @@ const StatLabel = styled(Typography)({
   fontFamily: tokensArcade.fonts.body,
   fontWeight: tokensArcade.fonts.weights.medium,
   marginTop: tokensArcade.spacing.xs,
+});
+
+/** =========================
+ * QUICK LINKS ROW
+ * ========================= */
+
+const QuickLinksRow = styled(Box)({
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: tokensArcade.spacing.sm,
+  width: "100%",
+  marginTop: tokensArcade.spacing.xs,
+});
+
+const QuickLinkButton = styled(Box)(({ color }) => ({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  gap: 4,
+  padding: `${tokensArcade.spacing.sm} ${tokensArcade.spacing.xs}`,
+  background: tokensArcade.colors.pureWhite,
+  border: tokensArcade.borders.base,
+  borderColor: color || tokensArcade.colors.electricPurple,
+  borderRadius: tokensArcade.borderRadius.md,
+  boxShadow: `3px 3px 0 ${tokensArcade.colors.shadowPurple}`,
+  cursor: "pointer",
+  transition: `all ${tokensArcade.motion.durations.fast} ${tokensArcade.motion.easings.snap}`,
+
+  "&:hover": {
+    transform: "translateY(-3px)",
+    boxShadow: `4px 4px 0 ${tokensArcade.colors.shadowPurple}`,
+  },
+  "&:active": {
+    transform: "translateY(1px)",
+    boxShadow: "none",
+  },
+}));
+
+const QuickLinkLabel = styled(Typography)({
+  fontFamily: tokensArcade.fonts.pixel,
+  fontSize: '0.5rem',
+  color: tokensArcade.colors.deepBlack,
+  textAlign: "center",
+  lineHeight: 1.3,
 });
 
 /** =========================
@@ -400,7 +457,7 @@ function Mypage() {
         {mockIsLoggedIn ? (
           userProfile && (
             <Stack>
-              {/* PROFILE HEADER - Arcade Style */}
+              {/* PROFILE HEADER - Compact Horizontal */}
               <ProfileHeader>
                 <AvatarFrame>
                   <StyledAvatar
@@ -408,10 +465,16 @@ function Mypage() {
                     alt="Profile"
                   />
                 </AvatarFrame>
-                <PlayerName>
-                  {userProfile.nickname || userProfile.name || "PLAYER"}
-                </PlayerName>
-                <PlayerID>PLAYER ID: {userProfile.email}</PlayerID>
+                <ProfileInfo>
+                  <PlayerName>
+                    {userProfile.nickname || userProfile.name || "PLAYER"}
+                  </PlayerName>
+                  <PlayerID>
+                    ID: {userProfile.email
+                      ? userProfile.email.replace(/(.{3}).*(@.*)/, "$1***$2")
+                      : "UNKNOWN"}
+                  </PlayerID>
+                </ProfileInfo>
               </ProfileHeader>
 
               {/* ACHIEVEMENTS CARD */}
@@ -446,6 +509,31 @@ function Mypage() {
                     <StatLabel>댓글</StatLabel>
                   </StatCard>
                 </StatsGrid>
+
+                {/* QUICK LINKS */}
+                <QuickLinksRow>
+                  <QuickLinkButton
+                    color={tokensArcade.colors.neonCyan}
+                    onClick={() => navigate("/my-history")}
+                  >
+                    <VisibilityIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.neonCyan }} />
+                    <QuickLinkLabel>퀴즈 기록</QuickLinkLabel>
+                  </QuickLinkButton>
+                  <QuickLinkButton
+                    color={tokensArcade.colors.arcadeYellow}
+                    onClick={() => navigate("/my-bookmarks")}
+                  >
+                    <BookmarkIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.arcadeYellow }} />
+                    <QuickLinkLabel>저장 목록</QuickLinkLabel>
+                  </QuickLinkButton>
+                  <QuickLinkButton
+                    color={tokensArcade.colors.neonPink}
+                    onClick={() => navigate("/my-comments")}
+                  >
+                    <ChatBubbleOutlineIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.neonPink }} />
+                    <QuickLinkLabel>내 댓글</QuickLinkLabel>
+                  </QuickLinkButton>
+                </QuickLinksRow>
               </AchievementsCard>
 
               {/* POWER OFF (Logout) */}
