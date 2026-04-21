@@ -23,6 +23,25 @@ const CATEGORY_MAP = {
   "🙏 종교": "religion",
 };
 
+const CATEGORY_ITEM_LIST_SCHEMA = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "HIYOUMORE Quiz Categories",
+  "description": "Korean trivia quiz categories — 한국어 퀴즈 카테고리 목록",
+  "url": "https://hiyoumore.xyz",
+  "numberOfItems": 8,
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Maker's Pick — 에디터 추천" },
+    { "@type": "ListItem", "position": 2, "name": "이과 — Science & Engineering" },
+    { "@type": "ListItem", "position": 3, "name": "동물 — Animals" },
+    { "@type": "ListItem", "position": 4, "name": "왕 — Kings & History" },
+    { "@type": "ListItem", "position": 5, "name": "식물 — Plants" },
+    { "@type": "ListItem", "position": 6, "name": "음식 — Food & Cuisine" },
+    { "@type": "ListItem", "position": 7, "name": "영어 — English Language" },
+    { "@type": "ListItem", "position": 8, "name": "종교 — Religion & Culture" }
+  ]
+});
+
 // Map Firebase field names to Supabase column names
 const FIREBASE_TO_SUPABASE_CATEGORY = {
   'my_pick': 'category_my_pick',
@@ -292,6 +311,7 @@ function Category({ handleSelectedQuestions }) {
         <meta property="og:title" content="HIYOUMORE — 오늘의 퀴즈" />
         <meta property="og:description" content="427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리." />
         <meta property="og:type" content="website" />
+        <script type="application/ld+json">{CATEGORY_ITEM_LIST_SCHEMA}</script>
       </Helmet>
       <div className="category-scroll-wrapper">
         <ScrollContainer className="Category_list">
