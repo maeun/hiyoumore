@@ -1,6 +1,8 @@
 {
-  "short_name": "하이유머",
-  "name": "hiyoumore",
+  "short_name": "HIYOUMORE",
+  "name": "HIYOUMORE — 퀴즈 공유 앱",
+  "description": "친구에게 퀴즈를 보내보세요! 아케이드 감성의 한국어 퀴즈 앱.",
+  "lang": "ko",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +20,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#FF2E97",
+  "background_color": "#0A0A0F"
 }

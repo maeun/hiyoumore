@@ -1,6 +1,7 @@
 import { supabase } from './supabaseConfig';
 
 import React, { useState, useEffect } from "react";
+import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from "react-router-dom";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { styled } from "@mui/system";
@@ -285,6 +286,13 @@ function Category({ handleSelectedQuestions }) {
 
   return (
     <>
+      <Helmet>
+        <title>HIYOUMORE — 오늘의 퀴즈</title>
+        <meta name="description" content="427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리." />
+        <meta property="og:title" content="HIYOUMORE — 오늘의 퀴즈" />
+        <meta property="og:description" content="427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <div className="category-scroll-wrapper">
         <ScrollContainer className="Category_list">
           {items.map((item, index) => (

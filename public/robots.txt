@@ -1,3 +1,20 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /mypage
+Disallow: /my-bookmarks
+Disallow: /my-history
+Disallow: /my-comments
+Disallow: /auth/callback
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+Sitemap: https://hiyoumore.xyz/sitemap.xml

@@ -129,7 +129,8 @@ const Info = () => {
   return (
     <PageContainer>
       <Helmet>
-        <title>INFO | HIYOUMORE</title>
+        <title>정보 | HIYOUMORE</title>
+        <meta name="description" content="HIYOUMORE 이용약관 및 개인정보처리방침." />
         <meta name="robots" content="noindex" />
       </Helmet>
 
