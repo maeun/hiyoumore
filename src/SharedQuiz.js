@@ -386,6 +386,23 @@ function SharedQuiz() {
     ? `"${stripHtml(question.que).substring(0, 80)}${stripHtml(question.que).length > 80 ? '...' : ''}" - 친구가 보낸 퀴즈를 맞춰보세요!`
     : "친구가 보낸 퀴즈가 도착했어요! 한 번 맞춰볼까요?";
 
+  const qaSchema = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    "name": `${stripHtml(question.que).substring(0, 60)} | HIYOUMORE`,
+    "url": window.location.href,
+    "mainEntity": {
+      "@type": "Question",
+      "name": stripHtml(question.que),
+      "text": stripHtml(question.que),
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": stripHtml(question.ans),
+        "url": window.location.href
+      }
+    }
+  });
+
   return (
     <BattleArena>
       <Helmet>
@@ -394,7 +411,9 @@ function SharedQuiz() {
         <meta property="og:title" content="친구가 보낸 퀴즈 | HIYOUMORE" />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:url" content={window.location.href} />
-        <meta property="og:image" content="https://hiyoumore.vercel.app/meta_img.png" />
+        <meta property="og:image" content="https://hiyoumore.xyz/meta_img.png" />
+        <meta property="og:type" content="article" />
+        <script type="application/ld+json">{qaSchema}</script>
       </Helmet>
 
       {/* Challenge Banner */}
