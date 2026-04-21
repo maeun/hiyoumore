@@ -41,7 +41,7 @@
   "scripts": {
     "start": "cross-env PUBLIC_URL=http://localhost:3000 react-scripts start",
     "prebuild": "node scripts/generate-sitemap.js",
-    "build": "CI=false react-scripts build",
+    "build": "cross-env CI=false react-scripts build",
     "postbuild": "react-snap",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
@@ -49,7 +49,7 @@
     "deploy": "netlify deploy --prod"
   },
   "reactSnap": {
-    "inlineCss": true,
+    "inlineCss": false,
     "skipThirdPartyRequests": true,
     "puppeteerArgs": [
       "--no-sandbox",
@@ -63,7 +63,9 @@
       "/terms",
       "/privacy",
       "/info"
-    ]
+    ],
+    "navigationTimeout": 60000,
+    "networkIdleTimeout": 200
   },
   "homepage": "https://hiyoumore.xyz/",
   "eslintConfig": {
