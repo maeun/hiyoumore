@@ -1,6 +1,6 @@
+'use client';
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useRouter } from "next/navigation";
 import { styled } from "@mui/system";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -238,7 +238,7 @@ const LoadMoreButtonInner = styled(Box)({
 // ============================================
 
 const MyComments = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -291,7 +291,7 @@ const MyComments = () => {
   };
 
   const handleCardClick = (quizIndex) => {
-    navigate(`/shared-quiz?num=${quizIndex}`);
+    router.push(`/shared-quiz?num=${quizIndex}`);
   };
 
   const handleLoadMore = () => {
@@ -323,11 +323,6 @@ const MyComments = () => {
 
   return (
     <GalleryContainer>
-      <Helmet>
-        <title>COMMENTS HISTORY | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <GalleryHeader>
         <GalleryTitle>💬 COMMENTS HISTORY</GalleryTitle>
       </GalleryHeader>

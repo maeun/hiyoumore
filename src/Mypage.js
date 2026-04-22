@@ -1,6 +1,6 @@
+'use client';
 import something_going_wrong from "./something_going_wrong.png";
-import { useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
+import { useRouter } from "next/navigation";
 import { styled } from "@mui/system";
 import { Avatar, Box, Typography } from "@mui/material";
 import { useContext, useEffect, useMemo, useState } from "react";
@@ -344,7 +344,7 @@ function Mypage() {
   const [bookmarkCount, setBookmarkCount] = useState(0);
   const [flipCount, setFlipCount] = useState(0);
   const [commentCount, setCommentCount] = useState(0);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const PREVIEW_MODE = process.env.NODE_ENV !== "production" && true;
 
@@ -439,7 +439,7 @@ function Mypage() {
       }
 
       showToast("POWER OFF! 👋");
-      navigate("/");
+      router.push("/");
     } catch (e) {
       console.error(e);
       showErrorToast("로그아웃 실패");
@@ -448,11 +448,6 @@ function Mypage() {
 
   return (
     <Page>
-      <Helmet>
-        <title>PLAYER STATS | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <Shell>
         {mockIsLoggedIn ? (
           userProfile && (
@@ -483,7 +478,7 @@ function Mypage() {
 
                 <StatsGrid>
                   {/* Viewed Quizzes */}
-                  <StatCard onClick={() => navigate("/my-history")}>
+                  <StatCard onClick={() => router.push("/my-history")}>
                     <StatIconBox>
                       <VisibilityIcon sx={{ fontSize: "1.8rem" }} />
                     </StatIconBox>
@@ -492,7 +487,7 @@ function Mypage() {
                   </StatCard>
 
                   {/* Bookmarks */}
-                  <StatCard onClick={() => navigate("/my-bookmarks")}>
+                  <StatCard onClick={() => router.push("/my-bookmarks")}>
                     <StatIconBox>
                       <BookmarkIcon sx={{ fontSize: "1.8rem" }} />
                     </StatIconBox>
@@ -501,7 +496,7 @@ function Mypage() {
                   </StatCard>
 
                   {/* Comments */}
-                  <StatCard onClick={() => navigate("/my-comments")}>
+                  <StatCard onClick={() => router.push("/my-comments")}>
                     <StatIconBox>
                       <ChatBubbleOutlineIcon sx={{ fontSize: "1.8rem" }} />
                     </StatIconBox>
@@ -514,21 +509,21 @@ function Mypage() {
                 <QuickLinksRow>
                   <QuickLinkButton
                     color={tokensArcade.colors.neonCyan}
-                    onClick={() => navigate("/my-history")}
+                    onClick={() => router.push("/my-history")}
                   >
                     <VisibilityIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.neonCyan }} />
                     <QuickLinkLabel>퀴즈 기록</QuickLinkLabel>
                   </QuickLinkButton>
                   <QuickLinkButton
                     color={tokensArcade.colors.arcadeYellow}
-                    onClick={() => navigate("/my-bookmarks")}
+                    onClick={() => router.push("/my-bookmarks")}
                   >
                     <BookmarkIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.arcadeYellow }} />
                     <QuickLinkLabel>저장 목록</QuickLinkLabel>
                   </QuickLinkButton>
                   <QuickLinkButton
                     color={tokensArcade.colors.neonPink}
-                    onClick={() => navigate("/my-comments")}
+                    onClick={() => router.push("/my-comments")}
                   >
                     <ChatBubbleOutlineIcon sx={{ fontSize: "1rem", color: tokensArcade.colors.neonPink }} />
                     <QuickLinkLabel>내 댓글</QuickLinkLabel>

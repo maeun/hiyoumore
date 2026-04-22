@@ -1,6 +1,6 @@
+'use client';
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useRouter } from 'next/navigation';
 import { styled } from '@mui/system';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
@@ -184,7 +184,7 @@ const LoadingContainer = styled(Box)({
 // ============================================
 
 const MyHistory = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -213,7 +213,7 @@ const MyHistory = () => {
   };
 
   const handleCardClick = (quizIndex) => {
-    navigate(`/shared-quiz?num=${quizIndex}`);
+    router.push(`/shared-quiz?num=${quizIndex}`);
   };
 
   const stripHtml = (html) => {
@@ -239,11 +239,6 @@ const MyHistory = () => {
 
   return (
     <GalleryContainer>
-      <Helmet>
-        <title>QUIZ HISTORY | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <GalleryHeader>
         <GalleryTitle>👁️ QUIZ HISTORY</GalleryTitle>
       </GalleryHeader>

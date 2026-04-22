@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, useEffect, useContext } from 'react';
 import { CircularProgress, Avatar } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
@@ -5,7 +6,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CloseIcon from '@mui/icons-material/Close';
 import PersonIcon from '@mui/icons-material/Person';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../supabaseConfig';
 import AuthContext from '../AuthContext';
 import { showToast, showErrorToast } from '../toastUtils';
@@ -415,7 +416,7 @@ const formatTimestamp = (timestamp) => {
 };
 
 const CommentSection = ({ quizIndex }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { user } = useContext(AuthContext);
   const isLoggedIn = !!user;
 
