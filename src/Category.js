@@ -1,8 +1,9 @@
+'use client';
+
 import { supabase } from './supabaseConfig';
 
 import React, { useState, useEffect } from "react";
-import { Helmet } from 'react-helmet-async';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useRouter, useSearchParams } from 'next/navigation';
 import ScrollContainer from "react-indiana-drag-scroll";
 import { styled } from "@mui/system";
 import { Box } from "@mui/material";
@@ -253,8 +254,8 @@ const CategoryTitle = styled('h2')({
 function Category({ handleSelectedQuestions }) {
   const [selectedItem, setSelectedItem] = useState("📆 Today's");
   const [refreshCount, setRefreshCount] = useState(0);
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     fetchTodays().then(handleSelectedQuestions);
@@ -262,16 +263,15 @@ function Category({ handleSelectedQuestions }) {
 
   useEffect(() => {
     // Check for login success query parameter
-    const params = new URLSearchParams(location.search);
-    if (params.get('loginSuccess') === 'true') {
+    if (searchParams.get('loginSuccess') === 'true') {
       // Show toast at top of page after small delay to ensure page is ready
       setTimeout(() => {
         showLoginToast('👋 로그인 되었습니다 👋');
       }, 300);
       // Remove query parameter from URL
-      navigate('/', { replace: true });
+      router.replace('/');
     }
-  }, [location.search, navigate]);
+  }, [searchParams, router]);
 
   const handleItemClick = async (item) => {
     setSelectedItem(item);
@@ -305,14 +305,6 @@ function Category({ handleSelectedQuestions }) {
 
   return (
     <>
-      <Helmet>
-        <title>HIYOUMORE — 오늘의 퀴즈</title>
-        <meta name="description" content="427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리." />
-        <meta property="og:title" content="HIYOUMORE — 오늘의 퀴즈" />
-        <meta property="og:description" content="427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리." />
-        <meta property="og:type" content="website" />
-        <script type="application/ld+json">{CATEGORY_ITEM_LIST_SCHEMA}</script>
-      </Helmet>
       <div className="category-scroll-wrapper">
         <ScrollContainer className="Category_list">
           {items.map((item, index) => (
