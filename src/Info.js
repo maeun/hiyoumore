@@ -1,6 +1,6 @@
+'use client';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useRouter } from 'next/navigation';
 import { styled } from '@mui/system';
 import { Box, Typography } from '@mui/material';
 import tokensArcade from './tokens-arcade';
@@ -124,23 +124,17 @@ const MenuDescription = styled(Typography)({
 // ============================================
 
 const Info = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <PageContainer>
-      <Helmet>
-        <title>정보 | HIYOUMORE</title>
-        <meta name="description" content="HIYOUMORE 이용약관 및 개인정보처리방침." />
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <PageHeader>
         <PageTitle>ℹ️ INFORMATION</PageTitle>
       </PageHeader>
 
       <Content>
         <MenuCard>
-          <MenuItem onClick={() => navigate('/terms')}>
+          <MenuItem onClick={() => router.push('/terms')}>
             <IconWrapper>
               <ArticleIcon />
             </IconWrapper>
@@ -149,7 +143,7 @@ const Info = () => {
             </MenuText>
           </MenuItem>
 
-          <MenuItem onClick={() => navigate('/privacy')}>
+          <MenuItem onClick={() => router.push('/privacy')}>
             <IconWrapper style={{ backgroundColor: tokensArcade.colors.neonCyan }}>
               <PrivacyTipIcon />
             </IconWrapper>

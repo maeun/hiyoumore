@@ -1,6 +1,6 @@
+'use client';
 import React from "react";
-import { Helmet } from "react-helmet-async";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from 'next/navigation';
 import { styled } from "@mui/system";
 import tokensArcade from "./tokens-arcade";
 
@@ -198,27 +198,22 @@ const EffectiveDate = styled('div')({
 });
 
 function Privacy() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // ESC key to exit
   React.useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        navigate(-1);
+        router.back();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate]);
+  }, [router]);
 
   return (
     <TerminalScreen>
-      <Helmet>
-        <title>SYSTEM INFO: PRIVACY | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <TerminalContent>
         <SystemHeader>
           <SystemTitle>SYSTEM INFORMATION: 개인정보처리방침</SystemTitle>
