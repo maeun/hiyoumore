@@ -19,6 +19,7 @@
     "firebase": "^9.22.0",
     "framer-motion": "^12.34.0",
     "mysql": "^2.18.1",
+    "next": "^15.5.15",
     "react": "^18.2.0",
     "react-card-flip": "^1.2.0",
     "react-confetti-explosion": "^3.0.3",
@@ -39,14 +40,12 @@
     "workbox-strategies": "^7.4.0"
   },
   "scripts": {
-    "start": "cross-env PUBLIC_URL=http://localhost:3000 react-scripts start",
+    "dev": "next dev",
     "prebuild": "node scripts/generate-sitemap.js",
-    "build": "cross-env CI=false react-scripts build",
-    "postbuild": "react-snap",
+    "build": "next build",
+    "start": "next start",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "netlify deploy --prod"
+    "eject": "react-scripts eject"
   },
   "reactSnap": {
     "inlineCss": false,
@@ -87,6 +86,7 @@
     ]
   },
   "devDependencies": {
+    "@emotion/cache": "^11.14.0",
     "dotenv": "^17.4.2",
     "gh-pages": "^6.1.1",
     "react-snap": "^1.23.0"
