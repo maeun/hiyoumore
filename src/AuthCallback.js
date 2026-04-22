@@ -1,11 +1,13 @@
+'use client';
+
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { supabase } from './supabaseConfig';
 import { showErrorToast } from './toastUtils';
 import CircularProgress from '@mui/material/CircularProgress';
 
 function AuthCallback() {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     // Supabase automatically exchanges code for session
@@ -13,16 +15,16 @@ function AuthCallback() {
       if (error) {
         showErrorToast('로그인 실패');
         console.error('Auth callback error:', error);
-        navigate('/login');
+        router.push('/login');
       } else if (session) {
         // Navigate with query parameter to trigger toast on homepage
-        navigate('/?loginSuccess=true');
+        router.push('/?loginSuccess=true');
       } else {
         showErrorToast('세션을 찾을 수 없습니다');
-        navigate('/login');
+        router.push('/login');
       }
     });
-  }, [navigate]);
+  }, [router]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

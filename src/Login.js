@@ -1,5 +1,6 @@
+'use client';
+
 import React from "react";
-import { Helmet } from "react-helmet-async";
 import { styled } from "@mui/system";
 import { Box, Typography } from "@mui/material";
 import { supabase } from './supabaseConfig';
@@ -227,11 +228,6 @@ function Login() {
 
   return (
     <ArcadeScreen>
-      <Helmet>
-        <title>INSERT COIN | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       {/* Coin Slot Machine */}
       <CoinSlotMachine />
 
