@@ -1,7 +1,9 @@
+'use client';
 import React from 'react';
 import { styled } from '@mui/system';
 import { Box } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import tokensArcade from '../tokens-arcade';
 import HomeIcon from '@mui/icons-material/Home';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -30,7 +32,7 @@ const TabBarContainer = styled(Box)({
   boxShadow: `0 -4px 0 ${tokensArcade.colors.shadowPurple}`,
 });
 
-const TabButton = styled(NavLink)({
+const TabButton = styled(Link)(({ isactive }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -83,7 +85,7 @@ const TabButton = styled(NavLink)({
   },
 
   // Active state (selected tab)
-  '&.active': {
+  ...(isactive === 'true' && {
     color: tokensArcade.colors.neonPink,
 
     '& .icon-wrapper': {
@@ -119,19 +121,20 @@ const TabButton = styled(NavLink)({
         opacity: 0.5,
       },
     },
-  },
+  }),
 
   // Active click state
   '&:active': {
     transform: 'translateY(2px)',
   },
-});
+}));
 
 // ============================================
 // TAB BAR COMPONENT
 // ============================================
 
 const TabBar = () => {
+  const pathname = usePathname();
   const tabs = [
     { path: '/', icon: <HomeIcon />, label: 'Home' },
     { path: '/my-bookmarks', icon: <BookmarkIcon />, label: 'Saved' },
@@ -144,8 +147,8 @@ const TabBar = () => {
       {tabs.map((tab) => (
         <TabButton
           key={tab.path}
-          to={tab.path}
-          end={tab.path === '/'}
+          href={tab.path}
+          isactive={pathname === tab.path ? 'true' : undefined}
         >
           <div className="icon-wrapper">
             {tab.icon}

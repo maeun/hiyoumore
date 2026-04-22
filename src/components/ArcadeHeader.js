@@ -1,7 +1,8 @@
+'use client';
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
 import { Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import tokensArcade from '../tokens-arcade';
 import { supabase } from '../supabaseConfig';
 
@@ -122,7 +123,7 @@ const ScoreValue = styled('span')({
 // ============================================
 
 const ArcadeHeader = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [todayQuizCount, setTodayQuizCount] = useState(0);
 
   useEffect(() => {
@@ -151,7 +152,7 @@ const ArcadeHeader = () => {
   }, []);
 
   const handleLogoClick = () => {
-    navigate('/');
+    router.push('/');
   };
 
   return (
