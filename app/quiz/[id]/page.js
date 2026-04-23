@@ -1,7 +1,8 @@
+import { cache } from 'react';
 import { createClient } from '@supabase/supabase-js';
 import SharedQuiz from '@/src/SharedQuiz';
 
-async function fetchQuiz(id) {
+const fetchQuiz = cache(async (id) => {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -14,7 +15,7 @@ async function fetchQuiz(id) {
 
   if (error || !data) return null;
   return data;
-}
+});
 
 export async function generateMetadata({ params }) {
   const quiz = await fetchQuiz(params.id);
