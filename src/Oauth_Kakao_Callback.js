@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Helmet } from "react-helmet-async";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
@@ -36,7 +35,7 @@ function Oauth_Kakao_Callback() {
   const fetchToken = async (code) => {
     const grantType = "authorization_code";
     const clientId = "05d00f0fda1f9c72cd19cc6f219cd58a"; // 카카오 개발자 콘솔에서 발급받은 REST API 키
-    const redirectUri = "https://hiyoumore.vercel.app/oauth/kakao/callback"; // 설정한 Redirect URI
+    const redirectUri = "https://hiyoumore.xyz/oauth/kakao/callback"; // 설정한 Redirect URI
 
     try {
       const response = await axios.post(
@@ -122,9 +121,6 @@ function Oauth_Kakao_Callback() {
         gap: "16px",
       }}
     >
-      <Helmet>
-        <meta name="robots" content="noindex" />
-      </Helmet>
       <CircularProgress sx={{ color: "#594b73" }} />
       <Typography sx={{ fontFamily: '"Noto Sans KR", sans-serif' }}>
         로그인 처리 중...

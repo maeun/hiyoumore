@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { HelmetProvider } from "react-helmet-async";
 import "./App.css";
 
 import { ToastContainer } from "react-toastify";
@@ -136,16 +135,14 @@ function App() {
   };
 
   return (
-    <HelmetProvider>
-      <AuthProvider>
-        <Router basename="/">
-          <AppContent
-            selectedQuestions={selectedQuestions}
-            handleSelectedQuestions={handleSelectedQuestions}
-          />
-        </Router>
-      </AuthProvider>
-    </HelmetProvider>
+    <AuthProvider>
+      <Router basename="/">
+        <AppContent
+          selectedQuestions={selectedQuestions}
+          handleSelectedQuestions={handleSelectedQuestions}
+        />
+      </Router>
+    </AuthProvider>
   );
 }
 

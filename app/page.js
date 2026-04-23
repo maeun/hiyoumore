@@ -1,16 +1,15 @@
-'use client';
+import HomeClient from './home-client';
 
-import { Suspense, useState } from 'react';
-import Home from '@/src/Home';
+export const metadata = {
+  title: 'HIYOUMORE — 오늘의 퀴즈',
+  description: '427개의 한국어 퀴즈를 풀고 친구와 공유해보세요! 동물, 상식, 음식, 역사 등 다양한 카테고리.',
+  openGraph: {
+    title: 'HIYOUMORE — 오늘의 퀴즈',
+    description: '427개의 한국어 퀴즈를 풀고 친구와 공유해보세요!',
+    type: 'website',
+  },
+};
 
 export default function HomePage() {
-  const [selectedQuestions, setSelectedQuestions] = useState([]);
-  return (
-    <Suspense fallback={null}>
-      <Home
-        selectedQuestions={selectedQuestions}
-        handleSelectedQuestions={setSelectedQuestions}
-      />
-    </Suspense>
-  );
+  return <HomeClient />;
 }

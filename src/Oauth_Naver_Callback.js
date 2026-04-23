@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Helmet } from "react-helmet-async";
 import AuthContext from "./AuthContext";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -71,9 +70,6 @@ function Oauth_Naver_Callback() {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "50vh", gap: "16px" }}>
-      <Helmet>
-        <meta name="robots" content="noindex" />
-      </Helmet>
       <CircularProgress sx={{ color: "#594b73" }} />
       <Typography sx={{ fontFamily: '"Noto Sans KR", sans-serif' }}>
         로그인 처리 중...
