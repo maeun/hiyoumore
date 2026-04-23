@@ -1,6 +1,7 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+import { useRouter } from 'next/navigation';
 import { styled } from '@mui/system';
 import tokensArcade from './tokens-arcade';
 import ArcadeButton from './components/ArcadeButton';
@@ -171,7 +172,7 @@ const ButtonStack = styled('div')({
 });
 
 const NotFound = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [countdown, setCountdown] = useState(10);
 
   // Auto-redirect countdown
@@ -179,7 +180,7 @@ const NotFound = () => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
-          navigate('/');
+          router.push('/');
           return 0;
         }
         return prev - 1;
@@ -187,35 +188,30 @@ const NotFound = () => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [navigate]);
+  }, [router]);
 
   // ESC key to go back
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
-        navigate(-1);
+        router.back();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate]);
+  }, [router]);
 
   const handleGoHome = () => {
-    navigate('/');
+    router.push('/');
   };
 
   const handleGoBack = () => {
-    navigate(-1);
+    router.back();
   };
 
   return (
     <GameOverScreen>
-      <Helmet>
-        <title>GAME OVER - 404 | HIYOUMORE</title>
-        <meta name="robots" content="noindex" />
-      </Helmet>
-
       <GameOverContent>
         <GameOverTitle>GAME OVER</GameOverTitle>
 
