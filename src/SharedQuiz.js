@@ -1,6 +1,7 @@
+'use client';
 import React, { useEffect, useState, useContext } from "react";
 import { Helmet } from "react-helmet-async";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { styled } from "@mui/system";
 import { Box, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -282,8 +283,7 @@ const ActionsStack = styled(Box)({
 
 function SharedQuiz() {
   const { user } = useContext(AuthContext);
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
+  const searchParams = useSearchParams();
   const num = searchParams.get("num");
 
   const [question, setQuestion] = useState({ que: "", ans: "" });
